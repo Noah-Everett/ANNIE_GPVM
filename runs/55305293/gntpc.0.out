@@ -1,0 +1,890 @@
+
+
+********************************************************************************************************
+
+oooooo   oooooo     oooo       .o.       ooooooooo.   ooooo      ooo ooooo ooooo      ooo   .oooooo.    
+ `888.    `888.     .8'       .888.      `888   `Y88. `888b.     `8' `888' `888b.     `8'  d8P'  `Y8b   
+  `888.   .8888.   .8'       .8"888.      888   .d88'  8 `88b.    8   888   8 `88b.    8  888           
+   `888  .8'`888. .8'       .8' `888.     888ooo88P'   8   `88b.  8   888   8   `88b.  8  888           
+    `888.8'  `888.8'       .88ooo8888.    888`88b.     8     `88b.8   888   8     `88b.8  888     ooooo 
+     `888'    `888'       .8'     `888.   888  `88b.   8       `888   888   8       `888  `88.    .88'  
+      `8'      `8'       o88o     o8888o o888o  o888o o8o        `8  o888o o8o        `8   `Y8bood8P'   
+                                                                                                        
+
+********************************************************************************************************
+
+                                THIS IS A DEVELOPMENT VERSION OF GENIE.
+                      IT HAS *NOT* BEEN FULLY VALIDATED AND IT HAS EXPERIMENTAL FEATURES.
+
+                                   USE THIS VERSION AT YOUR OWN RISK.
+
+ If you prefer to use a version with validated physics content, please see http://releases.genie-mc.org
+
+                            Site managers, please don't remove this notice!
+
+
+ GENIE will continue running in 15 seconds...
+
+
+
+
+
+*****************************************************************************************************************
+*                                                                                                               *
+*                                                   .oooooo.    oooooooooooo ooooo      ooo ooooo oooooooooooo  *
+*                                                  d8P'  `Y8b   `888'     `8 `888b.     `8' `888' `888'     `8  *
+*                                                 888            888          8 `88b.    8   888   888          * 
+*                        Ndyooym          dN      888            888oooo8     8   `88b.  8   888   888oooo8     *
+*                     Nds//+sdmoy       d+m       888     ooooo  888    "     8     `88b.8   888   888    "     * 
+*                   Nh+//ohN  m+s      N//syyN    `88.    .88'   888       o  8       `888   888   888       o  *
+*                 Ny+//od   Nh+oN       o///+      `Y8bood8P'   o888ooooood8 o8o        `8  o888o o888ooooood8  *
+*               Nh+//om   Nh+/yN       o///s                                                                    *
+*              d+//+d   my+/smmyhN    m///h                                      NEUTRINO MONTE CARLO GENERATOR *   
+*            Ns///yN NdyoshNNs///d   h////yN                                                                    *
+*           mo//om        ms///+m   d///////oyhmN                                           Version 999.999.999 *
+*          N+//yN       ms////+N    h////////////oym                                                            *
+*          s//h       ho/+///sN     N///////////////od                                  http://www.genie-mc.org *
+*         N+/h     my++yh+//y       s/////////////////oN                                                        *
+*         Ns/m Nmy++ymNh//+d        s//////////////////+m                                                       *
+*          NhssoshN  Ny//sN         m///////////////////+                                                       *
+*                  Nmo/+ohdmN        mo//////////////////h            NmmN                                      *
+*              ms/+s//o/-----:+sdN     mhso+ooys/////////o      mhs+/------/ohN                                 *
+*    Nhd     N+-/o+/o+------------/shN     Ndy+//////////+ mhs+:---------------om                               *
+*  mo/sN    m:/oo/oo:-----------------:://////////////////-----------------------y                              *
+*  y//d    Noo++o+:----------:------------:://///////////:-------:/+osyso/:-------h                             *
+*  Nyo+syysooo+/--------------::--------------:://///////:----::////+ossyso/------:                             *
+*     NNNNNs--------------------:/::-------------:://///:-:://////////oosyo+:------                             *
+*          y---------------------:////:::-----------:////////////////+o++++/:-----/                             *
+*          m-----------------------://////////////////////////////+so/--:---------y                             *
+*           +------------------------://////////////////////////+yy:---+oh/--:y+-/N                             *
+*           N/-------------------------://////////////////////ohy/-------yy--os-/m                              *
+*            No--------------------------://///////////////+shs/---------/d++/-oN                               *
+*              mo--------------------------:////////////+shyo:------------sy/sm                                 *
+*                Ny+:------------------------::://///oyhyo:--------------/sd                                    *
+*                    mhso+/:------------------:/+oyhyo/----------:/+syhm                                        *
+*                           NmddhyyyssssyyyhdmmNNNmhhhyyyyhhddmN                                                *
+*                                                                                                               *
+*                                                             Copyright (c) 2003-2019, The GENIE Collaboration  *
+*                                                                                                               *
+*                                                                                                               *
+*            Luis Alvarez-Ruso [8], Costas Andreopoulos [4,6], Christopher Barry [4], Francis Bench [4],        *
+*            Steve Dennis [4], Steve Dytman [5], Hugh Gallagher [7], Steven Gardiner [3], Walter Giele [3],     *
+*            Robert Hatcher [3], Libo Jiang [5], Rhiannon Jones [4], Igor Kakorin [2], Konstantin Kuzmin [2],   *
+*            Anselmo Meregaglia [1], Donna Naples [5], Vadim Naumov [2], Gabriel Perdue [3], Marco Roda [4],    *
+*            Vladyslav Syrotenko [7], Julia Tena Vidal [4], Jeremy Wolcott [7], and Julia Yarba [3]             *
+*                                                                                                               *
+*                                               (The GENIE Collaboration)                                       *
+*                                                                                                               *
+*                      [1] CENBG, Université de Bordeaux, CNRS/IN2P3, 33175 Gradignan, France                   *
+*              [2] Joint Institute for Nuclear Research (JINR), Dubna, Moscow region, 141980, Russia            *
+*                     [3] Fermi National Accelerator Laboratory, Batavia, Illinois 60510, USA                   *
+*                      [4] University of Liverpool, Dept. of Physics, Liverpool L69 7ZE, UK                     *
+*              [5] University of Pittsburgh, Dept. of Physics and Astronomy, Pittsburgh PA 15260, USA           *
+*             [6] STFC Rutherford Appleton Laboratory, Particle Physics Dept., Oxfordshire OX11 0QX, UK         *
+*                    [7] Tufts University, Dept. of Physics and Astronomy, Medford MA 02155, USA                *
+*                                       [8] University of Valencia, Valencia, Spain                             *
+*                                                                                                               *
+*  Corresponding Author:                                                                                        *
+*  Dr. Costas Andreopoulos  <costas.andreopoulos \at stfc.ac.uk>                                                *
+*                                                                                                               *
+*  University of Liverpool  |  STFC Rutherford Appleton Laboratory                                              *
+*  Physics Department       |  Particle Physics Department                                                      *
+*  Oliver Lodge Lab 316     |  Harwell Oxford Campus, R1 2.89                                                   *
+*  Liverpool L69 7ZE, UK    |  Oxfordshire OX11 0QX, UK                                                         *
+*  +44-(0)1517-943201 (tel) |  +44-(0)1235-445091 (tel)                                                         *
+*****************************************************************************************************************
+
+
+1652913470 NOTICE Messenger : [s] <SetPrioritiesFromXmlFile (158)> : Reading msg stream priorities from XML file: /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_04_ub3/Linux64bit+3.10-2.17-e17-prof/GENIE-Generator/config/Messenger.xml
+1652913470 INFO TuneId : [n] <TuneId.cxx::Build (133)> : G18_02a_00_000 Tune configured 
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (2962)> : Reading input filename
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (2984)> : Reading output file format
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3017)> : Unspecified output filename - Using default
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3027)> : Unspecified number of events to analyze - Use all
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3039)> : Unspecified version number - Use latest
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3042)> : Latest version number: 1
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3054)> : Unspecified random number seed - Using default
+1652913470 NOTICE gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3058)> : Input filename  = gntp.0.ghep.root
+1652913470 NOTICE gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3059)> : Output filename = gntp.0.gst.root
+1652913470 NOTICE gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3060)> : Conversion to format = -1, vrs = 1
+1652913470 NOTICE gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3062)> : Number of events to be converted = -1
+1652913470 NOTICE gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3063)> : Copy metadata? = No
+1652913470 NOTICE gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3064)> : Random number seed = -1
+1652913470 NOTICE gntpc : [n] <gNtpConv.cxx::GetCommandLineArgs (3066)> : Global running options:
+ GENIE tune: Custom GENIE tune: G18_02a_00_000
+ - Prefix ............... : G
+ - Year ................. : 18
+ - Major model ID ....... : 02
+ - Minor model ID ....... : a
+ - Tuned param set ID ... : 00
+ - Fit dataset ID ....... : 000
+ - Tune directory ....... : /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_04_ub3/Linux64bit+3.10-2.17-e17-prof/GENIE-Generator/config/G18_02a
+ - Base directory ....... : /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_04_ub3/Linux64bit+3.10-2.17-e17-prof/GENIE-Generator/config
+ - Custom directory ..... : /cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data
+
+ Event generator list: Default
+ User-specified message thresholds : 
+ Cache file : 
+ Unphysical event mask (bits: 15 -> 0) : 1111111111111111
+ Event record print level : 3
+ MC job status file refresh rate: 50
+ Pre-calculate all free-nucleon cross-sections? : Yes
+
+1652913470 INFO PDG : [n] <PDGLibrary.cxx::Instance (46)> : PDGLibrary late initialization
+1652913470 INFO PDG : [n] <PDGLibrary.cxx::LoadDBase (90)> : Load PDG data from: /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_04_ub3/Linux64bit+3.10-2.17-e17-prof/GENIE-Generator/data/evgen/catalogues/pdg/genie_pdg_table.txt
+1652913470 NOTICE gntpc : [n] <gNtpConv.cxx::ConvertToGST (403)> : *** Saving summary tree to: gntp.0.gst.root
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (516)> : Input tree header: Tree Header Info:
+MC run number     -> 0
+NtpRecord Format  -> [NtpMCEventRecord]
+GENIE CVS Vrs Nu  -> 3.0.6
+File generated at -> DATE (dd/mm/yyyy): 18/5/2022, TIME (hr:min:sec): 22:31:30
+
+
+1652913470 NOTICE gntpc : [n] <gNtpConv.cxx::ConvertToGST (534)> : *** Analyzing: 10 events
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (545)> : 
+
+*** Event #: 0
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (546)> : 
+
+|------------------------------------------------------------------------------------------------------------------|
+|GENIE GHEP Event Record [print level:   3]                                                                        |
+|------------------------------------------------------------------------------------------------------------------|
+| Idx |          Name | Ist |        PDG |   Mother  | Daughter  |      Px |      Py |      Pz |       E |      m  | 
+|------------------------------------------------------------------------------------------------------------------|
+|   0 |         nu_mu |   0 |         14 |  -1 |  -1 |   4 |   4 |   0.010 |  -0.005 |   1.194 |   1.194 |   0.000 | 
+|   1 |          Ar40 |   0 | 1000180400 |  -1 |  -1 |   2 |   3 |   0.000 |   0.000 |   0.000 |  37.216 |  37.216 | 
+|   2 |        proton |  11 |       2212 |   1 |  -1 |   5 |   5 |  -0.117 |  -0.071 |  -0.053 |   0.925 | **0.938 | M = 0.914 
+|   3 |          Cl39 |   2 | 1000170390 |   1 |  -1 |  12 |  12 |   0.117 |   0.071 |   0.053 |  36.290 |  36.290 | 
+|   4 |         nu_mu |   1 |         14 |   0 |  -1 |  -1 |  -1 |  -0.183 |  -0.324 |   0.724 |   0.814 |   0.000 | P = (0.225,0.398,-0.889)
+|   5 |        Delta+ |   3 |       2214 |   2 |  -1 |   6 |   7 |   0.076 |   0.247 |   0.417 |   1.306 | **1.232 | M = 1.210 
+|   6 |       neutron |  14 |       2112 |   5 |  -1 |   8 |   9 |  -0.095 |   0.160 |   0.187 |   0.976 |   0.940 | FSI = 2
+|   7 |           pi+ |  14 |        211 |   5 |  -1 |  10 |  11 |   0.170 |   0.087 |   0.230 |   0.330 |   0.140 | FSI = 2
+|   8 |        proton |   1 |       2212 |   6 |  -1 |  -1 |  -1 |  -0.013 |   0.188 |   0.031 |   0.958 |   0.938 | 
+|   9 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |  -0.121 |   0.175 |   0.177 |   0.979 |   0.940 | 
+|  10 |           pi0 |   1 |        111 |   7 |  -1 |  -1 |  -1 |   0.275 |   0.106 |   0.027 |   0.326 |   0.135 | 
+|  11 |        proton |   1 |       2212 |   7 |  -1 |  -1 |  -1 |  -0.078 |  -0.177 |  -0.018 |   0.958 |   0.938 | 
+|  12 |      HadrBlob |  15 | 2000000002 |   3 |  -1 |  -1 |  -1 |   0.129 |   0.026 |   0.254 |  34.376 | **0.000 | M = 34.374 
+|------------------------------------------------------------------------------------------------------------------|
+|       Fin-Init:                                                |   0.000 |   0.000 |   0.000 |   0.000 |         | 
+|------------------------------------------------------------------------------------------------------------------|
+|       Vertex:          nu_mu @ (x =     0.20793 m, y =    -0.28712 m, z =     1.79558 m, t =    6.677336e-06 s)  |
+|------------------------------------------------------------------------------------------------------------------|
+| Err flag [bits:15->0] : 0000000000000000    |  1st set:                                                     none | 
+| Err mask [bits:15->0] : 1111111111111111    |  Is unphysical:    NO |   Accepted:   YES                          |
+|------------------------------------------------------------------------------------------------------------------|
+| sig(Ev) =       2.45092e-38 cm^2  | d2sig(W,Q2;E)/dWdQ2 =     2.87355e-37 cm^2/GeV^3 | Weight =          1.00000 |
+|------------------------------------------------------------------------------------------------------------------|
+
+--------------------------------------------------------------------------------------------------------------
+GENIE Interaction Summary
+--------------------------------------------------------------------------------------------------------------
+[-] [Init-State] 
+ |--> probe        : PDG-code = 14 (nu_mu)
+ |--> nucl. target : Z = 18, A = 40, PDG-Code = 1000180400 (Ar40)
+ |--> hit nucleon  : PDC-Code = 2212 (proton)
+ |--> hit quark    : no set
+ |--> probe 4P     : (E =     1.194402, Px =     0.009908, Py =    -0.005233, Pz =     1.194350)
+ |--> target 4P    : (E =    37.215526, Px =     0.000000, Py =     0.000000, Pz =     0.000000)
+ |--> nucleon 4P   : (E =     0.925445, Px =    -0.117123, Py =    -0.071478, Pz =    -0.053356)
+[-] [Process-Info]  
+ |--> Interaction : Weak[NC]
+ |--> Scattering  : RES
+[-] [Kinematics]
+ |--> *Selected* Bjorken x = 0.254796
+ |--> *Selected* Inelasticity y = 0.361477
+ |--> *Selected* Momentum transfer Q2 (>0) = 0.215496
+ |--> *Selected* Hadronic invariant mass W = 1.210387
+[-] [Exclusive Process Info] 
+ |--> charm prod.  : false |--> strange prod.  : false
+ |--> f/s nucleons : N(p) = 0 N(n) = 0
+ |--> f/s pions    : N(pi^0) = 0 N(pi^+) = 0 N(pi^-) = 0
+ |--> resonance    : P33(1232)
+--------------------------------------------------------------------------------------------------------------
+
+
+1652913470 NOTICE GHepUtils : [n] <GHepUtils.cxx::NeutReactionCode (115)> : Current event is RES or DIS with W<2
+1652913470 NOTICE GHepUtils : [n] <GHepUtils.cxx::NeutReactionCode (162)> : Num of primary particles: 
+ p = 0, n = 1, pi+ = 1, pi- = 0, pi0 = 0, eta = 0, K+ = 0, K- = 0, K0 = 0, Lambda's = 0, gamma's = 0
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 6 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 7 -> pi+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (961)> : N(p):0, N(n):1, N(pi+):1, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 8 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 9 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 10 -> pi0
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 11 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1032)> : N(p):2, N(n):1, N(pi+):0, N(pi-):0, N(pi0):1, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (545)> : 
+
+*** Event #: 1
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (546)> : 
+
+|------------------------------------------------------------------------------------------------------------------|
+|GENIE GHEP Event Record [print level:   3]                                                                        |
+|------------------------------------------------------------------------------------------------------------------|
+| Idx |          Name | Ist |        PDG |   Mother  | Daughter  |      Px |      Py |      Pz |       E |      m  | 
+|------------------------------------------------------------------------------------------------------------------|
+|   0 |         nu_mu |   0 |         14 |  -1 |  -1 |   4 |   4 |  -0.001 |  -0.002 |   0.619 |   0.619 |   0.000 | 
+|   1 |          Ar40 |   0 | 1000180400 |  -1 |  -1 |   2 |   3 |   0.000 |   0.000 |   0.000 |  37.216 |  37.216 | 
+|   2 |       neutron |  11 |       2112 |   1 |  -1 |   5 |   5 |   0.224 |  -0.101 |   0.077 |   0.909 | **0.940 | M = 0.872 
+|   3 |          Ar39 |   2 | 1000180390 |   1 |  -1 |   8 |   8 |  -0.224 |   0.101 |  -0.077 |  36.306 | *36.286 | M = 36.305 
+|   4 |           mu- |   1 |         13 |   0 |  -1 |  -1 |  -1 |   0.375 |  -0.070 |   0.109 |   0.411 |   0.106 | 
+|   5 |        proton |  14 |       2212 |   2 |  -1 |   6 |   7 |  -0.153 |  -0.032 |   0.587 |   1.118 |   0.938 | FSI = 2
+|   6 |       neutron |   1 |       2112 |   5 |  -1 |  -1 |  -1 |   0.145 |  -0.168 |   0.535 |   1.104 |   0.940 | 
+|   7 |        proton |   1 |       2212 |   5 |  -1 |  -1 |  -1 |  -0.117 |   0.023 |   0.143 |   0.956 |   0.938 | 
+|   8 |      HadrBlob |  15 | 2000000002 |   3 |  -1 |  -1 |  -1 |  -0.405 |   0.214 |  -0.168 |  35.364 | **0.000 | M = 35.360 
+|------------------------------------------------------------------------------------------------------------------|
+|       Fin-Init:                                                |   0.000 |   0.000 |  -0.000 |  -0.000 |         | 
+|------------------------------------------------------------------------------------------------------------------|
+|       Vertex:          nu_mu @ (x =    -0.08019 m, y =    -0.19215 m, z =     1.50621 m, t =    6.676115e-06 s)  |
+|------------------------------------------------------------------------------------------------------------------|
+| Err flag [bits:15->0] : 0000000000000000    |  1st set:                                                     none | 
+| Err mask [bits:15->0] : 1111111111111111    |  Is unphysical:    NO |   Accepted:   YES                          |
+|------------------------------------------------------------------------------------------------------------------|
+| sig(Ev) =       1.33359e-37 cm^2  | dsig(Ev;{K_s})/dK   =     1.12835e-38 cm^2/{K}   | Weight =          1.00000 |
+|------------------------------------------------------------------------------------------------------------------|
+
+--------------------------------------------------------------------------------------------------------------
+GENIE Interaction Summary
+--------------------------------------------------------------------------------------------------------------
+[-] [Init-State] 
+ |--> probe        : PDG-code = 14 (nu_mu)
+ |--> nucl. target : Z = 18, A = 40, PDG-Code = 1000180400 (Ar40)
+ |--> hit nucleon  : PDC-Code = 2112 (neutron)
+ |--> hit quark    : no set
+ |--> probe 4P     : (E =     0.619325, Px =    -0.001135, Py =    -0.001751, Pz =     0.619322)
+ |--> target 4P    : (E =    37.215526, Px =     0.000000, Py =     0.000000, Pz =     0.000000)
+ |--> nucleon 4P   : (E =     0.909155, Px =     0.223651, Py =    -0.100875, Pz =     0.077023)
+[-] [Process-Info]  
+ |--> Interaction : Weak[CC]
+ |--> Scattering  : QES
+[-] [Kinematics]
+ |--> *Selected* Bjorken x = 0.751551
+ |--> *Selected* Inelasticity y = 0.468220
+ |--> *Selected* Momentum transfer Q2 (>0) = 0.362756
+ |--> *Selected* Hadronic invariant mass W = 0.938272
+[-] [Exclusive Process Info] 
+ |--> charm prod.  : false |--> strange prod.  : false
+ |--> f/s nucleons : N(p) = 0 N(n) = 0
+ |--> f/s pions    : N(pi^0) = 0 N(pi^+) = 0 N(pi^-) = 0
+ |--> resonance    : [not set]
+--------------------------------------------------------------------------------------------------------------
+
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 5 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (961)> : N(p):1, N(n):0, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 6 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 7 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1032)> : N(p):1, N(n):1, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (545)> : 
+
+*** Event #: 2
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (546)> : 
+
+|------------------------------------------------------------------------------------------------------------------|
+|GENIE GHEP Event Record [print level:   3]                                                                        |
+|------------------------------------------------------------------------------------------------------------------|
+| Idx |          Name | Ist |        PDG |   Mother  | Daughter  |      Px |      Py |      Pz |       E |      m  | 
+|------------------------------------------------------------------------------------------------------------------|
+|   0 |         nu_mu |   0 |         14 |  -1 |  -1 |   4 |   4 |   0.005 |  -0.005 |   0.959 |   0.959 |   0.000 | 
+|   1 |          Ar40 |   0 | 1000180400 |  -1 |  -1 |   2 |   3 |   0.000 |   0.000 |   0.000 |  37.216 |  37.216 | 
+|   2 |       neutron |  11 |       2112 |   1 |  -1 |   5 |   5 |   0.036 |  -0.075 |  -0.109 |   0.929 | **0.940 | M = 0.919 
+|   3 |          Ar39 |   2 | 1000180390 |   1 |  -1 |  12 |  12 |  -0.036 |   0.075 |   0.109 |  36.286 |  36.286 | 
+|   4 |           mu- |   1 |         13 |   0 |  -1 |  -1 |  -1 |  -0.003 |  -0.493 |   0.307 |   0.590 |   0.106 | P = (0.006,0.849,-0.529)
+|   5 |      HadrSyst |  12 | 2000000001 |   2 |  -1 |   6 |   7 |   0.044 |   0.412 |   0.542 |   1.298 | **0.000 | M = 1.104 
+|   6 |       neutron |  14 |       2112 |   5 |  -1 |   8 |   9 |   0.063 |   0.341 |   0.378 |   1.071 |   0.940 | FSI = 2
+|   7 |           pi+ |  14 |        211 |   5 |  -1 |  10 |  11 |  -0.019 |   0.071 |   0.164 |   0.227 |   0.140 | FSI = 4
+|   8 |        proton |   1 |       2212 |   6 |  -1 |  -1 |  -1 |   0.019 |   0.144 |   0.287 |   0.992 |   0.938 | 
+|   9 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |   0.078 |   0.230 |   0.304 |   1.017 |   0.940 | 
+|  10 |       neutron |   1 |       2112 |   7 |  -1 |  -1 |  -1 |   0.015 |  -0.176 |   0.537 |   1.096 |   0.940 | 
+|  11 |        proton |   1 |       2212 |   7 |  -1 |  -1 |  -1 |  -0.157 |   0.219 |  -0.264 |   1.011 |   0.938 | 
+|  12 |      HadrBlob |  15 | 2000000002 |   3 |  -1 |  -1 |  -1 |   0.053 |   0.070 |  -0.212 |  33.468 | **0.000 | M = 33.467 
+|------------------------------------------------------------------------------------------------------------------|
+|       Fin-Init:                                                |   0.000 |   0.000 |   0.000 |   0.000 |         | 
+|------------------------------------------------------------------------------------------------------------------|
+|       Vertex:          nu_mu @ (x =    -0.01677 m, y =    -0.30952 m, z =     1.59221 m, t =    6.676541e-06 s)  |
+|------------------------------------------------------------------------------------------------------------------|
+| Err flag [bits:15->0] : 0000000000000000    |  1st set:                                                     none | 
+| Err mask [bits:15->0] : 1111111111111111    |  Is unphysical:    NO |   Accepted:   YES                          |
+|------------------------------------------------------------------------------------------------------------------|
+| sig(Ev) =       9.69730e-39 cm^2  | d2sig(x,y;E)/dxdy =       3.24001e-38 cm^2       | Weight =          1.00000 |
+|------------------------------------------------------------------------------------------------------------------|
+
+--------------------------------------------------------------------------------------------------------------
+GENIE Interaction Summary
+--------------------------------------------------------------------------------------------------------------
+[-] [Init-State] 
+ |--> probe        : PDG-code = 14 (nu_mu)
+ |--> nucl. target : Z = 18, A = 40, PDG-Code = 1000180400 (Ar40)
+ |--> hit nucleon  : PDC-Code = 2112 (neutron)
+ |--> hit quark    : PDC-Code = 1 (d) [valence]
+ |--> probe 4P     : (E =     0.958581, Px =     0.004645, Py =    -0.005214, Pz =     0.958555)
+ |--> target 4P    : (E =    37.215526, Px =     0.000000, Py =     0.000000, Pz =     0.000000)
+ |--> nucleon 4P   : (E =     0.929435, Px =     0.036372, Py =    -0.075435, Pz =    -0.109282)
+[-] [Process-Info]  
+ |--> Interaction : Weak[CC]
+ |--> Scattering  : DIS
+[-] [Kinematics]
+ |-->  *Running* Hadronic invariant mass W = 1.104189
+ |--> *Selected* Bjorken x = 0.584242
+ |--> *Selected* Inelasticity y = 0.452393
+ |--> *Selected* Momentum transfer Q2 (>0) = 0.526039
+ |--> *Selected* Hadronic invariant mass W = 1.104189
+[-] [Exclusive Process Info] 
+ |--> charm prod.  : false |--> strange prod.  : false
+ |--> f/s nucleons : N(p) = 0 N(n) = 0
+ |--> f/s pions    : N(pi^0) = 0 N(pi^+) = 0 N(pi^-) = 0
+ |--> resonance    : [not set]
+--------------------------------------------------------------------------------------------------------------
+
+
+1652913470 NOTICE GHepUtils : [n] <GHepUtils.cxx::NeutReactionCode (115)> : Current event is RES or DIS with W<2
+1652913470 NOTICE GHepUtils : [n] <GHepUtils.cxx::NeutReactionCode (162)> : Num of primary particles: 
+ p = 0, n = 1, pi+ = 1, pi- = 0, pi0 = 0, eta = 0, K+ = 0, K- = 0, K0 = 0, Lambda's = 0, gamma's = 0
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 6 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 7 -> pi+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (961)> : N(p):0, N(n):1, N(pi+):1, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 8 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 9 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 10 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 11 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1032)> : N(p):2, N(n):2, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (545)> : 
+
+*** Event #: 3
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (546)> : 
+
+|------------------------------------------------------------------------------------------------------------------|
+|GENIE GHEP Event Record [print level:   3]                                                                        |
+|------------------------------------------------------------------------------------------------------------------|
+| Idx |          Name | Ist |        PDG |   Mother  | Daughter  |      Px |      Py |      Pz |       E |      m  | 
+|------------------------------------------------------------------------------------------------------------------|
+|   0 |         nu_mu |   0 |         14 |  -1 |  -1 |   4 |   4 |  -0.004 |  -0.017 |   2.296 |   2.296 |   0.000 | 
+|   1 |          Ar40 |   0 | 1000180400 |  -1 |  -1 |   2 |   3 |   0.000 |   0.000 |   0.000 |  37.216 |  37.216 | 
+|   2 |           n+n |  11 | 2000000200 |   1 |  -1 |   5 |   5 |  -0.278 |   0.138 |   0.047 |   1.905 |   1.879 | 
+|   3 |          Ar38 |   2 | 1000180380 |   1 |  -1 |  16 |  16 |   0.278 |  -0.138 |  -0.047 |  35.369 | *35.353 | M = 35.368 
+|   4 |           mu- |   1 |         13 |   0 |  -1 |  -1 |  -1 |   0.007 |   0.856 |   1.611 |   1.827 |   0.106 | 
+|   5 |           n+p |   3 | 2000000201 |   2 |  -1 |   6 |   7 |  -0.290 |  -0.735 |   0.732 |   2.315 | **1.878 | M = 2.050 
+|   6 |       neutron |  14 |       2112 |   5 |  -1 |   8 |   8 |  -0.389 |  -0.101 |   0.561 |   1.166 |   0.940 | FSI = 4
+|   7 |        proton |  14 |       2212 |   5 |  -1 |  15 |  15 |   0.100 |  -0.634 |   0.171 |   1.149 |   0.938 | FSI = 1
+|   8 |      HadrClus |  16 | 2000000300 |   6 |  -1 |   9 |  14 |  -0.389 |  -0.101 |   0.561 |   0.256 | **0.000 | M = -0.641 
+|   9 |        proton |   1 |       2212 |   8 |  -1 |  -1 |  -1 |   0.176 |  -0.015 |   0.117 |   0.962 |   0.938 | 
+|  10 |        proton |   1 |       2212 |   8 |  -1 |  -1 |  -1 |   0.106 |   0.111 |   0.273 |   0.989 |   0.938 | 
+|  11 |       neutron |   1 |       2112 |   8 |  -1 |  -1 |  -1 |  -0.222 |   0.025 |   0.248 |   0.997 |   0.940 | 
+|  12 |       neutron |   1 |       2112 |   8 |  -1 |  -1 |  -1 |  -0.134 |  -0.391 |  -0.012 |   1.027 |   0.940 | 
+|  13 |       neutron |   1 |       2112 |   8 |  -1 |  -1 |  -1 |  -0.189 |   0.071 |   0.007 |   0.961 |   0.940 | 
+|  14 |       neutron |   1 |       2112 |   8 |  -1 |  -1 |  -1 |  -0.125 |   0.097 |  -0.072 |   0.956 |   0.940 | 
+|  15 |        proton |   1 |       2212 |   7 |  -1 |  -1 |  -1 |   0.100 |  -0.634 |   0.171 |   1.149 |   0.938 | 
+|  16 |      HadrBlob |  15 | 2000000002 |   3 |  -1 |  -1 |  -1 |   0.278 |  -0.138 |  -0.047 |  30.644 | **0.000 | M = 30.643 
+|------------------------------------------------------------------------------------------------------------------|
+|       Fin-Init:                                                |   0.000 |   0.000 |  -0.000 |  -0.000 |         | 
+|------------------------------------------------------------------------------------------------------------------|
+|       Vertex:          nu_mu @ (x =    -0.11738 m, y =    -0.32781 m, z =     1.62797 m, t =    6.676670e-06 s)  |
+|------------------------------------------------------------------------------------------------------------------|
+| Err flag [bits:15->0] : 0000000000000000    |  1st set:                                                     none | 
+| Err mask [bits:15->0] : 1111111111111111    |  Is unphysical:    NO |   Accepted:   YES                          |
+|------------------------------------------------------------------------------------------------------------------|
+| sig(Ev) =       5.30657e-38 cm^2  | dsig(Ev;{K_s})/dK   =     0.00000e+00 cm^2/{K}   | Weight =          1.00000 |
+|------------------------------------------------------------------------------------------------------------------|
+
+--------------------------------------------------------------------------------------------------------------
+GENIE Interaction Summary
+--------------------------------------------------------------------------------------------------------------
+[-] [Init-State] 
+ |--> probe        : PDG-code = 14 (nu_mu)
+ |--> nucl. target : Z = 18, A = 40, PDG-Code = 1000180400 (Ar40)
+ |--> hit nucleon  : no set
+ |--> hit quark    : no set
+ |--> probe 4P     : (E =     2.296258, Px =    -0.004425, Py =    -0.016609, Pz =     2.296194)
+ |--> target 4P    : (E =    37.215526, Px =     0.000000, Py =     0.000000, Pz =     0.000000)
+
+[-] [Process-Info]  
+ |--> Interaction : Weak[CC]
+ |--> Scattering  : MEC
+[-] [Kinematics]
+ |-->  *Running* lepton kinetic energy = 1.721475
+ |-->  *Running* cosine of lepton theta = 0.879563
+ |--> *Selected* Bjorken x = 0.574269
+ |--> *Selected* Inelasticity y = 0.204300
+ |--> *Selected* Momentum transfer Q2 (>0) = 1.011792
+ |--> *Selected* Hadronic invariant mass W = 2.067936
+[-] [Exclusive Process Info] 
+ |--> charm prod.  : false |--> strange prod.  : false
+ |--> f/s nucleons : N(p) = 0 N(n) = 0
+ |--> f/s pions    : N(pi^0) = 0 N(pi^+) = 0 N(pi^-) = 0
+ |--> resonance    : [not set]
+--------------------------------------------------------------------------------------------------------------
+
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 6 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 7 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (961)> : N(p):1, N(n):1, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 9 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 10 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 11 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 12 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 13 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 14 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 15 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1032)> : N(p):3, N(n):4, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (545)> : 
+
+*** Event #: 4
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (546)> : 
+
+|------------------------------------------------------------------------------------------------------------------|
+|GENIE GHEP Event Record [print level:   3]                                                                        |
+|------------------------------------------------------------------------------------------------------------------|
+| Idx |          Name | Ist |        PDG |   Mother  | Daughter  |      Px |      Py |      Pz |       E |      m  | 
+|------------------------------------------------------------------------------------------------------------------|
+|   0 |         nu_mu |   0 |         14 |  -1 |  -1 |   4 |   4 |  -0.003 |   0.007 |   1.012 |   1.012 |   0.000 | 
+|   1 |          Ar40 |   0 | 1000180400 |  -1 |  -1 |   2 |   3 |   0.000 |   0.000 |   0.000 |  37.216 |  37.216 | 
+|   2 |        proton |  11 |       2212 |   1 |  -1 |   5 |   5 |   0.009 |  -0.069 |  -0.073 |   0.926 | **0.938 | M = 0.920 
+|   3 |          Cl39 |   2 | 1000170390 |   1 |  -1 |  10 |  10 |  -0.009 |   0.069 |   0.073 |  36.290 |  36.290 | 
+|   4 |           mu- |   1 |         13 |   0 |  -1 |  -1 |  -1 |  -0.311 |   0.256 |   0.089 |   0.425 |   0.106 | P = (0.754,-0.620,-0.217)
+|   5 |       Delta++ |   3 |       2224 |   2 |  -1 |   6 |   7 |   0.317 |  -0.318 |   0.850 |   1.512 | **1.231 | M = 1.167 
+|   6 |        proton |  14 |       2212 |   5 |  -1 |   8 |   8 |   0.224 |  -0.373 |   0.569 |   1.180 |   0.938 | FSI = 1
+|   7 |           pi+ |  14 |        211 |   5 |  -1 |   9 |   9 |   0.093 |   0.055 |   0.281 |   0.332 |   0.140 | FSI = 1
+|   8 |        proton |   1 |       2212 |   6 |  -1 |  -1 |  -1 |   0.224 |  -0.373 |   0.569 |   1.180 |   0.938 | 
+|   9 |           pi+ |   1 |        211 |   7 |  -1 |  -1 |  -1 |   0.093 |   0.055 |   0.281 |   0.332 |   0.140 | 
+|  10 |      HadrBlob |  15 | 2000000002 |   3 |  -1 |  -1 |  -1 |  -0.009 |   0.069 |   0.073 |  36.290 | **0.000 | M = 36.290 
+|------------------------------------------------------------------------------------------------------------------|
+|       Fin-Init:                                                |   0.000 |   0.000 |  -0.000 |   0.000 |         | 
+|------------------------------------------------------------------------------------------------------------------|
+|       Vertex:          nu_mu @ (x =     0.21295 m, y =    -0.00374 m, z =     1.58113 m, t =    6.676493e-06 s)  |
+|------------------------------------------------------------------------------------------------------------------|
+| Err flag [bits:15->0] : 0000000000000000    |  1st set:                                                     none | 
+| Err mask [bits:15->0] : 1111111111111111    |  Is unphysical:    NO |   Accepted:   YES                          |
+|------------------------------------------------------------------------------------------------------------------|
+| sig(Ev) =       7.88850e-38 cm^2  | d2sig(W,Q2;E)/dWdQ2 =     1.71324e-37 cm^2/GeV^3 | Weight =          1.00000 |
+|------------------------------------------------------------------------------------------------------------------|
+
+--------------------------------------------------------------------------------------------------------------
+GENIE Interaction Summary
+--------------------------------------------------------------------------------------------------------------
+[-] [Init-State] 
+ |--> probe        : PDG-code = 14 (nu_mu)
+ |--> nucl. target : Z = 18, A = 40, PDG-Code = 1000180400 (Ar40)
+ |--> hit nucleon  : PDC-Code = 2212 (proton)
+ |--> hit quark    : no set
+ |--> probe 4P     : (E =     1.012318, Px =    -0.002887, Py =     0.006545, Pz =     1.012292)
+ |--> target 4P    : (E =    37.215526, Px =     0.000000, Py =     0.000000, Pz =     0.000000)
+ |--> nucleon 4P   : (E =     0.925603, Px =     0.009490, Py =    -0.069138, Pz =    -0.072762)
+[-] [Process-Info]  
+ |--> Interaction : Weak[CC]
+ |--> Scattering  : RES
+[-] [Kinematics]
+ |--> *Selected* Bjorken x = 0.562588
+ |--> *Selected* Inelasticity y = 0.583660
+ |--> *Selected* Momentum transfer Q2 (>0) = 0.664037
+ |--> *Selected* Hadronic invariant mass W = 1.167418
+[-] [Exclusive Process Info] 
+ |--> charm prod.  : false |--> strange prod.  : false
+ |--> f/s nucleons : N(p) = 0 N(n) = 0
+ |--> f/s pions    : N(pi^0) = 0 N(pi^+) = 0 N(pi^-) = 0
+ |--> resonance    : P33(1232)
+--------------------------------------------------------------------------------------------------------------
+
+
+1652913470 NOTICE GHepUtils : [n] <GHepUtils.cxx::NeutReactionCode (115)> : Current event is RES or DIS with W<2
+1652913470 NOTICE GHepUtils : [n] <GHepUtils.cxx::NeutReactionCode (162)> : Num of primary particles: 
+ p = 1, n = 0, pi+ = 1, pi- = 0, pi0 = 0, eta = 0, K+ = 0, K- = 0, K0 = 0, Lambda's = 0, gamma's = 0
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 6 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 7 -> pi+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (961)> : N(p):1, N(n):0, N(pi+):1, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 8 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 9 -> pi+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1032)> : N(p):1, N(n):0, N(pi+):1, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (545)> : 
+
+*** Event #: 5
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (546)> : 
+
+|------------------------------------------------------------------------------------------------------------------|
+|GENIE GHEP Event Record [print level:   3]                                                                        |
+|------------------------------------------------------------------------------------------------------------------|
+| Idx |          Name | Ist |        PDG |   Mother  | Daughter  |      Px |      Py |      Pz |       E |      m  | 
+|------------------------------------------------------------------------------------------------------------------|
+|   0 |         nu_mu |   0 |         14 |  -1 |  -1 |   4 |   4 |  -0.004 |  -0.001 |   1.613 |   1.613 |   0.000 | 
+|   1 |          Ar40 |   0 | 1000180400 |  -1 |  -1 |   2 |   3 |   0.000 |   0.000 |   0.000 |  37.216 |  37.216 | 
+|   2 |        proton |  11 |       2212 |   1 |  -1 |   5 |   5 |   0.150 |   0.001 |   0.006 |   0.925 | **0.938 | M = 0.913 
+|   3 |          Cl39 |   2 | 1000170390 |   1 |  -1 |  11 |  11 |  -0.150 |  -0.001 |  -0.006 |  36.290 |  36.290 | 
+|   4 |           mu- |   1 |         13 |   0 |  -1 |  -1 |  -1 |  -0.340 |   0.439 |   0.705 |   0.903 |   0.106 | P = (0.379,-0.490,-0.785)
+|   5 |       Delta++ |   3 |       2224 |   2 |  -1 |   6 |   7 |   0.486 |  -0.440 |   0.915 |   1.635 | **1.231 | M = 1.186 
+|   6 |        proton |  14 |       2212 |   5 |  -1 |   8 |   9 |   0.299 |  -0.355 |   0.909 |   1.386 |   0.938 | FSI = 2
+|   7 |           pi+ |  14 |        211 |   5 |  -1 |  10 |  10 |   0.188 |  -0.085 |   0.006 |   0.249 |   0.140 | FSI = 1
+|   8 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |   0.416 |  -0.116 |   0.822 |   1.321 |   0.940 | 
+|   9 |        proton |   1 |       2212 |   6 |  -1 |  -1 |  -1 |  -0.132 |  -0.285 |  -0.047 |   0.991 |   0.938 | 
+|  10 |           pi+ |   1 |        211 |   7 |  -1 |  -1 |  -1 |   0.188 |  -0.085 |   0.006 |   0.249 |   0.140 | 
+|  11 |      HadrBlob |  15 | 2000000002 |   3 |  -1 |  -1 |  -1 |  -0.135 |   0.045 |   0.128 |  35.365 | **0.000 | M = 35.364 
+|------------------------------------------------------------------------------------------------------------------|
+|       Fin-Init:                                                |  -0.000 |   0.000 |  -0.000 |  -0.000 |         | 
+|------------------------------------------------------------------------------------------------------------------|
+|       Vertex:          nu_mu @ (x =    -0.11787 m, y =    -0.21198 m, z =     1.68789 m, t =    6.676701e-06 s)  |
+|------------------------------------------------------------------------------------------------------------------|
+| Err flag [bits:15->0] : 0000000000000000    |  1st set:                                                     none | 
+| Err mask [bits:15->0] : 1111111111111111    |  Is unphysical:    NO |   Accepted:   YES                          |
+|------------------------------------------------------------------------------------------------------------------|
+| sig(Ev) =       1.12315e-37 cm^2  | d2sig(W,Q2;E)/dWdQ2 =     3.40502e-37 cm^2/GeV^3 | Weight =          1.00000 |
+|------------------------------------------------------------------------------------------------------------------|
+
+--------------------------------------------------------------------------------------------------------------
+GENIE Interaction Summary
+--------------------------------------------------------------------------------------------------------------
+[-] [Init-State] 
+ |--> probe        : PDG-code = 14 (nu_mu)
+ |--> nucl. target : Z = 18, A = 40, PDG-Code = 1000180400 (Ar40)
+ |--> hit nucleon  : PDC-Code = 2212 (proton)
+ |--> hit quark    : no set
+ |--> probe 4P     : (E =     1.613145, Px =    -0.003687, Py =    -0.001005, Pz =     1.613141)
+ |--> target 4P    : (E =    37.215526, Px =     0.000000, Py =     0.000000, Pz =     0.000000)
+ |--> nucleon 4P   : (E =     0.925432, Px =     0.150256, Py =     0.000905, Pz =     0.006341)
+[-] [Process-Info]  
+ |--> Interaction : Weak[CC]
+ |--> Scattering  : RES
+[-] [Kinematics]
+ |--> *Selected* Bjorken x = 0.523150
+ |--> *Selected* Inelasticity y = 0.405148
+ |--> *Selected* Momentum transfer Q2 (>0) = 0.628731
+ |--> *Selected* Hadronic invariant mass W = 1.186125
+[-] [Exclusive Process Info] 
+ |--> charm prod.  : false |--> strange prod.  : false
+ |--> f/s nucleons : N(p) = 0 N(n) = 0
+ |--> f/s pions    : N(pi^0) = 0 N(pi^+) = 0 N(pi^-) = 0
+ |--> resonance    : P33(1232)
+--------------------------------------------------------------------------------------------------------------
+
+
+1652913470 NOTICE GHepUtils : [n] <GHepUtils.cxx::NeutReactionCode (115)> : Current event is RES or DIS with W<2
+1652913470 NOTICE GHepUtils : [n] <GHepUtils.cxx::NeutReactionCode (162)> : Num of primary particles: 
+ p = 1, n = 0, pi+ = 1, pi- = 0, pi0 = 0, eta = 0, K+ = 0, K- = 0, K0 = 0, Lambda's = 0, gamma's = 0
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 6 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 7 -> pi+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (961)> : N(p):1, N(n):0, N(pi+):1, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 8 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 9 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 10 -> pi+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1032)> : N(p):1, N(n):1, N(pi+):1, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (545)> : 
+
+*** Event #: 6
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (546)> : 
+
+|------------------------------------------------------------------------------------------------------------------|
+|GENIE GHEP Event Record [print level:   3]                                                                        |
+|------------------------------------------------------------------------------------------------------------------|
+| Idx |          Name | Ist |        PDG |   Mother  | Daughter  |      Px |      Py |      Pz |       E |      m  | 
+|------------------------------------------------------------------------------------------------------------------|
+|   0 |         nu_mu |   0 |         14 |  -1 |  -1 |   4 |   4 |   0.007 |   0.002 |   0.697 |   0.697 |   0.000 | 
+|   1 |          Ar40 |   0 | 1000180400 |  -1 |  -1 |   2 |   3 |   0.000 |   0.000 |   0.000 |  37.216 |  37.216 | 
+|   2 |        proton |  11 |       2212 |   1 |  -1 |   5 |   5 |  -0.023 |  -0.171 |  -0.028 |   0.925 | **0.938 | M = 0.909 
+|   3 |          Cl39 |   2 | 1000170390 |   1 |  -1 |  13 |  13 |   0.023 |   0.171 |   0.028 |  36.290 |  36.290 | 
+|   4 |         nu_mu |   1 |         14 |   0 |  -1 |  -1 |  -1 |  -0.085 |  -0.080 |   0.362 |   0.381 |   0.000 | P = (0.223,0.211,-0.952)
+|   5 |        Delta+ |   3 |       2214 |   2 |  -1 |   6 |   7 |   0.068 |  -0.089 |   0.307 |   1.241 | **1.232 | M = 1.198 
+|   6 |        proton |  14 |       2212 |   5 |  -1 |   8 |   8 |  -0.028 |  -0.155 |   0.409 |   1.036 |   0.938 | FSI = 4
+|   7 |           pi0 |  14 |        111 |   5 |  -1 |  12 |  12 |   0.096 |   0.066 |  -0.103 |   0.206 |   0.135 | FSI = 1
+|   8 |      HadrClus |  16 | 2000000300 |   6 |  -1 |   9 |  11 |  -0.028 |  -0.155 |   0.409 |   0.112 | **0.000 | M = -0.424 
+|   9 |        proton |   1 |       2212 |   8 |  -1 |  -1 |  -1 |  -0.221 |   0.086 |   0.160 |   0.981 |   0.938 | 
+|  10 |       neutron |   1 |       2112 |   8 |  -1 |  -1 |  -1 |   0.127 |   0.020 |   0.040 |   0.949 |   0.940 | 
+|  11 |       neutron |   1 |       2112 |   8 |  -1 |  -1 |  -1 |   0.066 |  -0.262 |   0.210 |   1.000 |   0.940 | 
+|  12 |           pi0 |   1 |        111 |   7 |  -1 |  -1 |  -1 |   0.096 |   0.066 |  -0.103 |   0.206 |   0.135 | 
+|  13 |      HadrBlob |  15 | 2000000002 |   3 |  -1 |  -1 |  -1 |   0.023 |   0.171 |   0.028 |  34.396 | **0.000 | M = 34.396 
+|------------------------------------------------------------------------------------------------------------------|
+|       Fin-Init:                                                |   0.000 |  -0.000 |   0.000 |  -0.000 |         | 
+|------------------------------------------------------------------------------------------------------------------|
+|       Vertex:          nu_mu @ (x =    -0.11289 m, y =    -0.18757 m, z =     1.62529 m, t =    6.676792e-06 s)  |
+|------------------------------------------------------------------------------------------------------------------|
+| Err flag [bits:15->0] : 0000000000000000    |  1st set:                                                     none | 
+| Err mask [bits:15->0] : 1111111111111111    |  Is unphysical:    NO |   Accepted:   YES                          |
+|------------------------------------------------------------------------------------------------------------------|
+| sig(Ev) =       1.13530e-38 cm^2  | d2sig(W,Q2;E)/dWdQ2 =     2.31888e-37 cm^2/GeV^3 | Weight =          1.00000 |
+|------------------------------------------------------------------------------------------------------------------|
+
+--------------------------------------------------------------------------------------------------------------
+GENIE Interaction Summary
+--------------------------------------------------------------------------------------------------------------
+[-] [Init-State] 
+ |--> probe        : PDG-code = 14 (nu_mu)
+ |--> nucl. target : Z = 18, A = 40, PDG-Code = 1000180400 (Ar40)
+ |--> hit nucleon  : PDC-Code = 2212 (proton)
+ |--> hit quark    : no set
+ |--> probe 4P     : (E =     0.696667, Px =     0.006620, Py =     0.001542, Pz =     0.696634)
+ |--> target 4P    : (E =    37.215526, Px =     0.000000, Py =     0.000000, Pz =     0.000000)
+ |--> nucleon 4P   : (E =     0.925323, Px =    -0.023352, Py =    -0.170895, Pz =    -0.027726)
+[-] [Process-Info]  
+ |--> Interaction : Weak[NC]
+ |--> Scattering  : RES
+[-] [Kinematics]
+ |--> *Selected* Bjorken x = 0.042426
+ |--> *Selected* Inelasticity y = 0.478333
+ |--> *Selected* Momentum transfer Q2 (>0) = 0.026965
+ |--> *Selected* Hadronic invariant mass W = 1.197632
+[-] [Exclusive Process Info] 
+ |--> charm prod.  : false |--> strange prod.  : false
+ |--> f/s nucleons : N(p) = 0 N(n) = 0
+ |--> f/s pions    : N(pi^0) = 0 N(pi^+) = 0 N(pi^-) = 0
+ |--> resonance    : P33(1232)
+--------------------------------------------------------------------------------------------------------------
+
+
+1652913470 NOTICE GHepUtils : [n] <GHepUtils.cxx::NeutReactionCode (115)> : Current event is RES or DIS with W<2
+1652913470 NOTICE GHepUtils : [n] <GHepUtils.cxx::NeutReactionCode (162)> : Num of primary particles: 
+ p = 1, n = 0, pi+ = 0, pi- = 0, pi0 = 1, eta = 0, K+ = 0, K- = 0, K0 = 0, Lambda's = 0, gamma's = 0
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 6 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 7 -> pi0
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (961)> : N(p):1, N(n):0, N(pi+):0, N(pi-):0, N(pi0):1, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 9 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 10 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 11 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 12 -> pi0
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1032)> : N(p):1, N(n):2, N(pi+):0, N(pi-):0, N(pi0):1, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (545)> : 
+
+*** Event #: 7
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (546)> : 
+
+|------------------------------------------------------------------------------------------------------------------|
+|GENIE GHEP Event Record [print level:   3]                                                                        |
+|------------------------------------------------------------------------------------------------------------------|
+| Idx |          Name | Ist |        PDG |   Mother  | Daughter  |      Px |      Py |      Pz |       E |      m  | 
+|------------------------------------------------------------------------------------------------------------------|
+|   0 |         nu_mu |   0 |         14 |  -1 |  -1 |   4 |   4 |  -0.005 |   0.002 |   0.871 |   0.871 |   0.000 | 
+|   1 |          Ar40 |   0 | 1000180400 |  -1 |  -1 |   2 |   3 |   0.000 |   0.000 |   0.000 |  37.216 |  37.216 | 
+|   2 |           n+p |  11 | 2000000201 |   1 |  -1 |   5 |   5 |   0.100 |   0.123 |   0.051 |   1.885 |   1.878 | 
+|   3 |          Cl38 |   2 | 1000170380 |   1 |  -1 |  16 |  16 |  -0.100 |  -0.123 |  -0.051 |  35.389 | *35.358 | M = 35.389 
+|   4 |           mu- |   1 |         13 |   0 |  -1 |  -1 |  -1 |  -0.067 |   0.115 |   0.654 |   0.676 |   0.106 | 
+|   5 |           p+p |   3 | 2000000202 |   2 |  -1 |   6 |   7 |   0.162 |   0.010 |   0.268 |   2.021 | **1.877 | M = 1.997 
+|   6 |        proton |  14 |       2212 |   5 |  -1 |   8 |   8 |   0.196 |   0.246 |  -0.080 |   0.993 |   0.938 | FSI = 4
+|   7 |        proton |  14 |       2212 |   5 |  -1 |  14 |  15 |  -0.034 |  -0.236 |   0.348 |   1.029 |   0.938 | FSI = 3
+|   8 |      HadrClus |  16 | 2000000300 |   6 |  -1 |   9 |  13 |   0.196 |   0.246 |  -0.080 |   0.079 | **0.000 | M = -0.314 
+|   9 |        proton |   1 |       2212 |   8 |  -1 |  -1 |  -1 |   0.014 |   0.096 |  -0.082 |   0.947 |   0.938 | 
+|  10 |        proton |   1 |       2212 |   8 |  -1 |  -1 |  -1 |  -0.064 |   0.027 |  -0.149 |   0.953 |   0.938 | 
+|  11 |        proton |   1 |       2212 |   8 |  -1 |  -1 |  -1 |   0.022 |   0.042 |   0.204 |   0.961 |   0.938 | 
+|  12 |        proton |   1 |       2212 |   8 |  -1 |  -1 |  -1 |   0.210 |  -0.025 |   0.028 |   0.962 |   0.938 | 
+|  13 |       neutron |   1 |       2112 |   8 |  -1 |  -1 |  -1 |   0.014 |   0.105 |  -0.082 |   0.949 |   0.940 | 
+|  14 |        proton |   1 |       2212 |   7 |  -1 |  -1 |  -1 |   0.345 |   0.014 |   0.188 |   1.017 |   0.938 | 
+|  15 |        proton |   1 |       2212 |   7 |  -1 |  -1 |  -1 |  -0.194 |  -0.185 |   0.044 |   0.977 |   0.938 | 
+|  16 |      HadrBlob |  15 | 2000000002 |   3 |  -1 |  -1 |  -1 |  -0.285 |  -0.188 |   0.065 |  30.644 | **0.000 | M = 30.643 
+|------------------------------------------------------------------------------------------------------------------|
+|       Fin-Init:                                                |   0.000 |   0.000 |  -0.000 |  -0.000 |         | 
+|------------------------------------------------------------------------------------------------------------------|
+|       Vertex:          nu_mu @ (x =    -0.23104 m, y =    -0.03493 m, z =     1.76418 m, t =    6.677048e-06 s)  |
+|------------------------------------------------------------------------------------------------------------------|
+| Err flag [bits:15->0] : 0000000000000000    |  1st set:                                                     none | 
+| Err mask [bits:15->0] : 1111111111111111    |  Is unphysical:    NO |   Accepted:   YES                          |
+|------------------------------------------------------------------------------------------------------------------|
+| sig(Ev) =       4.30488e-38 cm^2  | dsig(Ev;{K_s})/dK   =     0.00000e+00 cm^2/{K}   | Weight =          1.00000 |
+|------------------------------------------------------------------------------------------------------------------|
+
+--------------------------------------------------------------------------------------------------------------
+GENIE Interaction Summary
+--------------------------------------------------------------------------------------------------------------
+[-] [Init-State] 
+ |--> probe        : PDG-code = 14 (nu_mu)
+ |--> nucl. target : Z = 18, A = 40, PDG-Code = 1000180400 (Ar40)
+ |--> hit nucleon  : no set
+ |--> hit quark    : no set
+ |--> probe 4P     : (E =     0.871290, Px =    -0.004585, Py =     0.002062, Pz =     0.871275)
+ |--> target 4P    : (E =    37.215526, Px =     0.000000, Py =     0.000000, Pz =     0.000000)
+
+[-] [Process-Info]  
+ |--> Interaction : Weak[CC]
+ |--> Scattering  : MEC
+[-] [Kinematics]
+ |-->  *Running* lepton kinetic energy = 0.570372
+ |-->  *Running* cosine of lepton theta = 0.980823
+ |--> *Selected* Bjorken x = 0.034945
+ |--> *Selected* Inelasticity y = 0.224104
+ |--> *Selected* Momentum transfer Q2 (>0) = 0.025626
+ |--> *Selected* Hadronic invariant mass W = 2.057663
+[-] [Exclusive Process Info] 
+ |--> charm prod.  : false |--> strange prod.  : false
+ |--> f/s nucleons : N(p) = 0 N(n) = 0
+ |--> f/s pions    : N(pi^0) = 0 N(pi^+) = 0 N(pi^-) = 0
+ |--> resonance    : [not set]
+--------------------------------------------------------------------------------------------------------------
+
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 6 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 7 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (961)> : N(p):2, N(n):0, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 9 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 10 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 11 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 12 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 13 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 14 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 15 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1032)> : N(p):6, N(n):1, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (545)> : 
+
+*** Event #: 8
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (546)> : 
+
+|------------------------------------------------------------------------------------------------------------------|
+|GENIE GHEP Event Record [print level:   3]                                                                        |
+|------------------------------------------------------------------------------------------------------------------|
+| Idx |          Name | Ist |        PDG |   Mother  | Daughter  |      Px |      Py |      Pz |       E |      m  | 
+|------------------------------------------------------------------------------------------------------------------|
+|   0 |         nu_mu |   0 |         14 |  -1 |  -1 |   4 |   4 |  -0.005 |   0.003 |   0.872 |   0.872 |   0.000 | 
+|   1 |          Ar40 |   0 | 1000180400 |  -1 |  -1 |   2 |   3 |   0.000 |   0.000 |   0.000 |  37.216 |  37.216 | 
+|   2 |        proton |  11 |       2212 |   1 |  -1 |   5 |   5 |  -0.111 |  -0.017 |   0.203 |   0.925 | **0.938 | M = 0.895 
+|   3 |          Cl39 |   2 | 1000170390 |   1 |  -1 |   8 |   8 |   0.111 |   0.017 |  -0.203 |  36.291 |  36.290 | 
+|   4 |         nu_mu |   1 |         14 |   0 |  -1 |  -1 |  -1 |  -0.002 |  -0.359 |   0.564 |   0.669 |   0.000 | P = (0.003,0.537,-0.844)
+|   5 |        proton |  14 |       2212 |   2 |  -1 |   6 |   7 |  -0.115 |   0.345 |   0.511 |   1.129 |   0.938 | FSI = 2
+|   6 |       neutron |   1 |       2112 |   5 |  -1 |  -1 |  -1 |  -0.041 |   0.067 |   0.055 |   0.944 |   0.940 | 
+|   7 |        proton |   1 |       2212 |   5 |  -1 |  -1 |  -1 |  -0.153 |   0.183 |   0.441 |   1.064 |   0.938 | 
+|   8 |      HadrBlob |  15 | 2000000002 |   3 |  -1 |  -1 |  -1 |   0.276 |  -0.022 |  -0.334 |  35.352 | **0.000 | M = 35.349 
+|   9 |      NucBindE |   1 | 2000000101 |  -1 |  -1 |  -1 |  -1 |  -0.068 |   0.112 |   0.093 |   0.029 | **0.000 | M = -0.158 
+|  10 |      NucBindE |   1 | 2000000101 |  -1 |  -1 |  -1 |  -1 |  -0.018 |   0.022 |   0.053 |   0.029 | **0.000 | M = -0.052 
+|------------------------------------------------------------------------------------------------------------------|
+|       Fin-Init:                                                |  -0.000 |  -0.000 |  -0.000 |   0.000 |         | 
+|------------------------------------------------------------------------------------------------------------------|
+|       Vertex:          nu_mu @ (x =    -0.19606 m, y =    -0.33141 m, z =     1.75602 m, t =    6.677062e-06 s)  |
+|------------------------------------------------------------------------------------------------------------------|
+| Err flag [bits:15->0] : 0000000000000000    |  1st set:                                                     none | 
+| Err mask [bits:15->0] : 1111111111111111    |  Is unphysical:    NO |   Accepted:   YES                          |
+|------------------------------------------------------------------------------------------------------------------|
+| sig(Ev) =       2.64583e-38 cm^2  | dsig(Q2;E)/dQ2 =          2.87540e-39 cm^2/GeV^2 | Weight =          1.00000 |
+|------------------------------------------------------------------------------------------------------------------|
+
+--------------------------------------------------------------------------------------------------------------
+GENIE Interaction Summary
+--------------------------------------------------------------------------------------------------------------
+[-] [Init-State] 
+ |--> probe        : PDG-code = 14 (nu_mu)
+ |--> nucl. target : Z = 18, A = 40, PDG-Code = 1000180400 (Ar40)
+ |--> hit nucleon  : PDC-Code = 2212 (proton)
+ |--> hit quark    : no set
+ |--> probe 4P     : (E =     0.872497, Px =    -0.005085, Py =     0.002972, Pz =     0.872477)
+ |--> target 4P    : (E =    37.215526, Px =     0.000000, Py =     0.000000, Pz =     0.000000)
+ |--> nucleon 4P   : (E =     0.925001, Px =    -0.111346, Py =    -0.016758, Pz =     0.202925)
+[-] [Process-Info]  
+ |--> Interaction : Weak[NC]
+ |--> Scattering  : QES
+[-] [Kinematics]
+ |--> *Selected* Bjorken x = 0.701265
+ |--> *Selected* Inelasticity y = 0.208943
+ |--> *Selected* Momentum transfer Q2 (>0) = 0.184473
+ |--> *Selected* Hadronic invariant mass W = 0.938272
+[-] [Exclusive Process Info] 
+ |--> charm prod.  : false |--> strange prod.  : false
+ |--> f/s nucleons : N(p) = 0 N(n) = 0
+ |--> f/s pions    : N(pi^0) = 0 N(pi^+) = 0 N(pi^-) = 0
+ |--> resonance    : [not set]
+--------------------------------------------------------------------------------------------------------------
+
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 5 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (961)> : N(p):1, N(n):0, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 6 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 7 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1032)> : N(p):1, N(n):1, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (545)> : 
+
+*** Event #: 9
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (546)> : 
+
+|------------------------------------------------------------------------------------------------------------------|
+|GENIE GHEP Event Record [print level:   3]                                                                        |
+|------------------------------------------------------------------------------------------------------------------|
+| Idx |          Name | Ist |        PDG |   Mother  | Daughter  |      Px |      Py |      Pz |       E |      m  | 
+|------------------------------------------------------------------------------------------------------------------|
+|   0 |         nu_mu |   0 |         14 |  -1 |  -1 |   4 |   4 |  -0.004 |  -0.008 |   1.564 |   1.564 |   0.000 | 
+|   1 |          Ar40 |   0 | 1000180400 |  -1 |  -1 |   2 |   3 |   0.000 |   0.000 |   0.000 |  37.216 |  37.216 | 
+|   2 |       neutron |  11 |       2112 |   1 |  -1 |   5 |   5 |   0.039 |   0.197 |   0.010 |   0.929 | **0.940 | M = 0.907 
+|   3 |          Ar39 |   2 | 1000180390 |   1 |  -1 |  22 |  22 |  -0.039 |  -0.197 |  -0.010 |  36.286 |  36.286 | 
+|   4 |         nu_mu |   1 |         14 |   0 |  -1 |  -1 |  -1 |   0.511 |   0.332 |   1.236 |   1.378 |   0.000 | P = (-0.371,-0.241,-0.897)
+|   5 |       neutron |  14 |       2112 |   2 |  -1 |   6 |   6 |  -0.475 |  -0.143 |   0.337 |   1.115 |   0.940 | FSI = 4
+|   6 |      HadrClus |  16 | 2000000300 |   5 |  -1 |   7 |  21 |  -0.475 |  -0.143 |   0.337 |   0.250 | **0.000 | M = -0.545 
+|   7 |        proton |   1 |       2212 |   6 |  -1 |  -1 |  -1 |  -0.219 |  -0.010 |  -0.077 |   0.967 |   0.938 | 
+|   8 |        proton |   1 |       2212 |   6 |  -1 |  -1 |  -1 |   0.038 |   0.087 |  -0.005 |   0.943 |   0.938 | 
+|   9 |        proton |   1 |       2212 |   6 |  -1 |  -1 |  -1 |  -0.020 |  -0.142 |   0.041 |   0.950 |   0.938 | 
+|  10 |        proton |   1 |       2212 |   6 |  -1 |  -1 |  -1 |  -0.091 |   0.084 |   0.082 |   0.950 |   0.938 | 
+|  11 |        proton |   1 |       2212 |   6 |  -1 |  -1 |  -1 |   0.044 |   0.199 |  -0.060 |   0.962 |   0.938 | 
+|  12 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |  -0.170 |  -0.022 |   0.093 |   0.960 |   0.940 | 
+|  13 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |  -0.080 |  -0.021 |  -0.047 |   0.944 |   0.940 | 
+|  14 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |  -0.063 |  -0.158 |   0.060 |   0.957 |   0.940 | 
+|  15 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |  -0.008 |  -0.069 |   0.097 |   0.947 |   0.940 | 
+|  16 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |   0.116 |  -0.107 |  -0.034 |   0.953 |   0.940 | 
+|  17 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |  -0.037 |  -0.036 |  -0.151 |   0.953 |   0.940 | 
+|  18 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |   0.157 |   0.182 |   0.233 |   0.997 |   0.940 | 
+|  19 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |  -0.157 |  -0.006 |   0.112 |   0.959 |   0.940 | 
+|  20 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |  -0.090 |  -0.037 |  -0.029 |   0.945 |   0.940 | 
+|  21 |       neutron |   1 |       2112 |   6 |  -1 |  -1 |  -1 |   0.105 |  -0.087 |   0.023 |   0.950 |   0.940 | 
+|  22 |      HadrBlob |  15 | 2000000002 |   3 |  -1 |  -1 |  -1 |  -0.039 |  -0.197 |  -0.010 |  23.064 | **0.000 | M = 23.063 
+|------------------------------------------------------------------------------------------------------------------|
+|       Fin-Init:                                                |  -0.000 |   0.000 |  -0.000 |  -0.000 |         | 
+|------------------------------------------------------------------------------------------------------------------|
+|       Vertex:          nu_mu @ (x =     0.13249 m, y =    -0.32548 m, z =     1.73481 m, t =    6.676934e-06 s)  |
+|------------------------------------------------------------------------------------------------------------------|
+| Err flag [bits:15->0] : 0000000000000000    |  1st set:                                                     none | 
+| Err mask [bits:15->0] : 1111111111111111    |  Is unphysical:    NO |   Accepted:   YES                          |
+|------------------------------------------------------------------------------------------------------------------|
+| sig(Ev) =       3.38195e-38 cm^2  | dsig(Q2;E)/dQ2 =          1.26806e-39 cm^2/GeV^2 | Weight =          1.00000 |
+|------------------------------------------------------------------------------------------------------------------|
+
+--------------------------------------------------------------------------------------------------------------
+GENIE Interaction Summary
+--------------------------------------------------------------------------------------------------------------
+[-] [Init-State] 
+ |--> probe        : PDG-code = 14 (nu_mu)
+ |--> nucl. target : Z = 18, A = 40, PDG-Code = 1000180400 (Ar40)
+ |--> hit nucleon  : PDC-Code = 2112 (neutron)
+ |--> hit quark    : no set
+ |--> probe 4P     : (E =     1.563671, Px =    -0.003550, Py =    -0.007547, Pz =     1.563649)
+ |--> target 4P    : (E =    37.215526, Px =     0.000000, Py =     0.000000, Pz =     0.000000)
+ |--> nucleon 4P   : (E =     0.929141, Px =     0.039278, Py =     0.196625, Pz =     0.009625)
+[-] [Process-Info]  
+ |--> Interaction : Weak[NC]
+ |--> Scattering  : QES
+[-] [Kinematics]
+ |--> *Selected* Bjorken x = 0.883309
+ |--> *Selected* Inelasticity y = 0.177938
+ |--> *Selected* Momentum transfer Q2 (>0) = 0.452488
+ |--> *Selected* Hadronic invariant mass W = 0.939565
+[-] [Exclusive Process Info] 
+ |--> charm prod.  : false |--> strange prod.  : false
+ |--> f/s nucleons : N(p) = 0 N(n) = 0
+ |--> f/s pions    : N(pi^0) = 0 N(pi^+) = 0 N(pi^-) = 0
+ |--> resonance    : [not set]
+--------------------------------------------------------------------------------------------------------------
+
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (956)> : Counting in primary hadronic system: idx = 5 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (961)> : N(p):0, N(n):1, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 7 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 8 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 9 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 10 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 11 -> proton
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 12 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 13 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 14 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 15 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 16 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 17 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 18 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 19 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 20 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1027)> : Counting in f/s system from hadronic vtx: idx = 21 -> neutron
+1652913470 INFO gntpc : [n] <gNtpConv.cxx::ConvertToGST (1032)> : N(p):5, N(n):10, N(pi+):0, N(pi-):0, N(pi0):0, N(K+,K-,K0):0, N(gamma,e-,e+):0, N(etc):0
+
