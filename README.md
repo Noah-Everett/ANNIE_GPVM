@@ -4,21 +4,29 @@
 ```
 /annie/app/users/neverett/
     /bin/
-        run_genie_grid.sh                 # runs GENIE on the grid
-        run_genie.sh                      # runs GENIE on ANNIE gpvm
-        setup                             # general user setup
-        setup_genie2_12_10.sh             # setup for GENIE v2.12.10
-        setup_genie3_00_04.sh             # setup for GENIE v3.0.4
-        setup_genie3_00_06.sh             # setup for GENIE v3.0.6
-        setup_grid.sh                     # setup for grid commands
-        setup_shortcuts.sh                # setup for personal shortcuts
+        run_genie_grid.sh       # runs GENIE generator on the grid
+        run_genie.sh            # runs GENIE generator on ANNIE gpvm
+        run_gntpc.sh            # runs GENIE gntpc (converts ghep fles to gst files)
+        make_tar_genie.sh       # makes tarball for running GENIE on grid
+        make_geoms_4D.sh        # makes versions of the ANNIE geometry (4 variables)
+        make_geoms_1D.sh        # makes versions of the ANNIE geometry (1 variable)
+        setup                   # general user setup
+        setup_genie2_12_10.sh   # setup for GENIE v2.12.10
+        setup_genie3_00_04.sh   # setup for GENIE v3.0.4
+        setup_genie3_00_06.sh   # setup for GENIE v3.0.6
+        setup_grid.sh           # setup for grid commands
+        setup_shortcuts.sh      # setup for personal shortcuts
         /ROOT_scripts/
-            combineTrees.C                # ROOT script to combine gst trees
-            getTgt.C                      # ROOT script to output genie tgt
-    
-    /WCSim/
-        getwcsim.sh                       # installs WCSim
-        setupenvs.sh                      # used by getwcsim.sh
+            combineTrees.C      # ROOT script to combine GENIE gst trees
+            getTgt.C            # ROOT script to output GENIE event target (tgt) 
+
+    /config/
+        Messenger_debug.xml     # GENIE messenger config w/ all priorities set to DEBUG
+        Messenger_fatal.xml     # GENIE messenger config w/ all priorities set to FATAL
+        Messenger_warn.xml      # GENIE messenger config w/ all priorities set to WARN
+
+    /grid/
+        run_grid_genie.sh       # grid runnable script for GENIE
 ```
 
 To use the following commands make sure to run:
