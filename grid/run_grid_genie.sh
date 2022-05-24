@@ -52,7 +52,7 @@ for i in "$@"; do
   case $i in
     -r=*                   ) export RUNBASE="${i#*=}"   shift ;;
     -n=*                   ) export NEVENTS="${i#*=}"      shift ;;
-    -g=*                   ) export GDML="${i#*=}"      shift ;;
+    -g=*                   ) export GEOMETRY="${i#*=}"      shift ;;
     -t=*                   ) export TOPVOL="${i#*=}"    shift ;;
     -f=*                   ) export FLUXFILE="${i#*=}"  shift ;;
     -m=*                   ) export MAXPL="${i#*=}"     shift ;;
@@ -84,7 +84,6 @@ if [ -z "$TOPVOL" ]; then
   export $TOPVOL="TARGON_LV"
 fi
 
-export GENIEXSEC=/cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALsmall.xml
 export MAXPL=${G}/${MAXPL}
 export RUN=${RUNBASE}${PROCESS} #"0"  # starting run number
 export SEED=$RUN #"0" # random # seed
@@ -115,7 +114,7 @@ export GXMLPATH=${C}:${GXMLPATH} #$CONDOR_DIR_INPUT:${GXMLPATH}
 ${UNITS} \
 --cross-sections ${GENIEXSEC} \
 --tune G18_10a_02_11a \
--n ${NEVENTS} \ #${PROCESS}0 \ 
+-n ${NEVENTS} \
 -z $ZMIN \
 -m $MAXPL \
 --message-thresholds $MESTHRE
