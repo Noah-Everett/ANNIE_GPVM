@@ -4,43 +4,30 @@ for i in "$@"; do
   case $i in
     --outDir=*  ) export OUTDIR="${i#*=}"      shift  ;;
     --dwrThik=* ) export DWTH="${i#*=}"        shift  ;;
-    --x_delta=* ) export X_DELTA="${i#*=}"     shift  ;;
-    --y_delta=* ) export Y_DELTA="${i#*=}"     shift  ;;
-    --z_delta=* ) export Z_DELTA="${i#*=}"     shift  ;;
-    --r_delta=* ) export R_DELTA="${i#*=}"     shift  ;;
-    --x_min=*   ) export X_MIN="${i#*=}"       shift  ;;
-    --y_min=*   ) export Y_MIN="${i#*=}"       shift  ;;
-    --z_min=*   ) export Z_MIN="${i#*=}"       shift  ;;
-    --r_min=*   ) export R_MIN="${i#*=}"       shift  ;;
-    --x_max=*   ) export X_MAX="${i#*=}"       shift  ;;
-    --y_max=*   ) export Y_MAX="${i#*=}"       shift  ;;
-    --z_max=*   ) export Z_MAX="${i#*=}"       shift  ;;
-    --r_max=*   ) export R_MAX="${i#*=}"       shift  ;;
+    -n=*        ) export N="${i#*=}"           shift  ;;
     -*          ) echo "Unknown option \"$i\"" exit 1 ;;
   esac
 done
 
 mkdir $OUTDIR
-cat <<EOF > $OUTDIR/mkgeoms.legend
-annie_v02_<nFile>.gdml ---> x=<dewar x> y=dewar y> z=<dewar z>  rad=<dewar rad>
+cat <<EOF > $OUTDIR/mkgeoms_ar.legend
+annie_v02_<nFile>.gdml ---> y=<dewar y> rad=<dewar rad>
 EOF
 
 export c=0
-for (( x=$X_MIN; x<=$X_MAX; x+=$X_DELTA )); do
-  for (( y=$Y_MIN; y<=$Y_MAX; y+=$Y_DELTA )); do
-    for (( z=$Z_MIN; z<=$Z_MAX; z+=$Z_DELTA )); do
-      for (( rad=$R_MIN; rad<=$R_MAX; rad+=$R_DELTA )); do
-        mkfile_geom
-        update_legend
-        c=$((c+1))
-      done
-    done
-  done
+export N=$((N-1))
+export R_DELTA=(607-50)/$N
+for (( rad=50; rad<=607; rad+=$R_DELTA )); do
+  export y=$(echo 1215 - $rad | bc)
+  export RWATER=
+  mkfile_geom
+  update_legend
+  c=$((c+1))
 done
 }
 
 update_legend() {
-echo "annie_v02_${c}.gdml ---> x=$x y=$y z=$z rad=$rad" >> $OUTDIR/mkgeoms.legend
+echo "annie_v02_${c}.gdml ---> y=$y rad=$rad" >> $OUTDIR/mkgeoms_ar.legend
 }
 
 mkfile_geom() {
@@ -480,7 +467,7 @@ cat <<EOF > $OUTDIR/annie_v02_${c}.gdml
       <solidref ref="TWATER_S"/>
       <physvol name="TDEWUR_PV">
         <volumeref ref="TDEWAR_LV"/>
-        <position name="TDEWAR_PV_pos" unit="mm" x="$x" y="$y" z="$z"/>
+        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="$y" z="0"/>
       </physvol>
     </volume>
     <volume name="TBODY_LV">

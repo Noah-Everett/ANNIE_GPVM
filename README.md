@@ -36,71 +36,82 @@ source /annie/app/users/neverett/bin/setup
 
 ### **setup_shortcuts.sh**
 The remainder of the document will user environmental variables defined in `setup_shortcuts.sh`:
-
 ```
 # /annie/app/users/
-export ANNIEUSERS=/annie/app/users
+export USERS=/annie/app/users
 export NE=$ANNIEUSERS/neverett
 export RH=$ANNIEUSERS/rhatcher
 export JM=$ANNIEUSERS/jminock
 export MO=$ANNIEUSERS/moflaher
+export MA=$ANNIEUSERS/mascenci
+export FL=$ANNIEUSERS/flemmons
 
-# /pnfs/annie/scratch/users/
-export PNFSUSERS=/pnfs/annie/scratch/users
-export PNE=$PNFSUSERS/neverett
-
-# personal
+# /annie/app/users/neverett/
 export B=$NE/bin
 export R=$NE/runs
-export W=$NE/WCSim    
+export G=$NE/geometry
+export T=$NE/ToolAnalysis
+export C=$NE/config
+export GR=$NE/grid
+
+# /pnfs/annie/scratch/users/
+export PUSERS=/pnfs/annie/scratch/users
+
+# /pnfs/annie/scratch/users/neverett/
+export PNE=$PNFSUSERS/neverett
+export PG=$PNE/genie_output
 ```
 
 <br />
 
-## **GENIE**
-General template:
-
+## **GENIE on the ANNIE gpvm**
+Use GENIE Generator on the gpvm:
 ```
-$ cd <output dir>
-$ nohup $B/run_genie3.sh -r <run number> -n <number of events> -g annie_v0<1 or 2>.gdml -t <TWATER_LV or TARGON_LV> -o <output dir> -z -2000
-```
-
-Used to produce current results for water target:
-
-```
-$ cd $R/run_103
-$ nohup $B/run_genie3.sh -r 103 -n 1000 -g annie_v01.gdml -t TWATER_LV -o . -z -2000
-```
-
-Attempting to use for argon target:
-
-```
-$ cd $R/run_10
-$ nohup $B/run_genie3.sh -r 10 -n 1000 -g annie_v02.gdml -t TARGON_LV -o . -z -2000
+source $B/run_genie.sh -r=#                      (run number)
+                       -n=#                      (number of events)
+                       -g=abc.gdml               (geometry file (in $G))
+                       -t=ABC_LV                 (geometry top volume)
+                       -f=123*                   (flux file number (in $F))
+                       -m=abc.maxpl.xml          (max path length file (in $G))
+                       -o=/path/to/out/dir       (ouput directory)
+                       -S=(+|-)#                 (geometry scan config)
+     --message-thresholds=Messenger_abc.xml      (output type priorities (in $C))
+                       -h|--help                 (print script usage statement (this output))
 ```
 
-To run GENIE on the grid, we use `jobsub_submit`. To modify the simulation, simply edit `$B/run_genie3_grid.sh`. Output will be in `$PNE/genie_output` and `$PNE/job_output`. NOTE: I have not successfully completed a GENIE run on the grid, though this command should work (at least in theory):
-
+### **Example Usage** 
 ```
-$ jobsub_submit -G annie -M -N 1 --memory=2000MB --disk=2GB --cpu=1 --expected-lifetime=24h --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' -f dropbox:///annie/app/users/neverett/bin/setup_genie3_00_04.sh -f dropbox:///annie/app/users/neverett/geometry/annie_v02.gdml -f dropbox:///annie/app/users/neverett/flux/GNuMIFlux.xml -f dropbox:///annie/app/users/neverett/flux/bnb_annie_0030.root file:///annie/app/users/neverett/bin/run_genie3_grid.sh
+$ nohup $B/run_genie.sh -r=0 -n=100 -g=annie_v01.gdml -t=TWATER_LV -f=000* -m=annie_v01.maxpl.xml -o=. | tee -a ./run_0.out
 ```
-
-<br />
-<br />
-<br />
-<br />
-
-## **WCSim**
-All WCSim work was done using existing code by Marcus O'Flaherty. First, I did as Franklin recommended and tried to use Marcus' `getwcsim.sh` script (`$MO/wcsim/getwcsim.sh`).
-
 ```
-$ cd $NE
-$ mkdir WCSim && cd WCSim
-$ cp $MO/wcsim/getwcsim.sh
-$ ./getwcsim.sh
+$ nohup $B/run_genie.sh -r=1 -n=100 -g=annie_v02.gdml -t=TWATER_LV -f=000* -m=annie_v02.maxpl.xml -o=. | tee -a ./run_1.out
 ```
 
-This did not work and resulted in multiple errors (`$W/getwcsim.out.~0~`). Because the resulting errors seemed to be a result of WCSim's dependencies (GENIE, ROOT, and Geant4), I tried to update the sourcing of dependencies, specifically of GENIE. However, because ROOT relies on GENIE to be setup, there was an issue when using a different setup of GENIE. Upon realization of this issue, I decided it would be better to ask Marcus for help. The modified `getwcsim.sh` and `setupenvs.sh` can be found in `$W`. To use the updated WCSim installation procedure, simply copy `$W/getwcsim.sh` into any directory and run it. NOTE: errors have not been resolved, so it shouldn't work.
+## **GENIE on the Grid**
+Use GENIE Generator on the grid:
+```
+source $B/make_tar_genie.sh
+```
+```
+source $B/run_genie_grid.sh -r=#                 (run base number)
+                            -n=#                 (number of events)
+                            -g=abc.gdml          (geometry file (in $G))
+                            -t=ABC_LV            (geometry top volume)
+                            -f=123*              (flux file number (in $F))
+                            -m=abc.maxpl.xml     (max path length file (in $G))
+          --message-thresholds=Messenger_abc.xml (output type priorities (in $C))
+                            -N=#                 (number of identical jobs)
+                      --memory=#MB               (amount of memory)
+                        --disk=#MB               (amount of disk space)
+                         --cpu=#                 (number of cpus)
+           --expected-lifetime=#h                (maximum run time)
+                     -h|--help                   (print script usage statement (this output))
+```
 
-## **Previous Work (by Robert Hatcher)**
-Previous work by Robert Hatcher can be found [here](https://cdcvs.fnal.gov/redmine/projects/anniesoft/wiki/GENIE_and_Geant4_neutrons_from_rock_propagation). All of the scripts that run GENIE (both mine and James Minock's) are just modified versions of Robert Hatcher's work).
+### **Example Usage**
+```
+$ source $B/run_genie_grid.sh -r=0 -n=100 -g=annie_v02.gdml -t=TWATER_LV -f=000* -m=annie_v02.maxpl.xml --message-thresholds=Messenger_warn.xml -N=2 --memory=2000MB --disk=1000MB --cpu=1 --expected-lifetime=1h
+```
+
+## **Previous Work by Robert Hatcher**
+Previous work by Robert Hatcher has been extremely usefull and can be found [here](https://cdcvs.fnal.gov/redmine/projects/anniesoft/wiki/GENIE_and_Geant4_neutrons_from_rock_propagation), [here](https://cdcvs.fnal.gov/redmine/projects/genie/wiki/Running_gevgen_fnal), and in `$RH`. 
