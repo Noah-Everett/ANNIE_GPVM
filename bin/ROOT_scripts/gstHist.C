@@ -8,7 +8,7 @@ const map< string, string > kXaxisTitles   = { { "nfn", "Neutron Multiplicity" }
 const map< string, string > kYaxisTitles   = { { "nfn", "Events" } };
 const map< string, string > kBranchVarType = { { "nfn", "int" }, { "Q2", "double" } };
 
-bool makeHist( const vector< string >& t_files, const string& t_branch, const string& t_options );
+int makeHist( const vector< string >& t_files, const string& t_branch, const string& t_options );
 
 int gstHist( vector< string > t_files, string t_branch, string t_options ) 
 {
@@ -17,10 +17,16 @@ int gstHist( vector< string > t_files, string t_branch, string t_options )
             cout << "Usage Statement:" << endl;
             cout << endl;
             cout << "Command line usage:" << endl;
-            cout << "$ root -l /path/to/gstHist.C\\(\\{\\\"/path/to/gntp.<file number>.gst.root\\\",...,\\\"/path/to/gntp.<file number>.gst.root\\\"\\},\\\"<branch name>\\\",\\\"<options>\\\"\\)" << endl;
+            cout << "$ root -l /path/to/gstHist.C\\(\\{"
+                 << "\\\"/path/to/gntp.<file number>.gst.root\\\",...,"
+                 << "\\\"/path/to/gntp.<file number>.gst.root\\\"\\},"
+                 << "\\\"<branch name>\\\",\\\"<options>\\\"\\)" << endl;
             cout << endl;
             cout << "ROOT usage:" << endl;
-            cout << "root [#] .x /path/to/gstHist.C({\"/path/to/gntp.<file number>.gst.root\",...,\"/path/to/gntp.<file number>.gst.root\"},\"<branch name>\",\"<options>\")" << endl;
+            cout << "root [#] .x /path/to/gstHist.C({"
+                 << "\"/path/to/gntp.<file number>.gst.root\",...,"
+                 << "\"/path/to/gntp.<file number>.gst.root\"},"
+                 << "\"<branch name>\",\"<options>\")" << endl;
             cout << endl;
 
             return 1;
@@ -31,7 +37,7 @@ int gstHist( vector< string > t_files, string t_branch, string t_options )
     return 0;
 }
 
-bool makeHist( const vector< string >& t_files, const string& t_branch, const string& t_options )
+int makeHist( const vector< string >& t_files, const string& t_branch, const string& t_options )
 {
     bool oPercent = false;
     bool oFill    = false;
@@ -40,22 +46,24 @@ bool makeHist( const vector< string >& t_files, const string& t_branch, const st
         else if( option == 'F' ) oFill    = true;
         else {
             cerr << "Invalid char in `t_options`: \"option\". For usage statement include 'H' in `t_options`";
-            return false;
+            return 1;
         }
     }
 
+    TCanvas* canvas = new TCanvas( t_branch.c_str(), kTitles.at( t_branch ).c_str() );
+    TFile  * file   = TFile::Open( t_files[ 0 ].c_str() );
+    TTree  * tree   = ( TTree* )file->Get( "gst;1" );
+    TH1F   * hists  = new TH1F[ t_files.size() ];
+
     string type = kBranchVarType.at( t_branch );
-    TCanvas* canvas = new TCanvas( "nfn", "Final-State Neutrons" );
-    TFile* file = TFile::Open( t_files[ 0 ].c_str() );
-    TTree* tree = ( TTree* )file->Get( "gst;1" );
-    TH1F* hists = new TH1F[ t_files.size() ];
-    int sizes[ t_files.size() ];
     string opt = "HIST";
+    int    sizes[ t_files.size() ];
+    int    nFiles = t_files.size();
     double cur_double;
     int    cur_int;
-    Double_t maxes[ t_files.size() ];
-    Double_t max;
-    vector< Double_t > branches[ t_files.size() ];
+    double maxes[ t_files.size() ];
+    double max;
+    vector< double > branches[ t_files.size() ];
 
     for( int i = 0; i < t_files.size(); i++ ) {
         cout << "Retrieving information from file: `" << t_files[ i ] << "`, branch: `" << t_branch << "`." << endl;
@@ -105,9 +113,21 @@ bool makeHist( const vector< string >& t_files, const string& t_branch, const st
         }
     }
 
-    for( int i = 0; i < t_files.size(); i++ ) {
+    for( int i = 0; i < t_files.size() - 1; i++ ) {
         cout << "Drawing histogram for file: `" << t_files[ i ] << "`, branch: `" << t_branch << "`." << endl;
         hists[ i ].Draw( opt.c_str() );
+        hists[ i ].Print( "base" );
+        canvas->Modified();
+        canvas->Update();
         opt = "Sames HIST";
     }
+    cout << "Drawing histogram for file: `" << t_files.back() << "`, branch: `" << t_branch << "`." << endl;
+    hists[ t_files.size() - 1 ].Draw( opt.c_str() );
+    hists[ t_files.size() - 1 ].Print( "base" );
+    canvas->Modified();
+    canvas->Update();
+
+    // cout << "here" << endl;
+    // for( int i = 0; i < 999; i++ )
+    //     int k = 0;
 }
