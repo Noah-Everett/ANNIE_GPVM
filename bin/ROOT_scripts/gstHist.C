@@ -3,12 +3,13 @@ using std::vector;
 using std::map;
 
 const vector< Color_t >     kColors        = { kRed, kBlue, kGreen, kPink };
-const map< string, string > kTitles        = { { "nfn", "Final-State Neutrons" } };
-const map< string, string > kXaxisTitles   = { { "nfn", "Neutron Multiplicity" } };
-const map< string, string > kYaxisTitles   = { { "nfn", "Events" } };
+const map< string, string > kTitles        = { { "nfn", "Final-State Neutrons" }, { "Q2", "Momentum Transfer" } };
+const map< string, string > kXaxisTitles   = { { "nfn", "Neutron Multiplicity" }, { "Q2", "Momentum Transfer [GeV^2]" } };
+const map< string, string > kYaxisTitles   = { { "nfn", "Events" }, { "Q2", "Counts/GeV^2" } };
 const map< string, string > kBranchVarType = { { "nfn", "int" }, { "Q2", "double" } };
 
 int makeHist( const vector< string >& t_files, const string& t_branch, const string& t_options );
+int getDigits( const int& t_int );
 
 void gstHist( vector< string > t_files, string t_branch, string t_options ) 
 {
@@ -95,7 +96,14 @@ int makeHist( const vector< string >& t_files, const string& t_branch, const str
 
     for( int i = 0; i < t_files.size(); i++ ) {
         cout << "Making histogram for file: `" << t_files[ i ] << "`, branch: `" << t_branch << "`." << endl;
-        hists[ i ] = new TH1F( t_files[ i ].c_str(), kTitles.at( t_branch ).c_str(), max + 1, 0, max );
+
+        if( type == "int" )
+            hists[ i ] = new TH1F( t_files[ i ].c_str(), kTitles.at( t_branch ).c_str(), max + 1, 0, max );
+        else if( type == "double" )
+            hists[ i ] = new TH1F( t_files[ i ].c_str(), kTitles.at( t_branch ).c_str(), max * 20, 0, max );
+        else
+            hists[ i ] = new TH1F( t_files[ i ].c_str(), kTitles.at( t_branch ).c_str(), max * 20, 0, max );
+
         for( int j = 0; j < size; j++ )
             hists[ i ]->Fill( branches[ i ][ j ] );
 
@@ -108,25 +116,53 @@ int makeHist( const vector< string >& t_files, const string& t_branch, const str
             hists[ i ]->SetLineWidth     ( 4 );
         }
         if( oPercent ) {
-            hists[ i ]->Scale( 1 / double( branches[ i ].size() ) * 100 );
-            // hists[ i ]->GetYaxis()->SetTitle( ( kYaxisTitles.at( t_branch ) + " [%]" ).c_str() );
+            hists[ i ]->Scale( 1 / double( branches[ i ].size() ) * 100, "nosw2" );
+            hists[ i ]->GetYaxis()->SetTitle( ( kYaxisTitles.at( t_branch ) + " [%]" ).c_str() );
         } else {
             hists[ i ]->GetYaxis()->SetTitle( kYaxisTitles.at( t_branch ).c_str() );
         }
+        hists[ i ]->GetXaxis()->SetTitle( kXaxisTitles.at( t_branch ).c_str() );
+        hists[ i ]->GetXaxis()->SetTitleOffset( 1.15 );
     }
 
-    // TLegend* legend = new TLegend();
-    // for( int i = 0; i < t_files.size(); i++ )
-    //     legend->AddEntry( hists[ i ], t_files[ i ].c_str(), "l" );
+    TLegend* legend = new TLegend();
+    for( int i = 0; i < t_files.size(); i++ )
+        legend->AddEntry( hists[ i ], t_files[ i ].c_str(), "l" );
+
+    // Literally insertion sorting histograms. lol
+    for( int i = 1; t_files.size() > 1 && i < t_files.size(); i++ ) {
+        if( hists[ i - 1 ]->GetBinContent( hists[ i - 1 ]->GetMaximumBin() ) < 
+            hists[ i ]->GetBinContent( hists[ i ]->GetMaximumBin() ) ) {
+            TH1F* temp = hists[ i - 1 ];
+            hists[ i - 1 ] = hists[ i ];
+            hists[ i ] = temp;
+        }
+    }
+
+        for( int i = 0; i < t_files.size(); i++ )
+            hists[ i ]->GetYaxis()->SetTitleOffset( 0.7 + 
+            0.1 * ( getDigits( hists[ 0 ]->GetBinContent( hists[ 0 ]->GetMaximumBin() ) ) - 1 ) );
 
     TCanvas* canvas = new TCanvas( t_branch.c_str(), kTitles.at( t_branch ).c_str() );
     for( int i = 0; i < t_files.size(); i++ ) {
         cout << "Drawing histogram for file: `" << t_files[ i ] << "`, branch: `" << t_branch << "`." << endl;
         hists[ i ]->Draw( opt.c_str() );
-        opt = "Same";
+        opt = "Sames";
     }
-    // cout << "Drawing legend." << endl;
-    // legend->Draw( "Same" );
+    cout << "Drawing legend." << endl;
+    legend->Draw( "Same" );
 
     return 0;
+}
+
+int getDigits( const int& t_int ) {
+    int integer = t_int;
+
+    if( t_int == 0 )
+        return 1;
+
+    int digits = 1;
+    for( ; integer / 10 > 0; integer /= 10 ) ++digits;
+
+    return digits;
 }
