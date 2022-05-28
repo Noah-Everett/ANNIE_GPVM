@@ -303,7 +303,7 @@
     <material name="G4_Ar" state="gas">
       <T unit="K" value="293.15"/>
       <MEE unit="eV" value="188.000"/>
-      <D unit="g/cm3" value=""/>
+      <D unit="g/cm3" value="0.03324020"/>
       <fraction n="1" ref="Ar"/>
     </material>
   </materials>
