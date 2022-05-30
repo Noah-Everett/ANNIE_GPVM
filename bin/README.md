@@ -1,24 +1,24 @@
 # ANNIE_gpvm
-
-This is the Git repository for my (Noah Everett's) directory on the ANNIE gpvm.
  
 ## **My Code**
 ```
 /annie/app/users/neverett/
     /bin/
-        run_genie_grid.sh       # runs GENIE Generator on the grid
-        run_genie.sh            # runs GENIE Generator on ANNIE gpvm
-        make_genie_gst.sh       # runs GENIE gntpc to convert ghep files to gst files
+        run_genie_grid.sh       # runs GENIE generator on the grid
+        run_genie.sh            # runs GENIE generator on ANNIE gpvm
+        run_gntpc.sh            # runs GENIE gntpc (converts ghep fles to gst files)
         make_tar_genie.sh       # makes tarball for running GENIE on grid
         make_geoms_4D.sh        # makes versions of the ANNIE geometry (4 variables)
         make_geoms_1D.sh        # makes versions of the ANNIE geometry (1 variable)
-        make_maxpl_grid.sh      # runs GENIE Generator on the grid to produce maxpl.xml files
         setup                   # general user setup
         setup_genie2_12_10.sh   # setup for GENIE v2.12.10
         setup_genie3_00_04.sh   # setup for GENIE v3.0.4
         setup_genie3_00_06.sh   # setup for GENIE v3.0.6
         setup_grid.sh           # setup for grid commands
         setup_shortcuts.sh      # setup for personal shortcuts
+        /ROOT_scripts/
+            combineTrees.C      # ROOT script to combine GENIE gst trees
+            getTgt.C            # ROOT script to output GENIE event target (tgt) 
 
     /config/
         Messenger_debug.xml     # GENIE messenger config w/ all priorities set to DEBUG
