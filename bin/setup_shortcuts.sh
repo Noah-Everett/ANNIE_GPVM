@@ -21,3 +21,4 @@ export T=$NE/ToolAnalysis
 export GR=$NE/grid
 export F=$NE/flux
 export C=$NE/config
+export BA=$NE/backups
