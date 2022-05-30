@@ -1,116 +1,3 @@
-main() {
-echo "Processing command line arguments."
-for i in "$@"; do
-  case $i in
-    --outDir=*         ) export OUTDIR="${i#*=}"      shift    ;;
-    --dewarThickness=* ) export DWTH="${i#*=}"        shift    ;;
-    --material=*       ) export MATERIAL="${i#*=}"    shift    ;;
-    --shape*           ) export SHAPE="${i#*=}"       shift    ;;
-    --state=*          ) export STATE="${i#*=}"       shift    ;;
-    --density=*        ) export DENSITY="${i#*=}"     shift    ;;
-    --nFiles=*         ) export NFILES="${i#*=}"      shift    ;;
-    -*                 ) echo "Unknown option \"$i\"" return 1 ;;
-  esac
-done
-
-if [[ -z ${MATERIAL} || ( ${MATERIAL} != "vacuum" && ${MATERIAL} != "argon" && ${MATERIAL} != "water" ) ]]; then
-  echo "Use either \`--material=argon\`, \`--material=water\`, or \`--material=vacuum\`."
-  return 1
-fi
-
-if [[ -z ${SHAPE} || ( ${SHAPE} != "tube" && ${SHAPE} != "sphere" ) ]]; then
-  echo "Use either \`--shape=tube\` or \`--shape=sphere\`."
-  return 1
-fi
-
-if [[ ${MATERIAL} == "argon" && ( -z ${STATE} || ( ${STATE} != "gas" && ${STATE} != "liquid" ) ) ]]; then
-  echo "Use either \`--state=gas\` or \`--state=liquid\`."
-  return 1
-fi
-
-if [[ ${MATERIAL} == "argon" && ${STATE} == "gas" && -z ${DENSITY} ]]; then
-  echo "Use \`--density=#\` to set the density of the argon gas."
-  return 1
-else
-  export DENSITY="0$(echo "0.00166201*${DENSITY}" | bc)"
-fi
-
-if [ -z $NFILES ]; then
-  echo "Use \`--nFiles=#\` to set number of files to produce."
-  return 1
-fi
-
-if [ -z ${DWTH} ]; then
-  echo "Setting dewar thickness to \`4.76\`."
-  export DWTH="4.76"
-fi
-
-mkdir $OUTDIR
-cat <<EOF > $OUTDIR/make_geoms_1D.legend
-All gdml files in `${OUTDIR}` have the following properties:
-  Shape: ${SHAPE}
-  Material: ${MATERIAL}
-  Argon State (if Argon): ${STATE}
-  Argon Density (if Argon) (*1.66E-3 g/cm^3): ${DENSITY}
-
-annie_v02_<nFile>.gdml ---> y=<dewar y> rad=<dewar rad>
-EOF
-
-export c=0
-export NFILES=$((NFILES-1))
-export R_DELTA=(607-50)/$NFILES
-for (( rad=50; ( rad<=607 && rad>=0 ); rad+=$R_DELTA )); do
-  mkfile_geom
-  update_legend
-  c=$((c+1))
-done
-}
-
-update_legend() {
-echo "annie_v02_${c}.gdml ---> y=$(echo 1215 - $rad | bc) rad=$rad" >> $OUTDIR/make_geoms_1D.legend
-}
-
-mkfile_geom() {
-if [[ ${MATERIAL} == "argon" && ${STATE} == "gas" ]]; then
-  G4_Ar=$(cat <<-END
-    <material name="G4_Ar" state="gas">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="188.000"/>
-      <D unit="g/cm3" value="${DENSITY}"/>
-      <fraction n="1" ref="Ar"/>
-    </material>
-END
-)
-GDMLMATERIAL="G4_Ar"
-elif [[ ${MATERIAL} == "argon" && ${STATE} == "liquid" ]]; then
-  G4_Ar=$(cat <<-END
-    <material name="G4_Ar" state="liquid">
-      <T unit="K" value="87.45"/>
-      <MEE unit="eV" value="188.000"/>
-      <D unit="g/cm3" value="1.396"/>
-      <fraction n="1" ref="Ar"/>
-    </material>
-END
-)
-GDMLMATERIAL="G4_Ar"
-elif [[ ${MATERIAL} == "vacuum" ]]; then
-  G4_Ar=""
-  GDMLMATERIAL="Vacuum"
-elif [[ ${MATERIAL} == "water" ]]; then
-  G4_Ar=""
-  GDMLMATERIAL="TankWater"
-fi
-
-if [ ${SHAPE} == "tube" ]; then
-  TARGON_LV="<tube aunit=\"deg\" deltaphi=\"360\" lunit=\"mm\" name=\"TARGON_S\" rmax=\"$(echo ${rad} - ${DWTH} | bc)\" rmin=\"0\" startphi=\"0\" z=\"490.28\"/>"
-  TDEWAR_LV="<tube aunit=\"deg\" deltaphi=\"360\" lunit=\"mm\" name=\"TDEWAR_S\" rmax=\"${rad}\" rmin=\"0\" startphi=\"0\" z=\"500\"/>"
-elif [ ${SHAPE} == "sphere" ]; then
-  TARGON_LV="<sphere aunit=\"deg\" lunit=\"mm\" name=\"TARGON_S\" rmax=\"$(echo ${rad} - ${DWTH} | bc)\" deltaphi=\"360\" deltatheta=\"180\"/>"
-  TDEWAR_LV="<sphere aunit=\"deg\" lunit=\"mm\" name=\"TDEWAR_S\" rmax=\"${rad}\" deltaphi=\"360\" deltatheta=\"180\"/>"
-fi
-
-echo making and writing to $OUTDIR/annie_v02_${c}.gdml
-cat <<EOF > $OUTDIR/annie_v02_${c}.gdml
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
 
@@ -413,14 +300,19 @@ cat <<EOF > $OUTDIR/annie_v02_${c}.gdml
       <D unit="g/cm3" value="1e-25"/>
       <fraction n="1" ref="H"/>
     </material>
-${G4_Ar}
+    <material name="G4_lAr" state="liquid">
+      <T unit="K" value="87.45"/>
+      <MEE unit="eV" value="188.000"/>
+      <D unit="g/cm3" value="1.396"/>
+      <fraction n="1" ref="Ar"/>
+    </material>
   </materials>
 
   <solids>
     <box lunit="mm" name="ROOF_S" x="7823.2" y="6.35" z="5689.6"/>
     <box lunit="mm" name="ROOFC_S" x="7823.2" y="457.2" z="5689.6"/>
-    ${TARGON_LV}
-    ${TDEWAR_LV}
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="TARGON_S" rmax="45.24" rmin="0" startphi="0" z="490.28"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="TDEWAR_S" rmax="50" rmin="0" startphi="0" z="500"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TWATER_S" rmax="1519.24" rmin="0" startphi="0" z="3956.05"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBODY_S" rmax="1524.0" rmin="0" startphi="0" z="3956.05"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBASE_S" rmax="1549.4" rmin="0" startphi="0" z="6.35"/>
@@ -519,7 +411,7 @@ ${G4_Ar}
       </physvol>
     </volume>
     <volume name="TARGON_LV">
-      <materialref ref="$GDMLMATERIAL"/>
+      <materialref ref="G4_Ar"/>
       <solidref ref="TARGON_S"/>
     </volume>
     <volume name="TDEWAR_LV">
@@ -534,7 +426,7 @@ ${G4_Ar}
       <solidref ref="TWATER_S"/>
       <physvol name="TDEWUR_PV">
         <volumeref ref="TDEWAR_LV"/>
-        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="$(echo 1215 - $rad | bc)" z="0"/>
+        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="1165" z="0"/>
       </physvol>
     </volume>
     <volume name="TBODY_LV">
@@ -597,7 +489,8 @@ ${G4_Ar}
         <volumeref ref="vpaddle_log0x34dd440"/>
         <position name="paddle_phys0x34dd650_pos" unit="mm" x="737.5" y="-1016.5" z="-586.65"/>
         <rotation name="paddle_phys0x34dd650_rot" unit="deg" x="0" y="0" z="-90"/>
-      </physvol> <physvol name="paddle_phys0x34dd720">
+      </physvol>
+      <physvol name="paddle_phys0x34dd720">
         <volumeref ref="vpaddle_log0x34dd440"/>
         <position name="paddle_phys0x34dd720_pos" unit="mm" x="-737.5" y="-1016.5" z="-586.65"/>
         <rotation name="paddle_phys0x34dd720_rot" unit="deg" x="0" y="0" z="-90"/>
@@ -5425,7 +5318,3 @@ ${G4_Ar}
   </setup>
 
 </gdml>
-EOF
-}
-
-main "$@"

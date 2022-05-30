@@ -1,9 +1,3 @@
-#============================COMMAND=============================#
-#jobsub_submit -G annie -M -N 5 --memory=2000MB --disk=2GB --cpu=2 --expected-lifetime=24h --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' --tar_file_name=dropbox:///annie/app/users/neverett/grid/genie_grid.tar.gz file:///annie/app/users/neverett/grid/run_grid_genie.sh
-#======================================================================#
-
-
-
 #===========================GRID INIT========================#
 set -x
 echo Start `date`
@@ -50,14 +44,12 @@ F=$INPUT_TAR_DIR_LOCAL/annie/data/flux/bnb
 
 for i in "$@"; do
   case $i in
-    -r=*                   ) export RUNBASE="${i#*=}"   shift ;;
-    -n=*                   ) export NEVENTS="${i#*=}"      shift ;;
-    -g=*                   ) export GEOMETRY="${i#*=}"      shift ;;
-    -t=*                   ) export TOPVOL="${i#*=}"    shift ;;
-    -f=*                   ) export FLUXFILENUM="${i#*=}"  shift ;;
-    -m=*                   ) export MAXPL="${i#*=}"     shift ;;
-    --message-thresholds=* ) export MESTHRE="${i#*=}"   shift ;;
-    -*                     ) echo "unknown option $i" exit 1 ;;
+    --geomDir=*            ) export GEOMDIR="${i#*=}"      shift  ;;
+    -t=*                   ) export TOPVOL="${i#*=}"       shift  ;;
+    -f=*                   ) export FLUXFILENUM="${i#*=}"  shift  ;;
+    -m=*                   ) export MAXPL="${i#*=}"        shift  ;;
+    --message-thresholds=* ) export MESTHRE="${i#*=}"      shift  ;;
+    -*                     ) echo "unknown option $i"      exit 1 ;;
    esac
 done
 
@@ -66,14 +58,7 @@ if [ -z "$FLUXFILENUM" ]; then
 fi
 export FLUXFILE="bnb_annie_${FLUXFILENUM}.root"
 
-if [ -z "$ZMIN" ]; then
-  export ZMIN="-2000"
-fi
-
-if [ -z "$GEOMETRY" ]; then
-  export GEOMETRY="annie_v02.gdml"
-fi
-export GEOMETRY="${G}/${GEOMETRY}"
+export GEOMETRY="${G}/${GEOMDIR}/annie_v02_${PROCESS}.gdml"
 
 if [-z "$MESTHRE" ]; then
   export MESTHRE=""
@@ -85,9 +70,10 @@ if [ -z "$TOPVOL" ]; then
   export $TOPVOL="TARGON_LV"
 fi
 
-export MAXPL=${G}/${MAXPL}
-export RUN=${RUNBASE}${PROCESS}
-export SEED=${RUNBASE}${PROCESS}${CLUSTER}
+export MAXPL=+annie_v02_${PROCESS}.maxpl.xml
+export NEVENTS="1"
+export RUN=${PROCESS}${CLUSTER}
+export SEED=${PROCESS}${CLUSTER}
 export FLXPSET="ANNIE-tank"
 export FLUX="${F}/${FLUXFILE},${FLXPSET}"
 export GENIEXSEC=/cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALsmall.xml
@@ -107,7 +93,7 @@ export GXMLPATH=${C}:${GXMLPATH} #$CONDOR_DIR_INPUT:${GXMLPATH}
 #          Z Minimum: ${ZMIN}
 
 #=============================MAKE LOG========================#
-ifdh mkdir_p ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
+ifdh mkdir_p ${SCRATCH_DIR}/${GRID_USER}/genie_output/${GEOMDIR}
 cat <<EOF > ${RUN}.log
             Program: /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal
                 Run: ${RUN}
@@ -122,7 +108,7 @@ cat <<EOF > ${RUN}.log
 Maximum Path Length: ${MAXPL}
  Message Thresholds: ${MESTHRE}
 EOF
-ifdh cp -D $IFDH_OPTION ${RUN}.log ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
+ifdh cp -D $IFDH_OPTION ${RUN}.log ${SCRATCH_DIR}/${GRID_USER}/genie_output/${GEOMDIR}
 #======================================================================#
 
 
@@ -140,6 +126,7 @@ ${UNITS} \
 --tune G18_10a_02_11a \
 -n ${NEVENTS} \
 -m $MAXPL \
+-S 30000 \
 --message-thresholds $MESTHRE
 #======================================================================#
 
@@ -183,7 +170,7 @@ export IFDH_GRIDFTP_EXTRA="-st 1000"
     else
         # directory already exists, so let's copy
 #   ifdh cp -D $IFDH_OPTION job_output_${CLUSTER}.${PROCESS}.log ${SCRATCH_DIR}/${GRID_USER}/job_output
-    ifdh cp -D $IFDH_OPTION *.root ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
+    ifdh cp -D $IFDH_OPTION *.maxpl.xml ${SCRATCH_DIR}/${GRID_USER}/genie_output/${GEOMDIR}
 #    if [ ${RUNBASE} -eq 0 ]; then
 #      ifdh cp -D $IFDH_OPTION gntp.${PROCESS}.ghep.root ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
 #      if [ $? -ne 0 ]; then

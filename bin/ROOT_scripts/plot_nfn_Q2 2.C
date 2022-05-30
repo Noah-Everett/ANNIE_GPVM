@@ -1,4 +1,4 @@
-void graph_nfn_Q2( std::string nRun, bool verbatim = false ) 
+void plot_nfn_Q2( std::string nRun, bool verbatim = false ) 
 {
     TCanvas* canvas = new TCanvas( "nfn_Q2", "Final-State Neutrons vs Momentum Transfer" );
     // canvas->SetGrid();

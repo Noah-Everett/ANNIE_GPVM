@@ -56,7 +56,7 @@ ${UNITS} \
 --tune G18_10a_02_11a \
 -n ${NEVENTS} \
 -z ${ZMIN} \
--m ${MAXPL} \
+-m +${MAXPL} \
 -S ${NPART} \
 --message-thresholds ${MESTHRE}
 
@@ -72,7 +72,7 @@ ${UNITS} \
 --tune G18_10a_02_11a \
 -n ${NEVENTS} \
 -z ${ZMIN} \
--m ${MAXPL} \
+-m +${MAXPL} \
 -S ${NPART} \
 --message-thresholds ${MESTHRE}
 cd - 
