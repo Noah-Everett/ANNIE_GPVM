@@ -14,7 +14,7 @@ export G=$NE/geometry
 export T=$NE/ToolAnalysis
 export C=$NE/config
 export GR=$NE/grid
-export BA=$NE/backupsV
+export BA=$NE/backups
 
 # /pnfs/annie/scratch/users/
 export PUSERS=/pnfs/annie/scratch/users
