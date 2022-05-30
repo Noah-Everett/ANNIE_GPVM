@@ -69,7 +69,7 @@ source $B/run_genie_grid.sh -r=#                 (run base number)
 $ source $B/run_genie_grid.sh -r=0 -n=100 -g=annie_v02.gdml -t=TWATER_LV -f=000* -m=annie_v02.maxpl.xml --message-thresholds=Messenger_warn.xml -N=2 --memory=2000MB --disk=1000MB --cpu=1 --expected-lifetime=1h
 ```
 
-## **setup_singularity**
+## **setup_singularity.sh**
 
 ## **Previous Work by Robert Hatcher**
 Previous work by Robert Hatcher has been extremely usefull and can be found [here](https://cdcvs.fnal.gov/redmine/projects/anniesoft/wiki/GENIE_and_Geant4_neutrons_from_rock_propagation), [here](https://cdcvs.fnal.gov/redmine/projects/genie/wiki/Running_gevgen_fnal), and in `$RH`. 
