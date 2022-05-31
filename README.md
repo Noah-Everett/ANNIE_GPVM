@@ -61,7 +61,7 @@ export BA=$NE/backups
 export PUSERS=/pnfs/annie/scratch/users
 
 # /pnfs/annie/scratch/users/neverett/
-export PNE=$PNFSUSERS/neverett
+export PNE=$PUSERS/neverett
 export PG=$PNE/genie_output
 ```
 
