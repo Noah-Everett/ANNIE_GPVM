@@ -21,27 +21,51 @@
 - [setup_singularity.sh](#setup_singularity.sh)
 
 ## **run_genie.sh**
-Use GENIE Generator on the gpvm:
+
+### About
+`run_genie.sh` is used to run the GENIE Generator on the gpvm. 
+Currently, the script is specialized to my directory (`$NE`), though, with moderately minor modifications, the script could be modified to work in any user directory. 
+In general, this script (or any GENIE usage on the gpvm) should be limited to relatively small or experimental runs. 
+Any larger batches of runs should be run on the grid both to save the user time and also so ensure that the gpvm remains usable for all other collaboration members.
+
+### Usage
 ```
-source $B/run_genie.sh -r=#                      (run number)
-                       -n=#                      (number of events)
-                       -g=abc.gdml               (geometry file (in $G))
-                       -t=ABC_LV                 (geometry top volume)
-                       -f=123*                   (flux file number (in $F))
-                       -m=abc.maxpl.xml          (max path length file (in $G))
-                       -o=/path/to/out/dir       (ouput directory)
-                       -S=(+|-)#                 (geometry scan config (default = 0)
-     --message-thresholds=Messenger_abc.xml      (output type priorities (in $C) (default = ""))
-                       -h|--help                 (print script usage statement (this output))
+source $B/run_genie.sh -r=<run number>
+                       -n=<number of events>
+                       -g=<geometry file name (in $G)>.gdml
+                       -t=<top volume name>_LV
+                       -f=<flux file number (or numbers using '*') (in $FLUX)>
+                       -m=[+]<max path length file (in $G)>.maxpl.xml
+                       -o=</path/to/output/dir>
+                       -S=[-]<number of particles used to scan geometry (default = 0)>
+     --message-thresholds=Messenger_<name (in $C) (default = "")>.xml
+                       -h|--help
 ```
 
 ### **Example Usage**
+
+#### Typical GENIE Run (modified slightly to make the run time lower):
 ```
 $ nohup $B/run_genie.sh -r=0 -n=100 -g=annie_v01.gdml -t=TWATER_LV -f=000* -m=annie_v01.maxpl.xml -o=. | tee -a ./run_0.out
 ```
+- Run 0
+- 100 events
+- Using original ANNIE geometry (`annie_v01.gdml`) and its precomputed `.maxpl.xml` file
+- Events generated in `TWATER_LV`
+- Using flux files [`bnb_annie_0000.root`,`bnb_annie_0009.root`] (10 flux files)
+- A copy of the program output will be saved to `./run_0.out`
+
+#### Generating `.maxpl.xml` file: 
 ```
-$ nohup $B/run_genie.sh -r=1 -n=100 -g=annie_v02.gdml -t=TWATER_LV -f=000* -m=annie_v02.maxpl.xml --message-thresholds=Messenger_warn.xml -o=. | tee -a ./run_1.out
+$ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02.gdml -t=EXP_HALL_LV -f=* -m=+$G/annie_v02.maxpl.xml -S=30000 --message-thresholds=Messenger_warn.xml -o=. | tee /dev/null
 ```
+- Run 1
+- 1 Event (small to take less time)
+- Updated ANNIE geometry (`annie_v02.gdml`)
+- NOTE: `+` at the beginning of `-m` tells GENIE to create a new `.maxpl.xml` file
+- NOTE: `-S=30000` tells GENIE to use 30,000 flux particles to approximate the max path length of materials in the geometry
+- All message thresholds will be set to warn
+- The program output will not be saved
 
 ## **run_genie_grid.sh**
 Use GENIE Generator on the grid:
