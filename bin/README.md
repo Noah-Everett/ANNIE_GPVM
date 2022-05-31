@@ -83,7 +83,7 @@ This will allow our fellow collaborators to run their grid jobs faster as well a
 Please look through the following to learn more about the grid and how to properly use it:
 - [Storage Spaces](https://dune.github.io/computing-training-202105/02-storage-spaces/index.html)
 - [Grid Job Sumbission and Common Errors](https://dune.github.io/computing-training-202105/07-grid-job-submission/index.html)
-- Any other sessions in [DUNE Computing Training May 2021 edition](https://dune.github.io/computing-training-202105/index.html)
+- Any other sessions will also probably be of use: [DUNE Computing Training May 2021 edition](https://dune.github.io/computing-training-202105/index.html)
 
 ### Usage
 ```
