@@ -1,4 +1,4 @@
-# Usage Statements for Scripts in `$B` (this dir)
+# Information on Scripts in `$B` (this dir)
 
 ### Note:
 - As of now, these scripts have not been made to be the most user-friendly. They lack things like error messages and option/argument checking. These may or may not be added in the future.
