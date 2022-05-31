@@ -73,7 +73,10 @@ $ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t
 ### About
 `run_genie_grid.sh` is used to run the GENIE Generator on the grid.
 Currently, this script (and `$GR/run_grid_genie.sh`, which is called by this script) is specialized to my directory (`$NE`), though, with moderately minor modifications, this script (and `$GR/run_grid_genie.sh`) could be modified to work in any user directory.
-As stated above in the About section of run_genie.sh, this script can (and should) be used to run large groups of GENIE Generator runs as opposed to running them on the ANNIE gpvm.
+As stated above in the About section of run_genie.sh, this script can (and should) be used to run large groups of GENIE Generator runs as opposed to running them on the ANNIE gpvm. 
+
+To pass files like flux, geometry, and maxpl to the grid node, we use tarballs, specifically `$GR/grid_genie.tar.gz`.
+For more information on this file and how to generate it, visit the [`make_tar_genie.sh` section](#make_tar_geniesh).
 
 This script requires you to give the amount of memory, disk, cpus, and run time for your grid run. 
 It can be tricky to know the appropriate values for each (I myself am still finding the right amounts). 
