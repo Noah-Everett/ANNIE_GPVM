@@ -37,7 +37,7 @@ source /annie/app/users/neverett/bin/setup
 ```
 
 ### **setup_shortcuts.sh**
-The remainder of the document will user environmental variables defined in [`setup_shortcuts.sh`](https://github.com/Noah-Everett/ANNIE_gpvm/blob/main/bin/setup_shortcuts.sh):
+All `README.md` files in this repository use environmental variables defined in [`setup_shortcuts.sh`](https://github.com/Noah-Everett/ANNIE_gpvm/blob/main/bin/setup_shortcuts.sh):
 ```sh
 # /annie/app/users/
 export USERS=/annie/app/users
