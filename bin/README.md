@@ -6,19 +6,19 @@
 - `<>` denotes required option or argument, `[]` denotes optional option or argument.
 
 ## Table of Contents
-- [run_genie.sh](#run_genie.sh)
-- [run_genie_grid.sh](#run_genie_grid.sh)
-- [make_genie_gst.sh](#make_genie_gst.sh)
-- [make_tar_genie.sh](#make_tar_genie.sh)
-- [make_geoms_1D.sh](#make_geoms_1D.sh)
-- [make_geoms_4D.sh](#make_geoms_4D.sh)
+- [run_genie.sh](#run_geniesh)
+- [run_genie_grid.sh](#run_genie_gridsh)
+- [make_genie_gst.sh](#make_genie_gstsh)
+- [make_tar_genie.sh](#make_tar_geniesh)
+- [make_geoms_1D.sh](#make_geoms_1Dsh)
+- [make_geoms_4D.sh](#make_geoms_4Dsh)
 - [setup](#setup)
-- [setup_genie3_00_06.sh](#setup_genie3_00_06.sh)
-- [setup_genie3_00_04.sh](#setup_genie3_00_04.sh)
-- [setup_genie2_12_10.sh](#setup_genie2_12_10.sh)
-- [setup_grid.sh](#setup_grid.sh)
-- [setup_shortcuts.sh](#setup_shortcuts.sh)
-- [setup_singularity.sh](#setup_singularity.sh)
+- [setup_genie3_00_06.sh](#setup_genie3_00_06sh)
+- [setup_genie3_00_04.sh](#setup_genie3_00_04sh)
+- [setup_genie2_12_10.sh](#setup_genie2_12_10sh)
+- [setup_grid.sh](#setup_gridsh)
+- [setup_shortcuts.sh](#setup_shortcutssh)
+- [setup_singularity.sh](#setup_singularitysh)
 
 ## **run_genie.sh**
 
