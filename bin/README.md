@@ -139,14 +139,50 @@ $ source $B/run_genie_grid.sh -r=0 -n=1000 -g=annie_v02_sphere_argon_gas_20atm/a
 - Expected lifetime of 9hr
 
 ## `make_maxpl_grid.sh`
+### About
+### Usage
+### Example Usage
 ## `make_gst.sh`
+### About
+### Usage
+### Example Usage
 ## `make_tar_genie.sh`
+### About
+### Usage
+### Example Usage
 ## `make_geoms_1D.sh`
+### About
+### Usage
+### Example Usage
 ## `make_geoms_4D.sh`
+### About
+### Usage
+### Example Usage
 ## `setup`
+### About
+### Usage
+### Example Usage
 ## `setup_genie3_00_06.sh`
+### About
+### Usage
+### Example Usage
 ## `setup_genie3_00_04.sh`
+### About
+### Usage
+### Example Usage
 ## `setup_genie2_12_10.sh`
+### About
+### Usage
+### Example Usage
 ## `setup_grid.sh`
+### About
+### Usage
+### Example Usage
 ## `setup_shortcuts.sh`
+### About
+### Usage
+### Example Usage
 ## `setup_singularity.sh`
+### About
+### Usage
+### Example Usage
