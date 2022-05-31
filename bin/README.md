@@ -9,7 +9,8 @@
 ## Table of Contents
 - [run_genie.sh](#run_geniesh)
 - [run_genie_grid.sh](#run_genie_gridsh)
-- [make_genie_gst.sh](#make_genie_gstsh)
+- [make_maxpl_grid.sh](#make_maxpl_gridsh)
+- [make_gst.sh](#make_gstsh)
 - [make_tar_genie.sh](#make_tar_geniesh)
 - [make_geoms_1D.sh](#make_geoms_1Dsh)
 - [make_geoms_4D.sh](#make_geoms_4Dsh)
@@ -21,7 +22,7 @@
 - [setup_shortcuts.sh](#setup_shortcutssh)
 - [setup_singularity.sh](#setup_singularitysh)
 
-## **run_genie.sh**
+## `run_genie.sh`
 
 ### About
 `run_genie.sh` is used to run the GENIE Generator on the gpvm. 
@@ -43,7 +44,7 @@ source $B/run_genie.sh -r=<run number>
                        -h|--help
 ```
 
-### **Example Usage**
+### Example Usage
 
 #### Typical GENIE Run (modified slightly to make the run time lower):
 ```
@@ -68,7 +69,7 @@ $ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t
 - All message thresholds will be set to `warn`
 - The program output will not be saved
 
-## **run_genie_grid.sh**
+## `run_genie_grid.sh`
 
 ### About
 `run_genie_grid.sh` is used to run the GENIE Generator on the grid.
@@ -105,7 +106,7 @@ source $B/run_genie_grid.sh -r=<run base number>
                      -h|--help
 ```
 
-### **Example Usage**
+### Example Usage
 
 #### Fast to Run Example:
 ```
@@ -136,3 +137,16 @@ $ source $B/run_genie_grid.sh -r=0 -n=1000 -g=annie_v02_sphere_argon_gas_20atm/a
 - 5GB of disk space
 - 4 cpu
 - Expected lifetime of 9hr
+
+## `make_maxpl_grid.sh`
+## `make_gst.sh`
+## `make_tar_genie.sh`
+## `make_geoms_1D.sh`
+## `make_geoms_4D.sh`
+## `setup`
+## `setup_genie3_00_06.sh`
+## `setup_genie3_00_04.sh`
+## `setup_genie2_12_10.sh`
+## `setup_grid.sh`
+## `setup_shortcuts.sh`
+## `setup_singularity.sh`

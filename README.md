@@ -7,8 +7,8 @@
     /bin/                        # user runnable scripts
         run_genie.sh                 # runs GENIE Generator on ANNIE gpvm
         run_genie_grid.sh            # runs GENIE Generator on the grid
-        make_genie_gst.sh            # runs GENIE gntpc to convert ghep files to gst files
         make_maxpl_grid.sh           # runs GENIE Generator on the grid to produce maxpl.xml files
+        make_gst.sh                  # runs GENIE gntpc to convert ghep files to gst files
         make_tar_genie.sh            # makes tarball for running GENIE on grid
         make_geoms_1D.sh             # makes versions of the ANNIE geometry (1 variable)
         make_geoms_4D.sh             # makes versions of the ANNIE geometry (4 variables)
