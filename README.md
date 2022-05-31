@@ -1,6 +1,6 @@
 # ANNIE_gpvm
 
-## **Repository Contents**
+## Repository Contents
 ```
 /annie/app/users/neverett/
     /backups/                    # miscilanious backup folders and files
@@ -36,7 +36,7 @@ To use more easily follow the contents of all README.md files in this repository
 source /annie/app/users/neverett/bin/setup
 ```
 
-### **setup_shortcuts.sh**
+### `setup_shortcuts.sh`
 All `README.md` files in this repository use environmental variables defined in [`setup_shortcuts.sh`](https://github.com/Noah-Everett/ANNIE_gpvm/blob/main/bin/setup_shortcuts.sh):
 ```sh
 # /annie/app/users/
@@ -65,9 +65,9 @@ export PNE=$PNFSUSERS/neverett
 export PG=$PNE/genie_output
 ```
 
-## **Usage for Scripts in [`$B`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/bin)**
+## Information on Scripts
 
 Usage statements for scripts in [`$B`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/bin) can be found in [`$B/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/bin#readme)
 
-## **Previous Work by Robert Hatcher**
+## Previous Work by Robert Hatcher
 Previous work by Robert Hatcher has been extremely usefull and can be found [here](https://cdcvs.fnal.gov/redmine/projects/anniesoft/wiki/GENIE_and_Geant4_neutrons_from_rock_propagation), [here](https://cdcvs.fnal.gov/redmine/projects/genie/wiki/Running_gevgen_fnal), and in `$RH`. 
