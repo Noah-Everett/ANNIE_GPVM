@@ -65,7 +65,7 @@ $ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t
 - `$G/annie_v02_sphere_vacuum/annie_v02_1.gdml` geometry file
 - NOTE: `+` at the beginning of `-m=` tells GENIE to create a new `.maxpl.xml` file
 - NOTE: `-S=30000` tells GENIE to use 30,000 flux particles to approximate the max path length of materials in the geometry
-- All message thresholds will be set to warn
+- All message thresholds will be set to `warn`
 - The program output will not be saved
 
 ## **run_genie_grid.sh**
@@ -115,7 +115,7 @@ $ source $B/run_genie_grid.sh -r=0 -n=100 -g=annie_v02.gdml -t=TWATER_LV -f=000*
 - 100 events in each run
 - `$G/annie_v02.gdml` geometry file, with events in TWATER_LV (and its sub volumes), using its max path length file (`$G/annie_v02.maxpl.xml`)
 - Using flux files [`bnb_annie_0000.root`,`bnb_annie_0009.root`] (10 flux files)
-- Set all message thresholds to warn
+- Set all message thresholds to `warn`
 - 2 identical runs
 - 2GB of memory
 - 1GB of disk space
@@ -130,7 +130,7 @@ $ source $B/run_genie_grid.sh -r=0 -n=1000 -g=annie_v02_sphere_argon_gas_20atm/a
 - 1000 events in each run (20 runs --> 20,000 total events)
 - `$G/annie_v02_sphere_argon_gas_20atm/annie_v02_4.gdml` geometry file, with events in TWATER_LV (and its sub volumes), using its max path length file (`$G/annie_v02_sphere_argon_gas_20atm/annie_v02_4.maxpl.xml`)
 - Using all flux files ([`bnb_annie_0000.root`,`bnb_annie_4999.root`] (5000 flux files))
-- Set all message thresholds to warn (decrease run time and lower disk usage)
+- Set all message thresholds to `warn` (decrease run time and lower disk usage)
 - 20 identical runs (each with different run number and seed)
 - 8GB of memory
 - 5GB of disk space
