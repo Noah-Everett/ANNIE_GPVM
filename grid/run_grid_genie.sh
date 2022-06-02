@@ -104,7 +104,6 @@ export GXMLPATH=${C}:${GXMLPATH} #$CONDOR_DIR_INPUT:${GXMLPATH}
 #======================================================================#
 
 
-#          Z Minimum: ${ZMIN}
 
 #=============================MAKE LOG========================#
 ifdh mkdir_p ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
@@ -123,10 +122,10 @@ Maximum Path Length: ${MAXPL}
  Message Thresholds: ${MESTHRE}
 EOF
 ifdh cp -D $IFDH_OPTION ${RUN}.log ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
+#          Z Minimum: ${ZMIN}
 #======================================================================#
 
 
-#-z $ZMIN \
 
 #===============================RUN GENIE=============================#
 /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal \
@@ -141,6 +140,7 @@ ${UNITS} \
 -n ${NEVENTS} \
 -m $MAXPL \
 --message-thresholds $MESTHRE
+#-z $ZMIN \
 #======================================================================#
 
 
@@ -184,6 +184,13 @@ export IFDH_GRIDFTP_EXTRA="-st 1000"
         # directory already exists, so let's copy
 #   ifdh cp -D $IFDH_OPTION job_output_${CLUSTER}.${PROCESS}.log ${SCRATCH_DIR}/${GRID_USER}/job_output
     ifdh cp -D $IFDH_OPTION *.root ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
+      if [ $? -ne 0 ]; then
+          echo "Error $? when copying to dCache scratch area!"
+          echo "If you created ${SCRATCH_DIR}/${GRID_USER} yourself,"
+          echo "make sure that it has group write permission."
+          echo "Also make sure that you are copying the correct file."
+          exit 73
+      fi
 #    if [ ${RUNBASE} -eq 0 ]; then
 #      ifdh cp -D $IFDH_OPTION gntp.${PROCESS}.ghep.root ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
 #      if [ $? -ne 0 ]; then
