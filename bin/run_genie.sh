@@ -23,15 +23,18 @@ for i in "$@"; do
   esac
 done
 
-if [ -z "$FLUXFILE" ]    ; then export FLUXFILE="0000"          ; fi;
-if [ -z "$ZMIN"     ]    ; then export ZMIN="-2000"             ; fi;
-if [ -z "$GEOMETRYFILE" ]; then export GEOMETRY="annie_v02.gdml"; fi; export GEOMETRY="${G}/${GEOMETRYFILE}"
-if [ -z "$MESTHRE"  ]    ; then export MESTHRE=""               ;
-                           else export MESTHRE="${C}/${MESTHRE}"; fi;
-if [ -z "$TOPVOL"   ]    ; then export TOPVOL="TARGON_LV"       ; fi;
-if [ -z "$OUTDIR"   ]    ; then export OUDIR=$PWD               ; fi;
-if [ -z "$NPART"    ]    ; then export NPART="0"                ; fi;
-mkdir ${OUTDIR} >> /dev/null
+if [ -z "$FLUXFILE" ]         ; then export FLUXFILE="0000"           ; fi;
+if [ -z "$GEOMETRYFILE" ]     ; then export GEOMETRY="annie_v02.gdml" ; fi; 
+                                     export GEOMETRY="${G}/${GEOMETRYFILE}"
+if [ -z "$MESTHRE"  ]         ; then export MESTHRE=""                ;
+                                else export MESTHRE="${C}/${MESTHRE}" ; fi;
+if [ -z "$TOPVOL"   ]         ; then export TOPVOL="TARGON_LV"        ; fi;
+if [ -z "$OUTDIR"   ]         ; then export OUDIR=$PWD                ; fi;
+if [ -z "$NPART"    ]         ; then export NPART="0"                 ; fi;
+if [ ${MAXPLFILE:0:1} == "+" ]; then export MAKEMAXPL="+"             ; 
+                                     export MAXPLFILE="${MAXPLFILE:1}"; fi;
+                                     export MAXPL=${MAKEMAXPL}${G}/${MAXPLFILE}
+mkdir ${OUTDIR}
 
 export MAXPL=${G}/${MAXPLFILE}
 export SEED=${RUN}
@@ -55,7 +58,6 @@ ${UNITS} \
 --cross-sections ${GENIEXSEC} \
 --tune G18_10a_02_11a \
 -n ${NEVENTS} \
--z ${ZMIN} \
 -m +${MAXPL} \
 -S ${NPART} \
 --message-thresholds ${MESTHRE}
@@ -71,7 +73,6 @@ ${UNITS} \
 --cross-sections ${GENIEXSEC} \
 --tune G18_10a_02_11a \
 -n ${NEVENTS} \
--z ${ZMIN} \
 -m +${MAXPL} \
 -S ${NPART} \
 --message-thresholds ${MESTHRE}

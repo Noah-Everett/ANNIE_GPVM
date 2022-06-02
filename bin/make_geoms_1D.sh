@@ -222,6 +222,39 @@ cat <<EOF > $OUTDIR/annie_v02_${c}.gdml
     <isotope N="11" Z="5" name="B11">
       <atom unit="g/mole" value="11.0093"/>
     </isotope>
+    <isotope N="152" Z="64" name="Gd152">
+      <atom unit="g/mole" value="151.92"/>
+    </isotope>
+    <isotope N="154" Z="64" name="Gd154">
+      <atom unit="g/mole" value="153.921"/>
+    </isotope>
+    <isotope N="155" Z="64" name="Gd155">
+      <atom unit="g/mole" value="154.923"/>
+    </isotope>
+    <isotope N="156" Z="64" name="Gd156">
+      <atom unit="g/mole" value="155.922"/>
+    </isotope>
+    <isotope N="157" Z="64" name="Gd157">
+      <atom unit="g/mole" value="156.924/>
+    </isotope>
+    <isotope N="158" Z="64" name="Gd158">
+      <atom unit="g/mole" value="157.924"/>
+    </isotope>
+    <isotope N="160" Z="64" name="Gd160">
+      <atom unit="g/mole" value="159.927"/>
+    </isotope>
+    <isotope N="32" Z="16" name="S32">
+      <atom unit="g/mole" value="31.9721"/>
+    </isotope>
+    <isotope N="33" Z="16" name="S33">
+      <atom unit="g/mole" value="32.9715/>
+    </isotope>
+    <isotope N="34" Z="16" name="S34">
+      <atom unit="g/mole" value="33.9679"/>
+    </isotope>
+    <isotope N="36" Z="16" name="S36">
+      <atom unit="g/mole" value="35.9671"/>
+    </isotope>
     <element name="K">
       <fraction n="0.932581" ref="K39"/>
       <fraction n="0.000117" ref="K40"/>
@@ -319,6 +352,27 @@ cat <<EOF > $OUTDIR/annie_v02_${c}.gdml
       <fraction n="0.02119" ref="Fe57"/>
       <fraction n="0.00282" ref="Fe58"/>
     </element>
+    <element name="Gd">
+      <fraction n="0.0020" ref="Gd152"/>
+      <fraction n="0.0218" ref="Gd154"/>
+      <fraction n="0.1480" ref="Gd155"/>
+      <fraction n="0.2047" ref="Gd156"/>
+      <fraction n="0.1565" ref="Gd157"/>
+      <fraction n="0.2486" ref="Gd158"/>
+      <fraction n="0.2186" ref="Gd160"/>
+    </element>
+    <element name="S">
+      <fraction n="0.9493" ref="S32"/>
+      <fraction n="0.0076" ref="S33"/>
+      <fraction n="0.0429" ref="S34"/>
+      <fraction n="0.0002" ref="S36"/>
+    </element>
+    <material name="Gd_Sulfate" state="solid">
+      <D unit="g/cm3" value="3.01"/>
+      <fraction n="0.5218332025293563" ref="Gd"/>
+      <fraction n="0.1596112715971746" ref="O"/>
+      <fraction n="0.3185555258734691" ref="S"/>
+    </material>
     <material name="Steel" state="solid">
       <MEE unit="eV" value="286"/>
       <D unit="g/cm3" value="7.874"/>
@@ -338,8 +392,9 @@ cat <<EOF > $OUTDIR/annie_v02_${c}.gdml
     <material name="TankWater" state="solid">
       <MEE unit="eV" value="68.9984174679527"/>
       <D unit="g/cm3" value="1"/>
-      <fraction n="0.111898477841067" ref="H"/>
-      <fraction n="0.888101522158933" ref="O"/>
+      <fraction n="0.111556300020840" ref="H"/>
+      <fraction n="0.885452673059918" ref="O"/>
+      <fraction n="0.002991026919242" ref="Gd_Sulfate"/>
     </material>
     <material name="TankSteel" state="solid">
       <MEE unit="eV" value="286"/>

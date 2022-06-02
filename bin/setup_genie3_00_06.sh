@@ -34,4 +34,4 @@ setup genie_xsec   v3_00_06 -q G1810a0211a:e1000:k250
 # allow GNuMIFlux driver to find config file for ANNIE BNB flux
 # copied to my own area for testing purposes
 # export GXMLPATH=/annie/app/users/rhatcher/neverett/flux:${GXMLPATH}
-export GXMLPATH=/annie/app/users/neverett/flux:${GXMLPATH}
+export GXMLPATH=/annie/app/users/neverett/config:${GXMLPATH}
