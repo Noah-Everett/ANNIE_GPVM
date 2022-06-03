@@ -1,4 +1,12 @@
 main() {
+OUTDIR=""
+DWTH=""
+MATERIAL=""
+SHAPE=""
+STATE=""
+DENSITY=""
+NFILES=""
+
 echo "Processing command line arguments."
 for i in "$@"; do
   case $i in
@@ -12,6 +20,11 @@ for i in "$@"; do
     -*                 ) echo "Unknown option \"$i\"" return 1 ;;
   esac
 done
+
+if [ -z {OUTDIR} ]; then
+  echo "Use \`--outDir=</output/dir>\` to set the output directory"
+  return 1;
+fi
 
 if [[ -z ${MATERIAL} || ( ${MATERIAL} != "vacuum" && ${MATERIAL} != "argon" && ${MATERIAL} != "water" ) ]]; then
   echo "Use either \`--material=argon\`, \`--material=water\`, or \`--material=vacuum\`."

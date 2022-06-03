@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
-
   <define/>
-
   <materials>
     <isotope N="54" Z="26" name="Fe54">
       <atom unit="g/mole" value="53.9396"/>
@@ -258,7 +256,7 @@
       <D unit="g/cm3" value="3.01"/>
       <fraction n="0.5218332025293563" ref="Gd"/>
       <fraction n="0.1596112715971746" ref="O"/>
-      <fraction n="0.3185555258734692" ref="S"/>
+      <fraction n="0.3185555258734691" ref="S"/>
     </material>
     <material name="Steel" state="solid">
       <MEE unit="eV" value="286"/>
@@ -279,9 +277,9 @@
     <material name="TankWater" state="solid">
       <MEE unit="eV" value="68.9984174679527"/>
       <D unit="g/cm3" value="1"/>
-      <fraction n="0.111898477841067" ref="H"/>
-      <fraction n="0.888101522158933" ref="O"/>
-      <fraction n="0.003000000000000" ref="Gd_Sulfate"/>
+      <fraction n="0.111556300020840" ref="H"/>
+      <fraction n="0.885452673059918" ref="O"/>
+      <fraction n="0.002991026919242" ref="Gd_Sulfate"/>
     </material>
     <material name="TankSteel" state="solid">
       <MEE unit="eV" value="286"/>
@@ -362,109 +360,6 @@
       <fraction n="1" ref="Ar"/>
     </material>
   </materials>
-
-  <solids>
-    <box lunit="mm" name="ROOF_S" x="7823.2" y="6.35" z="5689.6"/>
-    <box lunit="mm" name="ROOFC_S" x="7823.2" y="457.2" z="5689.6"/>
-    <sphere aunit="deg" lunit="mm" name="TARGON_S" rmax="323.24" deltaphi="360" deltatheta="180"/>
-    <sphere aunit="deg" lunit="mm" name="TDEWAR_S" rmax="328" deltaphi="360" deltatheta="180"/>
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="120.505737007499"/>
-      <D unit="g/cm3" value="2.23"/>
-      <fraction n="0.37677716758196" ref="Silicon"/>
-      <fraction n="0.540476709287037" ref="Oxygen"/>
-      <fraction n="0.040370583165757" ref="Boron"/>
-      <fraction n="0.0296740884156179" ref="Sodium"/>
-      <fraction n="0.0127014515496273" ref="Aluminum"/>
-    </material>
-    <material name="MRDSteel" state="solid">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="282.156966376465"/>
-      <D unit="g/cm3" value="7.8"/>
-      <fraction n="0.01" ref="Carbon"/>
-      <fraction n="0.99" ref="Iron"/>
-    </material>
-    <material Z="13" name="Aluminium" state="solid">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="166"/>
-      <D unit="g/cm3" value="2.7"/>
-      <atom unit="g/mole" value="26.98"/>
-    </material>
-    <material name="Vacuum" state="gas">
-      <T unit="K" value="0.1"/>
-      <P unit="pascal" value="1e-19"/>
-      <MEE unit="eV" value="19.2"/>
-      <D unit="g/cm3" value="1e-25"/>
-      <fraction n="1" ref="H"/>
-    </material>
-    <material name="G4_Ar" state="gas">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="188.000"/>
-      <D unit="g/cm3" value="0.03324020"/>
-      <fraction n="1" ref="Ar"/>
-    </material>
-  </materials>
-
-  <solids>
-    <box lunit="mm" name="ROOF_S" x="7823.2" y="6.35" z="5689.6"/>
-    <box lunit="mm" name="ROOFC_S" x="7823.2" y="457.2" z="5689.6"/>
-    <sphere aunit="deg" lunit="mm" name="TARGON_S" rmax="323.24" deltaphi="360" deltatheta="180"/>
-    <sphere aunit="deg" lunit="mm" name="TDEWAR_S" rmax="328" deltaphi="360" deltatheta="180"/>
-      <fraction n="0.002" ref="Mg"/>
-      <fraction n="0.033872" ref="Al"/>
-      <fraction n="0.337021" ref="Si"/>
-      <fraction n="0.013" ref="K"/>
-      <fraction n="0.044" ref="Ca"/>
-      <fraction n="0.014" ref="Fe"/>
-    </material>
-    <material name="Dirt" state="solid">
-      <MEE unit="eV" value="129.589427782907"/>
-      <D unit="g/cm3" value="1.7"/>
-      <fraction n="0.437" ref="O"/>
-      <fraction n="0.257" ref="Si"/>
-      <fraction n="0.222" ref="Na"/>
-      <fraction n="0.049" ref="Al"/>
-      <fraction n="0.02" ref="Fe"/>
-      <fraction n="0.015" ref="K"/>
-    </material>
-    <material name="Glass" state="solid">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="120.505737007499"/>
-      <D unit="g/cm3" value="2.23"/>
-      <fraction n="0.37677716758196" ref="Silicon"/>
-      <fraction n="0.540476709287037" ref="Oxygen"/>
-      <fraction n="0.040370583165757" ref="Boron"/>
-      <fraction n="0.0296740884156179" ref="Sodium"/>
-      <fraction n="0.0127014515496273" ref="Aluminum"/>
-    </material>
-    <material name="MRDSteel" state="solid">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="282.156966376465"/>
-      <D unit="g/cm3" value="7.8"/>
-      <fraction n="0.01" ref="Carbon"/>
-      <fraction n="0.99" ref="Iron"/>
-    </material>
-    <material Z="13" name="Aluminium" state="solid">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="166"/>
-      <D unit="g/cm3" value="2.7"/>
-      <atom unit="g/mole" value="26.98"/>
-    </material>
-    <material name="Vacuum" state="gas">
-      <T unit="K" value="0.1"/>
-      <P unit="pascal" value="1e-19"/>
-      <MEE unit="eV" value="19.2"/>
-      <D unit="g/cm3" value="1e-25"/>
-      <fraction n="1" ref="H"/>
-    </material>
-    <material name="G4_Ar" state="gas">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="188.000"/>
-      <D unit="g/cm3" value="0.03324020"/>
-      <fraction n="1" ref="Ar"/>
-    </material>
-  </materials>
-
   <solids>
     <box lunit="mm" name="ROOF_S" x="7823.2" y="6.35" z="5689.6"/>
     <box lunit="mm" name="ROOFC_S" x="7823.2" y="457.2" z="5689.6"/>
@@ -553,7 +448,6 @@
     <trd lunit="mm" name="vetoLG_box0x34dc2b0" x1="305" x2="100" y1="20" y2="20" z="500"/>
     <box lunit="mm" name="totVeto_box0x34dc350" x="4220.56" y="4214.9" z="207.2"/>
   </solids>
-
   <structure>
     <volume name="ROOF_LV">
       <materialref ref="Steel"/>
@@ -5347,6 +5241,98 @@
       <physvol name="vetolg_phys0x35535c0">
         <volumeref ref="vetolg_log0x3552dd0"/>
         <position name="vetolg_phys0x35535c0_pos" unit="mm" x="1850" y="-1843" z="-19.8"/>
+        <rotation name="vetolg_phys0x35535c0_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x3553630">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x3553630_pos" unit="mm" x="1850" y="-1536" z="-19.8"/>
+        <rotation name="vetolg_phys0x3553630_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x35536a0">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x35536a0_pos" unit="mm" x="1850" y="-1229" z="-19.8"/>
+        <rotation name="vetolg_phys0x35536a0_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x3553710">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x3553710_pos" unit="mm" x="1850" y="-922" z="-19.8"/>
+        <rotation name="vetolg_phys0x3553710_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x35533a0">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x35533a0_pos" unit="mm" x="1850" y="-615" z="-19.8"/>
+        <rotation name="vetolg_phys0x35533a0_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x3553890">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x3553890_pos" unit="mm" x="1850" y="-308" z="-19.8"/>
+        <rotation name="vetolg_phys0x3553890_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x3553900">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x3553900_pos" unit="mm" x="1850" y="-1" z="-19.8"/>
+        <rotation name="vetolg_phys0x3553900_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x3553970">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x3553970_pos" unit="mm" x="1850" y="306" z="-19.8"/>
+        <rotation name="vetolg_phys0x3553970_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x35539e0">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x35539e0_pos" unit="mm" x="1850" y="613" z="-19.8"/>
+        <rotation name="vetolg_phys0x35539e0_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x3553a50">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x3553a50_pos" unit="mm" x="1850" y="920" z="-19.8"/>
+        <rotation name="vetolg_phys0x3553a50_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x3553ac0">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x3553ac0_pos" unit="mm" x="1850" y="1227" z="-19.8"/>
+        <rotation name="vetolg_phys0x3553ac0_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x3553b30">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x3553b30_pos" unit="mm" x="1850" y="1534" z="-19.8"/>
+        <rotation name="vetolg_phys0x3553b30_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+      <physvol name="vetolg_phys0x3553ba0">
+        <volumeref ref="vetolg_log0x3552dd0"/>
+        <position name="vetolg_phys0x3553ba0_pos" unit="mm" x="1850" y="1841" z="-19.8"/>
+        <rotation name="vetolg_phys0x3553ba0_rot" unit="deg" x="-90" y="-90" z="0"/>
+      </physvol>
+    </volume>
+    <volume name="EXP_HALL_LV">
+      <materialref ref="G4_AIR"/>
+      <solidref ref="EXP_HALL"/>
+      <physvol name="TBODY_PV">
+        <volumeref ref="TBODY_LV"/>
+        <position name="TBODY_PV_pos" unit="mm" x="431.799999999999" y="-4187.825" z="-753.3894"/>
+        <rotation name="TBODY_PV_rot" unit="deg" x="90" y="0" z="0"/>
+      </physvol>
+      <physvol name="TBASE_PV">
+        <volumeref ref="TBASE_LV"/>
+        <position name="TBASE_PV_pos" unit="mm" x="431.799999999999" y="-6169.025" z="-753.3894"/>
+        <rotation name="TBASE_PV_rot" unit="deg" x="90" y="0" z="0"/>
+      </physvol>
+      <physvol name="totMRDphys0x34dd280">
+        <volumeref ref="totMRDlog0x34dd320"/>
+        <position name="totMRDphys0x34dd280_pos" unit="mm" x="431.799999999999" y="-4030.973" z="1516.45"/>
+      </physvol>
+      <physvol name="totVetoPhys0x3550e80">
+        <volumeref ref="totVetolog0x3550f10"/>
+        <position name="totVetoPhys0x3550e80_pos" unit="mm" x="431.799999999999" y="-4172.825" z="-2362.5894"/>
+      </physvol>
+    </volume>
+    <volume name="BLDG_LV">
+      <materialref ref="G4_CONCRETE"/>
+      <solidref ref="BLDG_S"/>
+      <physvol name="ROOFC_PV">
+        <volumeref ref="ROOFC_LV"/>
+        <position name="ROOFC_PV_pos" unit="mm" x="0" y="6400.8" z="0"/>
+      </physvol>
       <physvol name="EXP_HALL_PV">
         <volumeref ref="EXP_HALL_LV"/>
       </physvol>
@@ -5376,9 +5362,7 @@
       </physvol>
     </volume>
   </structure>
-
   <setup name="Default" version="1.0">
     <world ref="WORLD_LV"/>
   </setup>
-
 </gdml>
