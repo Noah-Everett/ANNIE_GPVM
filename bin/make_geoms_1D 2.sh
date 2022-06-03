@@ -1,6 +1,121 @@
+main() {
+echo "Processing command line arguments."
+for i in "$@"; do
+  case $i in
+    --outDir=*         ) export OUTDIR="${i#*=}"      shift    ;;
+    --dewarThickness=* ) export DWTH="${i#*=}"        shift    ;;
+    --material=*       ) export MATERIAL="${i#*=}"    shift    ;;
+    --shape*           ) export SHAPE="${i#*=}"       shift    ;;
+    --state=*          ) export STATE="${i#*=}"       shift    ;;
+    --density=*        ) export DENSITY="${i#*=}"     shift    ;;
+    --nFiles=*         ) export NFILES="${i#*=}"      shift    ;;
+    -*                 ) echo "Unknown option \"$i\"" return 1 ;;
+  esac
+done
+
+if [[ -z ${MATERIAL} || ( ${MATERIAL} != "vacuum" && ${MATERIAL} != "argon" && ${MATERIAL} != "water" ) ]]; then
+  echo "Use either \`--material=argon\`, \`--material=water\`, or \`--material=vacuum\`."
+  return 1
+fi
+
+if [[ -z ${SHAPE} || ( ${SHAPE} != "tube" && ${SHAPE} != "sphere" ) ]]; then
+  echo "Use either \`--shape=tube\` or \`--shape=sphere\`."
+  return 1
+fi
+
+if [[ ${MATERIAL} == "argon" && ( -z ${STATE} || ( ${STATE} != "gas" && ${STATE} != "liquid" ) ) ]]; then
+  echo "Use either \`--state=gas\` or \`--state=liquid\`."
+  return 1
+fi
+
+if [[ ${MATERIAL} == "argon" && ${STATE} == "gas" && -z ${DENSITY} ]]; then
+  echo "Use \`--density=#\` to set the density of the argon gas."
+  return 1
+else
+  export DENSITY="0$(echo "0.00166201*${DENSITY}" | bc)"
+fi
+
+if [ -z $NFILES ]; then
+  echo "Use \`--nFiles=#\` to set number of files to produce."
+  return 1
+fi
+
+if [ -z ${DWTH} ]; then
+  echo "Setting dewar thickness to \`4.76\`."
+  export DWTH="4.76"
+fi
+
+mkdir $OUTDIR
+cat <<EOF > $OUTDIR/make_geoms_1D.legend
+All gdml files in `${OUTDIR}` have the following properties:
+  Shape: ${SHAPE}
+  Material: ${MATERIAL}
+  Argon State (if Argon): ${STATE}
+  Argon Density (if Argon) (*1.66E-3 g/cm^3): ${DENSITY}
+
+annie_v02_<nFile>.gdml ---> y=<dewar y> rad=<dewar rad>
+EOF
+
+export c=0
+export NFILES=$((NFILES-1))
+export R_DELTA=(607-50)/$NFILES
+for (( rad=50; ( rad<=607 && rad>=0 ); rad+=$R_DELTA )); do
+  mkfile_geom
+  update_legend
+  c=$((c+1))
+done
+}
+
+update_legend() {
+echo "annie_v02_${c}.gdml ---> y=$(echo 1215 - $rad | bc) rad=$rad" >> $OUTDIR/make_geoms_1D.legend
+}
+
+mkfile_geom() {
+if [[ ${MATERIAL} == "argon" && ${STATE} == "gas" ]]; then
+  G4_Ar=$(cat <<-END
+    <material name="G4_Ar" state="gas">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="188.000"/>
+      <D unit="g/cm3" value="${DENSITY}"/>
+      <fraction n="1" ref="Ar"/>
+    </material>
+END
+)
+GDMLMATERIAL="G4_Ar"
+elif [[ ${MATERIAL} == "argon" && ${STATE} == "liquid" ]]; then
+  G4_Ar=$(cat <<-END
+    <material name="G4_Ar" state="liquid">
+      <T unit="K" value="87.45"/>
+      <MEE unit="eV" value="188.000"/>
+      <D unit="g/cm3" value="1.396"/>
+      <fraction n="1" ref="Ar"/>
+    </material>
+END
+)
+GDMLMATERIAL="G4_Ar"
+elif [[ ${MATERIAL} == "vacuum" ]]; then
+  G4_Ar=""
+  GDMLMATERIAL="Vacuum"
+elif [[ ${MATERIAL} == "water" ]]; then
+  G4_Ar=""
+  GDMLMATERIAL="TankWater"
+fi
+
+if [ ${SHAPE} == "tube" ]; then
+  TARGON_LV="<tube aunit=\"deg\" deltaphi=\"360\" lunit=\"mm\" name=\"TARGON_S\" rmax=\"$(echo ${rad} - ${DWTH} | bc)\" rmin=\"0\" startphi=\"0\" z=\"490.28\"/>"
+  TDEWAR_LV="<tube aunit=\"deg\" deltaphi=\"360\" lunit=\"mm\" name=\"TDEWAR_S\" rmax=\"${rad}\" rmin=\"0\" startphi=\"0\" z=\"500\"/>"
+elif [ ${SHAPE} == "sphere" ]; then
+  TARGON_LV="<sphere aunit=\"deg\" lunit=\"mm\" name=\"TARGON_S\" rmax=\"$(echo ${rad} - ${DWTH} | bc)\" deltaphi=\"360\" deltatheta=\"180\"/>"
+  TDEWAR_LV="<sphere aunit=\"deg\" lunit=\"mm\" name=\"TDEWAR_S\" rmax=\"${rad}\" deltaphi=\"360\" deltatheta=\"180\"/>"
+fi
+
+echo making and writing to $OUTDIR/annie_v02_${c}.gdml
+cat <<EOF > $OUTDIR/annie_v02_${c}.gdml
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
   <define/>
+
   <materials>
     <isotope N="54" Z="26" name="Fe54">
       <atom unit="g/mole" value="53.9396"/>
@@ -107,39 +222,6 @@
     <isotope N="11" Z="5" name="B11">
       <atom unit="g/mole" value="11.0093"/>
     </isotope>
-    <isotope N="152" Z="64" name="Gd152">
-      <atom unit="g/mole" value="151.92"/>
-    </isotope>
-    <isotope N="154" Z="64" name="Gd154">
-      <atom unit="g/mole" value="153.921"/>
-    </isotope>
-    <isotope N="155" Z="64" name="Gd155">
-      <atom unit="g/mole" value="154.923"/>
-    </isotope>
-    <isotope N="156" Z="64" name="Gd156">
-      <atom unit="g/mole" value="155.922"/>
-    </isotope>
-    <isotope N="157" Z="64" name="Gd157">
-      <atom unit="g/mole" value="156.924"/>
-    </isotope>
-    <isotope N="158" Z="64" name="Gd158">
-      <atom unit="g/mole" value="157.924"/>
-    </isotope>
-    <isotope N="160" Z="64" name="Gd160">
-      <atom unit="g/mole" value="159.927"/>
-    </isotope>
-    <isotope N="32" Z="16" name="S32">
-      <atom unit="g/mole" value="31.9721"/>
-    </isotope>
-    <isotope N="33" Z="16" name="S33">
-      <atom unit="g/mole" value="32.9715"/>
-    </isotope>
-    <isotope N="34" Z="16" name="S34">
-      <atom unit="g/mole" value="33.9679"/>
-    </isotope>
-    <isotope N="36" Z="16" name="S36">
-      <atom unit="g/mole" value="35.9671"/>
-    </isotope>
     <element name="K">
       <fraction n="0.932581" ref="K39"/>
       <fraction n="0.000117" ref="K40"/>
@@ -237,27 +319,6 @@
       <fraction n="0.02119" ref="Fe57"/>
       <fraction n="0.00282" ref="Fe58"/>
     </element>
-    <element name="Gd">
-      <fraction n="0.0020" ref="Gd152"/>
-      <fraction n="0.0218" ref="Gd154"/>
-      <fraction n="0.1480" ref="Gd155"/>
-      <fraction n="0.2047" ref="Gd156"/>
-      <fraction n="0.1565" ref="Gd157"/>
-      <fraction n="0.2486" ref="Gd158"/>
-      <fraction n="0.2186" ref="Gd160"/>
-    </element>
-    <element name="S">
-      <fraction n="0.9493" ref="S32"/>
-      <fraction n="0.0076" ref="S33"/>
-      <fraction n="0.0429" ref="S34"/>
-      <fraction n="0.0002" ref="S36"/>
-    </element>
-    <material name="Gd_Sulfate" state="solid">
-      <D unit="g/cm3" value="3.01"/>
-      <fraction n="0.5218332025293563" ref="Gd"/>
-      <fraction n="0.1596112715971746" ref="O"/>
-      <fraction n="0.3185555258734691" ref="S"/>
-    </material>
     <material name="Steel" state="solid">
       <MEE unit="eV" value="286"/>
       <D unit="g/cm3" value="7.874"/>
@@ -277,9 +338,8 @@
     <material name="TankWater" state="solid">
       <MEE unit="eV" value="68.9984174679527"/>
       <D unit="g/cm3" value="1"/>
-      <fraction n="0.111556300020840" ref="H"/>
-      <fraction n="0.885452673059918" ref="O"/>
-      <fraction n="0.002991026919242" ref="Gd_Sulfate"/>
+      <fraction n="0.111898477841067" ref="H"/>
+      <fraction n="0.888101522158933" ref="O"/>
     </material>
     <material name="TankSteel" state="solid">
       <MEE unit="eV" value="286"/>
@@ -353,18 +413,14 @@
       <D unit="g/cm3" value="1e-25"/>
       <fraction n="1" ref="H"/>
     </material>
-    <material name="G4_Ar" state="gas">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="188.000"/>
-      <D unit="g/cm3" value="0.00166201"/>
-      <fraction n="1" ref="Ar"/>
-    </material>
+${G4_Ar}
   </materials>
+
   <solids>
     <box lunit="mm" name="ROOF_S" x="7823.2" y="6.35" z="5689.6"/>
     <box lunit="mm" name="ROOFC_S" x="7823.2" y="457.2" z="5689.6"/>
-    <sphere aunit="deg" lunit="mm" name="TARGON_S" rmax="601.24" deltaphi="360" deltatheta="180"/>
-    <sphere aunit="deg" lunit="mm" name="TDEWAR_S" rmax="606" deltaphi="360" deltatheta="180"/>
+    ${TARGON_LV}
+    ${TDEWAR_LV}
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TWATER_S" rmax="1519.24" rmin="0" startphi="0" z="3956.05"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBODY_S" rmax="1524.0" rmin="0" startphi="0" z="3956.05"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBASE_S" rmax="1549.4" rmin="0" startphi="0" z="6.35"/>
@@ -448,6 +504,7 @@
     <trd lunit="mm" name="vetoLG_box0x34dc2b0" x1="305" x2="100" y1="20" y2="20" z="500"/>
     <box lunit="mm" name="totVeto_box0x34dc350" x="4220.56" y="4214.9" z="207.2"/>
   </solids>
+
   <structure>
     <volume name="ROOF_LV">
       <materialref ref="Steel"/>
@@ -462,7 +519,7 @@
       </physvol>
     </volume>
     <volume name="TARGON_LV">
-      <materialref ref="G4_Ar"/>
+      <materialref ref="$GDMLMATERIAL"/>
       <solidref ref="TARGON_S"/>
     </volume>
     <volume name="TDEWAR_LV">
@@ -477,7 +534,7 @@
       <solidref ref="TWATER_S"/>
       <physvol name="TDEWUR_PV">
         <volumeref ref="TDEWAR_LV"/>
-        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="609" z="0"/>
+        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="$(echo 1215 - $rad | bc)" z="0"/>
       </physvol>
     </volume>
     <volume name="TBODY_LV">
@@ -5362,7 +5419,13 @@
       </physvol>
     </volume>
   </structure>
+
   <setup name="Default" version="1.0">
     <world ref="WORLD_LV"/>
   </setup>
+
 </gdml>
+EOF
+}
+
+main "$@"

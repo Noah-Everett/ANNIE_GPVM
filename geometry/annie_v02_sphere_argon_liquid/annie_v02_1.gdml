@@ -353,18 +353,18 @@
       <D unit="g/cm3" value="1e-25"/>
       <fraction n="1" ref="H"/>
     </material>
-    <material name="G4_Ar" state="gas">
-      <T unit="K" value="293.15"/>
+    <material name="G4_Ar" state="liquid">
+      <T unit="K" value="87.45"/>
       <MEE unit="eV" value="188.000"/>
-      <D unit="g/cm3" value="0.00166201"/>
+      <D unit="g/cm3" value="1.396"/>
       <fraction n="1" ref="Ar"/>
     </material>
   </materials>
   <solids>
     <box lunit="mm" name="ROOF_S" x="7823.2" y="6.35" z="5689.6"/>
     <box lunit="mm" name="ROOFC_S" x="7823.2" y="457.2" z="5689.6"/>
-    <sphere aunit="deg" lunit="mm" name="TARGON_S" rmax="601.24" deltaphi="360" deltatheta="180"/>
-    <sphere aunit="deg" lunit="mm" name="TDEWAR_S" rmax="606" deltaphi="360" deltatheta="180"/>
+    <sphere aunit="deg" lunit="mm" name="TARGON_S" rmax="184.24" deltaphi="360" deltatheta="180"/>
+    <sphere aunit="deg" lunit="mm" name="TDEWAR_S" rmax="189" deltaphi="360" deltatheta="180"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TWATER_S" rmax="1519.24" rmin="0" startphi="0" z="3956.05"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBODY_S" rmax="1524.0" rmin="0" startphi="0" z="3956.05"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBASE_S" rmax="1549.4" rmin="0" startphi="0" z="6.35"/>
@@ -477,7 +477,7 @@
       <solidref ref="TWATER_S"/>
       <physvol name="TDEWUR_PV">
         <volumeref ref="TDEWAR_LV"/>
-        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="609" z="0"/>
+        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="1026" z="0"/>
       </physvol>
     </volume>
     <volume name="TBODY_LV">

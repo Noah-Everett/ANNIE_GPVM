@@ -353,12 +353,7 @@
       <D unit="g/cm3" value="1e-25"/>
       <fraction n="1" ref="H"/>
     </material>
-    <material name="G4_Ar" state="gas">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="188.000"/>
-      <D unit="g/cm3" value="0.00166201"/>
-      <fraction n="1" ref="Ar"/>
-    </material>
+
   </materials>
   <solids>
     <box lunit="mm" name="ROOF_S" x="7823.2" y="6.35" z="5689.6"/>
@@ -462,7 +457,7 @@
       </physvol>
     </volume>
     <volume name="TARGON_LV">
-      <materialref ref="G4_Ar"/>
+      <materialref ref="Vacuum"/>
       <solidref ref="TARGON_S"/>
     </volume>
     <volume name="TDEWAR_LV">
