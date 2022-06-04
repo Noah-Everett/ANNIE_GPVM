@@ -21,7 +21,7 @@ for i in "$@"; do
   esac
 done
 
-if [ -z {OUTDIR} ]; then
+if [ -z ${OUTDIR} ]; then
   echo "Use \`--outDir=</output/dir>\` to set the output directory"
   return 1;
 fi

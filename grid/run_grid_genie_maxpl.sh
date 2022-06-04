@@ -47,9 +47,8 @@ for i in "$@"; do
     --geomDir=*            ) export GEOMDIR="${i#*=}"      shift  ;;
     -t=*                   ) export TOPVOL="${i#*=}"       shift  ;;
     -f=*                   ) export FLUXFILENUM="${i#*=}"  shift  ;;
-    -m=*                   ) export MAXPL="${i#*=}"        shift  ;;
     --message-thresholds=* ) export MESTHRE="${i#*=}"      shift  ;;
-    -*                     ) echo "unknown option $i"      exit 1 ;;
+    -*                     ) echo "unknown option $i";     exit 1 ;;
    esac
 done
 
@@ -70,13 +69,16 @@ if [ -z "$TOPVOL" ]; then
   export $TOPVOL="TARGON_LV"
 fi
 
+cp /cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALbig.xml.gz .
+gzip -d gxspl-FNALbig.xml.gz
+
 export MAXPL=+annie_v02_${PROCESS}.maxpl.xml
 export NEVENTS="1"
 export RUN=${PROCESS}${CLUSTER}
 export SEED=${PROCESS}${CLUSTER}
 export FLXPSET="ANNIE-tank"
 export FLUX="${F}/${FLUXFILE},${FLXPSET}"
-export GENIEXSEC=/cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALsmall.xml
+export GENIEXSEC=${PWD}/gxspl-FNALbig.xml
 export UNITS="-L cm -D g_cm3"
 export XYZHALL=( -393.70 -213.36   0.0  307.34 1021.08 487.68 )
 export XYZBLDG=( -434.34 -259.08 -40.64 347.98 1066.80 528.32 )
@@ -90,7 +92,6 @@ export GXMLPATH=${C}:${GXMLPATH} #$CONDOR_DIR_INPUT:${GXMLPATH}
 #======================================================================#
 
 
-#          Z Minimum: ${ZMIN}
 
 #=============================MAKE LOG========================#
 ifdh mkdir_p ${SCRATCH_DIR}/${GRID_USER}/genie_output/${GEOMDIR}
@@ -112,7 +113,6 @@ ifdh cp -D $IFDH_OPTION ${RUN}.log ${SCRATCH_DIR}/${GRID_USER}/genie_output/${GE
 #======================================================================#
 
 
-#-z $ZMIN \
 
 #===============================RUN GENIE=============================#
 /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal \
@@ -171,15 +171,13 @@ export IFDH_GRIDFTP_EXTRA="-st 1000"
         # directory already exists, so let's copy
 #   ifdh cp -D $IFDH_OPTION job_output_${CLUSTER}.${PROCESS}.log ${SCRATCH_DIR}/${GRID_USER}/job_output
     ifdh cp -D $IFDH_OPTION *.maxpl.xml ${SCRATCH_DIR}/${GRID_USER}/genie_output/${GEOMDIR}
-#    if [ ${RUNBASE} -eq 0 ]; then
-#      ifdh cp -D $IFDH_OPTION gntp.${PROCESS}.ghep.root ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
-#      if [ $? -ne 0 ]; then
-#          echo "Error $? when copying to dCache scratch area!"
-#          echo "If you created ${SCRATCH_DIR}/${GRID_USER} yourself,"
-#          echo "make sure that it has group write permission."
-#          echo "Also make sure that you are copying the correct file."
-#          exit 73
-#      fi
+    if [ $? -ne 0 ]; then
+      echo "Error $? when copying to dCache scratch area!"
+      echo "If you created ${SCRATCH_DIR}/${GRID_USER} yourself,"
+      echo "make sure that it has group write permission."
+      echo "Also make sure that you are copying the correct file."
+      exit 73
+    fi
 #    else
 #      ifdh cp -D $IFDH_OPTION gntp.${RUN}.ghep.root ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
 #      if [ $? -ne 0 ]; then
