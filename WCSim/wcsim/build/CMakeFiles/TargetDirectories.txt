@@ -1,0 +1,5 @@
+/annie/app/users/neverett/WCSim/wcsim/build/CMakeFiles/rebuild_cache.dir
+/annie/app/users/neverett/WCSim/wcsim/build/CMakeFiles/edit_cache.dir
+/annie/app/users/neverett/WCSim/wcsim/build/CMakeFiles/WCSim.dir
+/annie/app/users/neverett/WCSim/wcsim/build/CMakeFiles/WCSimRoot.dir
+/annie/app/users/neverett/WCSim/wcsim/build/CMakeFiles/WCSimRootDict.dir
