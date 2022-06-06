@@ -1,0 +1,286 @@
+-bash-4.2$ ./WCSim
+Warning in <TClassTable::Add>: class WCSimRootTrack already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootCherenkovHit already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootCherenkovHitTime already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootCherenkovDigiHit already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootEventHeader already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootPi0 already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootTrigger already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootEvent already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootPMT already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootGeom already in TClassTable
+Warning in <TClassTable::Add>: class WCSimPmtInfo already in TClassTable
+Warning in <TClassTable::Add>: class WCSimLAPPDInfo already in TClassTable
+Warning in <TClassTable::Add>: class WCSimLAPPDpulse already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootOptions already in TClassTable
+Warning in <TClassTable::Add>: class WCSimEnumerations already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootCaptureGamma already in TClassTable
+Warning in <TClassTable::Add>: class WCSimRootCapture already in TClassTable
+Warning in <TClassTable::Add>: class WCSimLAPPDpulseCluster already in TClassTable
+
+*************************************************************
+ Geant4 version Name: geant4-10-03-patch-03    (20-October-2017)
+                      Copyright : Geant4 Collaboration
+                      Reference : NIM A 506 (2003), 250-303
+                            WWW : http://cern.ch/geant4
+*************************************************************
+
+Setting water attenuation parameter 1.300000
+Setting cathode reflectivity parameter 0.320000
+Setting Rayleigh scattering parameter 0.750000
+Setting blacksheet reflection parameter 2.400000
+Setting Mie scattering parameter 0.000000
+Setting ANNIE Teflon reflectivity parameter 1.000000
+Setting ANNIE holder reflectivity parameter 0.900000
+Setting LUX/ETEL holder reflectivity parameter 0.700000
+Setting ANNIE liner reflectivity parameter 0.870000
+Setting ANNIE Q.E. ratio factor 1.400000
+Setting cathode reflectivity parameter (R7081) 0.320000
+Setting WB Q.E. ratio factor 1.000000
+Setting ANNIE PMT holders On
+Turning PMT-wise QE tuning On
+Setting Top Veto Off
+Setting Top Veto PMT Spacing 100.000000
+Making detector
+0.594493
+0.396328
+0.00667969
+2.22656e-05
+0.00247705
+Making the physics
+There are 22 available physics lists, and they are:
+  FTFP_BERT
+  FTFP_BERT_TRV
+  FTFP_BERT_ATL
+  FTFP_BERT_HP
+  FTFP_INCLXX
+  FTFP_INCLXX_HP
+  FTF_BIC
+  LBE
+  QBBC
+  QGSP_BERT
+  QGSP_BERT_HP
+  QGSP_BIC
+  QGSP_BIC_HP
+  QGSP_BIC_AllHP
+  QGSP_FTFP_BERT
+  QGSP_INCLXX
+  QGSP_INCLXX_HP
+  QGS_BIC
+  Shielding
+  ShieldingLEND
+  ShieldingM
+  NuBeam
+Setting Physics list to FTFP_BERT and delaying initialization
+Getting job options from jobOptions.mac
+Setting Physics list to FTFP_BERT_HP and delaying initialization
+Setting neutron capture model to ANNRI
+Setting Gd composition to Natural
+Setting Gd cascade model to PeakAndCont
+Initialising physics factories
+Initializing physics list FTFP_BERT_HP
+You are setting a new verbose level for Particle HP package.
+the new value will be used in whole of the Particle HP package, i.e., models and cross sections for Capture, Elastic, Fission and Inelastic interaction.
+G4PhysListFactory::GetReferencePhysList <FTFP_BERT_HP>  EMoption= 0
+<<< Geant4 Physics List simulation engine: FTFP_BERT_HP 2.0
+
+<<< Reference Physics List FTFP_BERT_HP is built
+
+RegisterPhysics: G4EmStandard
+RegisterPhysics: G4GammaLeptoNuclearPhys
+RegisterPhysics: Decay
+RegisterPhysics: hElasticWEL_CHIPS_HP
+RegisterPhysics: hInelastic FTFP_BERT_HP
+RegisterPhysics: stopping
+RegisterPhysics: ionInelasticFTFP_BIC
+RegisterPhysics: OpticalPhysics
+Creating visualisation manager
+Visualization Manager instantiating with verbosity "warnings (3)"...
+Visualization Manager initialising...
+Registering graphics systems...
+
+You have successfully registered the following graphics systems.
+Current available graphics systems are:
+ASCIITree (ATree)
+DAWNFILE (DAWNFILE)
+G4HepRep (HepRepXML)
+G4HepRepFile (HepRepFile)
+RayTracer (RayTracer)
+VRML1FILE (VRML1FILE)
+VRML2FILE (VRML2FILE)
+gMocrenFile (gMocrenFile)
+OpenGLImmediateX (OGLIX, OGLI)
+OpenGLStoredX (OGLSX, OGL, OGLS)
+
+Registering model factories...
+
+You have successfully registered the following model factories.
+Registered model factories:
+  generic
+  drawByAttribute
+  drawByCharge
+  drawByOriginVolume
+  drawByParticleID
+  drawByEncounteredVolume
+
+Registered filter factories:
+  attributeFilter
+  chargeFilter
+  originVolumeFilter
+  particleFilter
+  encounteredVolumeFilter
+
+You have successfully registered the following user vis actions.
+Run Duration User Vis Actions: none
+End of Event User Vis Actions: none
+End of Run User Vis Actions: none
+
+Some /vis commands (optionally) take a string to specify colour.
+Available colours:
+  black, blue, brown, cyan, gray, green, grey, magenta, red, white, yellow
+
+Creating Primary Generator Action
+
+
+********************************************************************************************************
+********************************************************************************************************
+**                                                                                                    **
+**   .oooooo.    oooooooooooo ooooo      ooo ooooo oooooooooooo                                       **
+**  d8P'  `Y8b   `888'     `8 `888b.     `8' `888' `888'     `8      NEUTRINO MONTE CARLO GENERATOR   **
+** 888            888          8 `88b.    8   888   888                                               **
+** 888            888oooo8     8   `88b.  8   888   888oooo8              Version 2.12.10             **
+** 888     ooooo  888    "     8     `88b.8   888   888    "                                          **
+** `88.    .88'   888       o  8       `888   888   888       o         http://www.genie-mc.org       **
+**  `Y8bood8P'   o888ooooood8 o8o        `8  o888o o888ooooood8                                       **
+**                                                                                                    **
+**                                                                                                    **
+**              Luis Alvarez-Ruso [8], Costas Andreopoulos (*) [2,5], Christopher Barry [2],          **
+**   Francis Bench [2], Steve Dennis [2], Steve Dytman [3], Hugh Gallagher [7], Tomasz Golan [1,4],   **
+**         Robert Hatcher [1], Rhiannon Jones [2], Libo Jiang [3], Anselmo Meregaglia [6],            **
+**                      Donna Naples [3], Gabriel Perdue [1], Marco Roda [2],                         **
+**                                Jeremy Wolcott [7], Julia Yarba [1]                                 **
+**                                                                                                    **
+**                                     (The GENIE Collaboration)                                      **
+**                                                                                                    **
+**                          (1) Fermi National Accelerator Laboratory, USA                            **
+**                                 (2) University of Liverpool, UK                                    **
+**                                (3) University of Pittsburgh, USA                                   **
+**                                 (4) University of Rochester, USA                                   **
+**                             (5) STFC Rutherford Appleton Laboratory UK                             **
+**                                   (6) Strasbourg IPHC, France                                      **
+**                                    (7) Tufts University, USA                                       **
+**                                 (8) University of Valencia, Spain                                  **
+**                                                                                                    **
+**                                                                                                    **
+** (*) Corresponding Author: Dr. Costas Andreopoulos  <costas.andreopoulos \at stfc.ac.uk>            **
+**      -----------------------------------------------------------------                             **
+**     | University of Liverpool  |  STFC Rutherford Appleton Laboratory |                            **
+**     | Physics Department       |  Particle Physics Department         |                            **
+**     | Oliver Lodge Lab 316     |  Harwell Oxford Campus, R1 2.89      |                            **
+**     | Liverpool L69 7ZE, UK    |  Oxfordshire OX11 0QX, UK            |                            **
+**     | +44-(0)1517-943201 (tel) |  +44-(0)1235-445091 (tel)            |                            **
+**      -----------------------------------------------------------------                             **
+**                                                                                                    **
+** (c) 2003-2018 GENIE Collaboration                                                                  **
+**                                                                                                    **
+** This program is free software: you can redistribute it and/or modify it under the terms of         **
+** the GNU General Public License as published by the Free Software Foundation, either version 3 of   **
+** the License, or any later version.                                                                 **
+** This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;          **
+** without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.          **
+** See the GNU General Public License for more details.                                               **
+** You should have received a copy of the GNU General Public License along with this program.         **
+** If not, see <http://www.gnu.org/licenses/>.                                                        **
+********************************************************************************************************
+********************************************************************************************************
+
+
+1654542705 NOTICE Messenger : [s] <SetPrioritiesFromXmlFile (158)> : Reading msg stream priorities from XML file: /grid/fermiapp/products/nova/externals/genie/v2_12_10b/Linux64bit+2.6-2.12-e15-debug/GENIE_R21210/config/Messenger.xml
+1654542705 INFO Messenger : [s] <SetPrioritiesFromXmlFile (196)> : Set priority level: ...............EventLoop --> DEBUG
+1654542705 INFO Messenger : [s] <SetPrioritiesFromXmlFile (196)> : Set priority level: ..................GCPlex --> DEBUG
+1654542705 INFO Messenger : [s] <SetPrioritiesFromXmlFile (196)> : Set priority level: ...............GSimFiles --> DEBUG
+1654542705 INFO Messenger : [s] <SetPrioritiesFromXmlFile (196)> : Set priority level: ...............MiniBooNE --> DEBUG
+Input directory set to /annie/app/users/neverett/WCSim/genie_files/gntp.*.ghep.root
+Input directory set to /annie/data/flux/bnb/bnb_annie_*.root
+Primary files will be read starting from entry 0
+Creating Run Action
+Initial CommitHash.txt contents: 131a3dee2275261e7c8f9f207cceda46c0442357
+Attempting to update CommitHash.txt based on git head
+Retrieved updated commit hash based on current HEAD
+Updated CommitHash.txt
+Current WCSim commit hash is: 79c0e1c1dc4dae81742ffb60eb91605be667e36d
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+WARNING: THERE ARE UNCOMMITTED CHANGES TO THE SOURCE FILES
+    WCSimRootOptions::CommitHash WILL NOT BE ACCURATE!
+       PLEASE COMMIT YOUR CHANGES AND REBUILD
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Creating Event Action
+Initializing DAQ Messenger for detector element tank
+Digitizer choice set to SKI (this is a default set; it may be overwritten by user commands)
+Trigger choice set to NDigits (this is a default set; it may be overwritten by user commands)
+Saving only triggered events (this is a default set; it may be overwritten by user commands)
+Trigger time for events which fail all triggers will be set to 100 ns (this is a default set; it may be overwritten by user commands)
+SaveFailures pretrigger window set to -400 ns (this is a default set; it may be overwritten by user commands)
+SaveFailures posttrigger window set to 950 ns (this is a default set; it may be overwritten by user commands)
+Will adjust NDigits trigger threshold using average dark noise rate (this is a default set; it may be overwritten by user commands)
+Initializing DAQ Messenger for detector element mrd
+Digitizer choice set to SKI (this is a default set; it may be overwritten by user commands)
+Trigger choice set to NDigits (this is a default set; it may be overwritten by user commands)
+Saving only triggered events (this is a default set; it may be overwritten by user commands)
+Trigger time for events which fail all triggers will be set to 100 ns (this is a default set; it may be overwritten by user commands)
+SaveFailures pretrigger window set to -400 ns (this is a default set; it may be overwritten by user commands)
+SaveFailures posttrigger window set to 950 ns (this is a default set; it may be overwritten by user commands)
+Will adjust NDigits trigger threshold using average dark noise rate (this is a default set; it may be overwritten by user commands)
+Initializing DAQ Messenger for detector element facc
+Digitizer choice set to SKI (this is a default set; it may be overwritten by user commands)
+Trigger choice set to NDigits (this is a default set; it may be overwritten by user commands)
+Saving only triggered events (this is a default set; it may be overwritten by user commands)
+Trigger time for events which fail all triggers will be set to 100 ns (this is a default set; it may be overwritten by user commands)
+SaveFailures pretrigger window set to -400 ns (this is a default set; it may be overwritten by user commands)
+SaveFailures posttrigger window set to 950 ns (this is a default set; it may be overwritten by user commands)
+Will adjust NDigits trigger threshold using average dark noise rate (this is a default set; it may be overwritten by user commands)
+added tank to the DarkRateMessenger
+Initializing Dark Rate Messenger for detector element tank
+Setting DarkMode value 0 (this is a default set; it may be overwritten by user commands)
+Setting DarkLow value 0 (this is a default set; it may be overwritten by user commands)
+Setting DarkHigh value 100000 (this is a default set; it may be overwritten by user commands)
+Setting DarkWindow value 5000 (this is a default set; it may be overwritten by user commands)
+added mrd to the DarkRateMessenger
+Initializing Dark Rate Messenger for detector element mrd
+Setting DarkMode value 0 (this is a default set; it may be overwritten by user commands)
+Setting DarkLow value 0 (this is a default set; it may be overwritten by user commands)
+Setting DarkHigh value 100000 (this is a default set; it may be overwritten by user commands)
+Setting DarkWindow value 5000 (this is a default set; it may be overwritten by user commands)
+added facc to the DarkRateMessenger
+Initializing Dark Rate Messenger for detector element facc
+Setting DarkMode value 0 (this is a default set; it may be overwritten by user commands)
+Setting DarkLow value 0 (this is a default set; it may be overwritten by user commands)
+Setting DarkHigh value 100000 (this is a default set; it may be overwritten by user commands)
+Setting DarkWindow value 5000 (this is a default set; it may be overwritten by user commands)
+Upstream genie directory is: /annie/app/users/neverett/WCSim/genie_files
+Upstream dirt directory is: /pnfs/annie/persistent/users/moflaher/g4dirt_vincentsgenie/BNB_Water_10k_22-05-17
+Creating Tracking Action
+Creating Stacking Action
+Creating Stepping Action
+Initialising G4 kernel
+Computed tolerance = 5.94e-08 mm
+Tank is full of ***Doped Water***
+Read PHASE2_INNER_STRUCTURE.gdml (overlap check = true)
+G4GDML: Reading 'PHASE2_INNER_STRUCTURE.gdml'...
+G4GDML: Reading definitions...
+G4GDML: Reading materials...
+G4GDML: Reading solids...
+G4GDML: Reading structure...
+G4GDML: Reading setup...
+G4GDML: Reading 'PHASE2_INNER_STRUCTURE.gdml' done!
+Stripping off GDML names of materials, solids and volumes ...
+Constructing ANNIE Tank & Inner Structure with version ANNIEp2v7
+**** Building Cylindrical Detector ****
+ConstructANNIECylinderScan
+Checking overlaps for volume WCBarrelCellBlackSheet ... OK!
+Constructed barrel cell blacksheet with radius 1277 to 1278.01
+Making PMTKey (PMTName=R7081, CollectionName=ANNIEp2v7-glassFaceWCPMT_R7081
+terminate called after throwing an instance of 'std::bad_alloc'
+  what():  std::bad_alloc
+Aborted
+-bash-4.2$
