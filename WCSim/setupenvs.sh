@@ -76,7 +76,7 @@ export PRODUCTS=${PRODUCTS}:/grid/fermiapp/products/larsoft:/grid/fermiapp/produ
 
 # setup the products we need to build wcsim
 THIS_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-export WCSIMDIR=${THIS_SCRIPT_DIR}/source     # path to wcsim source files
+export WCSIMDIR=${THIS_SCRIPT_DIR}/wcsim/source     # path to wcsim source files
 setup_wcsim
 
 # setup the products we need to submit jobs to the grid

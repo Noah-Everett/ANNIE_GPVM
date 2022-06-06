@@ -1,0 +1,9 @@
+# set the list of root files containing primaries to import into the primary generator TChain
+# be sure that the neutrinosDirectory is set before setting the primariesDirectory!
+#/mygen/neutrinosdirectory /pnfs/annie/persistent/users/vfischer/genie_files/BNB_World_10k_29-06-17/gntp.*.ghep.root
+#/mygen/primariesdirectory /pnfs/annie/persistent/users/moflaher/g4dirt_vincentsgenie/world/annie_tank_flux.*.root
+#/mygen/neutrinosdirectory /pnfs/annie/persistent/users/vfischer/genie_files/BNB_Water_10k_22-05-17/gntp.*.ghep.root
+/mygen/neutrinosdirectory /annie/app/users/neverett/WCSim/genie_files/gntp.*.ghep.root
+#/mygen/primariesdirectory /pnfs/annie/persistent/users/moflaher/g4dirt_vincentsgenie/BNB_Water_10k_22-05-17/annie_tank_flux.*.root
+/mygen/primariesdirectory /annie/data/flux/bnb/bnb_annie_*.root
+/mygen/primariesoffset 0
