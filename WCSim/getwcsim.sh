@@ -17,7 +17,6 @@ cp /annie/app/users/neverett/WCSim/modified_code/GdNeutronHPCaptureFSANNRI.hh /a
 cp /annie/app/users/neverett/WCSim/modified_code/GdNeutronHPCaptureFSANNRI.cc /annie/app/users/neverett/WCSim/wcsim/source/src
 cp /annie/app/users/neverett/WCSim/modified_code/GdNeutronHPCapture.hh /annie/app/users/neverett/WCSim/wcsim/source/include
 cp /annie/app/users/neverett/WCSim/modified_code/GdNeutronHPCapture.cc /annie/app/users/neverett/WCSim/wcsim/source/src
-cp /annie/app/users/neverett/WCSim/modified_code/WCSimConstructPMT.cc /annie/app/users/neverett/WCSim/wcsim/source/src
 cp /annie/app/users/neverett/WCSim/modified_code/WCSimWCSD.cc /annie/app/users/neverett/WCSim/wcsim/source/src
 
 #source ../setupenvs.sh

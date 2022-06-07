@@ -33,25 +33,17 @@ WCSimWCSD::WCSimWCSD(G4String CollectionName, G4String name,WCSimDetectorConstru
   // GetCollectionID()
 
 
-  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 0" << G4endl;
   collectionName.insert(CollectionName);
   
-  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 1" << G4endl;
   fdet = myDet;
   
-  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 2" << G4endl;
   HCID = -1;
 
-  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 3" << G4endl;
   WCSimTuningParameters *tuning = (WCSimTuningParameters*) fdet->Get_TuningParams();
-  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 4" << G4endl;
   G4bool pmtwiseqe = tuning->GetPMTwiseQE();
-  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 5" << G4endl;
   if (pmtwiseqe) {
-    G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 6" << G4endl;
     ReadInPMTWiseQE();
   }
-  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 7" << G4endl;
 }
 
 WCSimWCSD::~WCSimWCSD() {}
@@ -353,22 +345,15 @@ void WCSimWCSD::EndOfEvent(G4HCofThisEvent*)
 }
 
 void WCSimWCSD::ReadInPMTWiseQE(){
-   G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 0" << G4endl;
    std::ifstream pmtqefile("../source/pmt_qe.txt");
-   G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 1" << G4endl;
    double temp_qe;
-   G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 2" << G4endl;
    while (!pmtqefile.eof()){
-   G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 3" << G4endl;
      pmtqefile >> temp_qe;
      vector_pmtqe.push_back(temp_qe);
      if (pmtqefile.eof()) {
-       G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 4" << G4endl;
        break;
      }
    }
-   G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 5" << G4endl;
    pmtqefile.close();
 
-   G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ") 6" << G4endl;
  }
