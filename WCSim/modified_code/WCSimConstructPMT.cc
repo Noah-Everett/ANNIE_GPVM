@@ -27,21 +27,18 @@ WCSimDetectorConstruction::PMTMap_t WCSimDetectorConstruction::PMTLogicalVolumes
 G4LogicalVolume* WCSimDetectorConstruction::ConstructPMT(G4String PMTName, G4String CollectionName, G4String detectorElement)
 {
   G4cout <<"Making PMTKey (PMTName="<<PMTName<<", CollectionName="<<CollectionName<<G4endl;
-  G4cout << "NE: this is the correct file. Nice." << G4endl;
 #ifdef __CONSTRUCT_PMT_VERBOSE__
   G4cout<<"Making PMTKey_t (PMTName="<<PMTName<<", CollectionName="<<CollectionName<<") "<<G4endl;
 #endif
-  G4cout << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ")" << G4endl;
   PMTKey_t key(PMTName,CollectionName);
-  G4cout << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ")" << G4endl;
+  for( auto& i : PMTLogicalVolumes ) G4cout << "{" << i.first.first << ", " << i.first.second << "}, " << i.second << G4endl;
   PMTMap_t::iterator it = PMTLogicalVolumes.find(key);
-  G4cout << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ")" << G4endl;
+  G4cout << &(*it) << G4endl;
+  G4cout << &(*PMTLogicalVolumes.end()) << G4endl;
   if (it != PMTLogicalVolumes.end()) {
-    G4cout << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ")" << G4endl;
 #ifdef __CONSTRUCT_PMT_VERBOSE__
       G4cout<<"This key already exists in the PMTLogicalVolumes map. Restoring it."<<G4endl;
 #endif
-  G4cout << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << ")" << G4endl;
       //G4cout << "Restore PMT" << G4endl;
       return it->second;
   }
@@ -72,15 +69,18 @@ else
   G4cout<<"Getting pointer to PMT object corresponding to CollectionName "<<CollectionName<<G4endl;
 #endif
   WCSimPMTObject *PMT = GetPMTPointer(CollectionName);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 0" << G4endl;
 #ifdef __CONSTRUCT_PMT_VERBOSE__
   G4cout<<"Retrieved PMT with name "<<PMT->GetPMTName()<<G4endl;
 #endif
   expose = PMT->GetExposeHeight();
   radius = PMT->GetRadius();
   glassThickness = PMT->GetPMTGlassThickness();
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 1" << G4endl;
 
   G4double sphereRadius = (expose*expose+ radius*radius)/(2*expose);
   G4double PMTOffset =  sphereRadius - expose;
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 2" << G4endl;
 
   //All components of the PMT are now contained in a single logical volume logicWCPMT.
   //Origin is on the blacksheet, faces positive z-direction.
@@ -92,6 +92,7 @@ G4cout<<"Making the geometry"<<G4endl;
   G4double PMTHolderZ[2] = {0, expose};
   G4double PMTHolderR[2] = {radius, radius};
   G4double PMTHolderr[2] = {0,0};
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 3" << G4endl;
   G4Polycone* solidWCPMT = 
    new G4Polycone("WCPMT",                    
                   0.0*deg,
@@ -100,14 +101,17 @@ G4cout<<"Making the geometry"<<G4endl;
                   PMTHolderZ,
                   PMTHolderr, // R Inner
                   PMTHolderR);// R Outer
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 4" << G4endl;
 
   G4LogicalVolume* logicWCPMT =
     new G4LogicalVolume(    solidWCPMT,
                             G4Material::GetMaterial("Water"),
                             "WCPMT",
                             0,0,0);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 5" << G4endl;
 
 if (Vis_Choice == "RayTracer"){
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 6" << G4endl;
 // Makes the volume containing the PMT visible, solid, and forces the auxiliary edges to be viewed.
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
   WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
@@ -118,6 +122,7 @@ if (Vis_Choice == "RayTracer"){
 else{
 // Makes the volume containg the PMT invisible for normal visualization
     logicWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 7" << G4endl;
 
   //Need a volume to cut away excess behind blacksheet
   G4Box* solidCutOffTubs =
@@ -126,6 +131,7 @@ else{
             sphereRadius+1.*cm,
             PMTOffset);
 
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 8" << G4endl;
 
   //Create PMT Interior
   G4Sphere* tmpSolidInteriorWCPMT =
@@ -133,11 +139,13 @@ else{
                        0.0*m,(sphereRadius-glassThickness),
                        0.0*deg,360.0*deg,
                        0.0*deg,90.0*deg);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 9" << G4endl;
 
   G4SubtractionSolid* solidInteriorWCPMT =
       new G4SubtractionSolid(    "InteriorWCPMT",
                     tmpSolidInteriorWCPMT,
                     solidCutOffTubs);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 10" << G4endl;
 
   // "Air" here is not true air, but a modified material
   // with n = 1 and a very short absorption length
@@ -146,6 +154,7 @@ else{
                     G4Material::GetMaterial("Air"),
                     "InteriorWCPMT",
                     0,0,0);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 11" << G4endl;
 
   G4VPhysicalVolume* physiInteriorWCPMT =
       new G4PVPlacement(0,
@@ -155,8 +164,10 @@ else{
                   logicWCPMT,
                   false,
                   0);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 12" << G4endl;
 
 if (Vis_Choice == "RayTracer"){
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 13" << G4endl;
 // Adding color and forcing the inner portion of the PMT's to be viewed
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
   WCPMTVisAtt->SetForceSolid(true); // force the object to be visualized with a surface
@@ -167,6 +178,7 @@ if (Vis_Choice == "RayTracer"){
 else {
 // Making the inner portion of the detector invisible for OGLSX visualization
   logicInteriorWCPMT->SetVisAttributes(G4VisAttributes::Invisible);}
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 14" << G4endl;
 
 
   //Create PMT Glass Face
@@ -176,11 +188,13 @@ else {
                        sphereRadius,
                        0.0*deg,360.0*deg,
                        0.0*deg,90.0*deg);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 15" << G4endl;
   
   G4SubtractionSolid* solidGlassFaceWCPMT =
       new G4SubtractionSolid(    CollectionName,
                                  tmpGlassFaceWCPMT,
                                  solidCutOffTubs); 
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 16" << G4endl;
 
   G4LogicalVolume *logicGlassFaceWCPMT;
   if (PMTName == "R7081"){
@@ -188,11 +202,13 @@ else {
 				G4Material::GetMaterial("GlassR7081"),
 				CollectionName,
 				0,0,0);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 17" << G4endl;
   } else {
    logicGlassFaceWCPMT = new G4LogicalVolume(    solidGlassFaceWCPMT,
                             G4Material::GetMaterial("Glass"),
                             CollectionName,
                             0,0,0);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 18" << G4endl;
   }
 
   G4VPhysicalVolume* physiGlassFaceWCPMT =
@@ -204,6 +220,7 @@ else {
                         false,
                         0,
                         checkOverlaps);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 19" << G4endl;
 
 // For either visualization type, logicGlassFaceWCPMT will either be visible or invisible depending on which
 // line is commented at the end of the respective if statements
@@ -211,12 +228,14 @@ else {
   if (Vis_Choice == "OGLSX")
    { // Gray wireframe visual style
     // used in OGLSX visualizer
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 20" << G4endl;
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.2,0.2,0.2));
   WCPMTVisAtt->SetForceWireframe(true);
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
 
   if (Vis_Choice == "RayTracer"){
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 21" << G4endl;
     // Blue wireframe visual style
     // Used in the RayTracer visualizer
   G4VisAttributes* WCPMTVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,1.0));
@@ -233,6 +252,7 @@ else {
   WCPMTVisAtt->SetForceWireframe(true);
   //logicGlassFaceWCPMT->SetVisAttributes(G4VisAttributes::Invisible);
   logicGlassFaceWCPMT->SetVisAttributes(WCPMTVisAtt);}
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 22" << G4endl;
 
 #ifdef __CONSTRUCT_PMT_VERBOSE__
   G4cout<<"Finished making the geometry"<<G4endl;
@@ -242,6 +262,7 @@ else {
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   G4String SDName = "/WCSim/";
   SDName += CollectionName;
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 23" << G4endl;
 
 #ifdef __CONSTRUCT_PMT_VERBOSE__
   G4cout<<"Searching for sensitive detector "<<SDName<<G4endl;
@@ -249,14 +270,19 @@ else {
   // If there is no such sensitive detector with that SDName yet,
   // make a new one
   if( ! SDman->FindSensitiveDetector(SDName, false) ) {
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 24" << G4endl;
 #ifdef __CONSTRUCT_PMT_VERBOSE__
     G4cout<<"Sensitive detector not found. Making aWCPMT = new WCSimWCSD("<<CollectionName<<", "<<SDName
           <<", "<<"{DetectorConstruction}"<<", "<<detectorElement<<"), and adding to the SD manager"<<G4endl;
 #endif
+    G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): BEGINNING" << G4endl;
     aWCPMT = new WCSimWCSD(CollectionName,SDName,this,detectorElement );
+    G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): MIDDLE" << G4endl;
     SDman->AddNewDetector( aWCPMT );
+    G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): ENDING" << G4endl;
   }
 
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 25" << G4endl;
   logicGlassFaceWCPMT->SetSensitiveDetector( aWCPMT );
 
   PMTLogicalVolumes[key] = logicWCPMT;
@@ -270,11 +296,13 @@ else {
                              physiGlassFaceWCPMT,
                              physiInteriorWCPMT,
                              OpGlassCathodeSurface_R7081);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 26" << G4endl;
 } else {
   new G4LogicalBorderSurface("GlassCathodeSurface",
                              physiGlassFaceWCPMT,
                              physiInteriorWCPMT,
                              OpGlassCathodeSurface);
+  G4cout << "NE: " << __FILE__ << "::" << __FUNCTION__ << " (" << __LINE__ << "): 27" << G4endl;
 }
 #ifdef __CONSTRUCT_PMT_VERBOSE__
   G4cout<<"returning logical volume"<<G4endl;
