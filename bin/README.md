@@ -26,7 +26,7 @@
 
 ### About
 `run_genie.sh` is used to run the GENIE Generator on the gpvm. 
-Currently, the script is specialized to my directory (`$NE`), though, with moderately minor modifications, the script could be modified to work in any user directory. 
+Currently, the script is specialized to my directory (`$NE`); though, with moderately minor modifications, the script could be modified to work for any user.
 In general, this script (or any GENIE usage on the gpvm) should be limited to relatively small or experimental runs. 
 Any larger batches of runs should be run on the grid both to save the user time and also so ensure that the gpvm remains usable for all other collaboration members.
 
@@ -73,7 +73,7 @@ $ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t
 
 ### About
 `run_genie_grid.sh` is used to run the GENIE Generator on the grid.
-Currently, this script (and `$GR/run_grid_genie.sh`, which is called by this script) is specialized to my directory (`$NE`), though, with moderately minor modifications, this script (and `$GR/run_grid_genie.sh`) could be modified to work in any user directory.
+Currently, this script (and `$GR/run_grid_genie.sh`, which is called by this script) is specialized to my directory (`$NE`); though, with moderately minor modifications, this script (and `$GR/run_grid_genie.sh`) could be modified to work for any user.
 As stated above in the About section of run_genie.sh, this script can (and should) be used to run large groups of GENIE Generator runs as opposed to running them on the ANNIE gpvm. 
 
 To pass files like flux, geometry, and maxpl to the grid node, we use tarballs, specifically `$GR/grid_genie.tar.gz`.
@@ -140,6 +140,24 @@ $ source $B/run_genie_grid.sh -r=0 -n=1000 -g=annie_v02_sphere_argon_gas_20atm/a
 
 ## `make_maxpl_grid.sh`
 ### About
+`make_maxpl_grid.sh` is used to generate `.maxpl.xml` files using the grid. 
+`.maxpl.xml` files, while not nessecary to use the GENIE Generator, do decreate its runtime significantly. 
+Currently, this script is specialized to my directory (`$NE`); though, with moderately minor modifications, this script could be modified to work for any user. 
+As stated previously, the grid should be used to decrease pressure on the annie gpvm. 
+Thus, when generating `.maxpl.xml` files for maultiple `gdml` geometry files, it is highly recommended to use the grid via this script.
+
+To pass files like flux, geometry, and maxpl to the grid node, we use tarballs, specifically `$GR/grid_genie.tar.gz`.
+For more information on this file and how to generate it, visit the [`make_tar_genie.sh` section](#make_tar_geniesh).
+
+This script requires you to give the amount of memory, disk, cpus, and run time for your grid run. 
+It can be tricky to know the appropriate values for each (I myself am still finding the right amounts). 
+However, note that we want to use the least amount of each we can. 
+This will allow our fellow collaborators to run their grid jobs faster as well as allow other collaboration to run their jobs faster as more resources will be available.
+
+Please look through the following to learn more about the grid and how to properly use it:
+- [Storage Spaces](https://dune.github.io/computing-training-202105/02-storage-spaces/index.html)
+- [Grid Job Sumbission and Common Errors](https://dune.github.io/computing-training-202105/07-grid-job-submission/index.html)
+- Any other sessions will also probably be of use: [DUNE Computing Training May 2021 edition](https://dune.github.io/computing-training-202105/index.html)
 ### Usage
 ### Example Usage
 ## `make_gst.sh`
@@ -148,8 +166,15 @@ $ source $B/run_genie_grid.sh -r=0 -n=1000 -g=annie_v02_sphere_argon_gas_20atm/a
 ### Example Usage
 ## `make_tar_genie.sh`
 ### About
+`make_tar_genie.sh` is used to create a tarball that contains all the files needed to run the GENIE Generator on the grid. All scripts that run the GENIE Generator on the grid require `$GR/grid_genie.tar.gz`, which is created by running this script. `$GR/grid_genie.tar.gz` contains the following files:
+- `$G/*`
+- `$C/*`
+- `$B/setup_genie3_00_06.sh`
+- `$FLUX/*`
+
+If any of these files have been changed, and you wish to use the new versions, make sure to rerun `$B/make_tar_genie.sh` to produce an up to date `$GR/grid_genie.tar.gz`.
 ### Usage
-### Example Usage
+`$ source $B/make_tar_genie.sh`
 ## `make_geoms_1D.sh`
 ### About
 ### Usage

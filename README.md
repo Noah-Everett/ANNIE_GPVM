@@ -39,30 +39,47 @@ source /annie/app/users/neverett/bin/setup
 ### `setup_shortcuts.sh`
 All `README.md` files in this repository use environmental variables defined in [`setup_shortcuts.sh`](https://github.com/Noah-Everett/ANNIE_gpvm/blob/main/bin/setup_shortcuts.sh):
 ```sh
-# /annie/app/users/
-export USERS=/annie/app/users
-export NE=$USERS/neverett
-export RH=$USERS/rhatcher
-export JM=$USERS/jminock
-export MO=$USERS/moflaher
-export MA=$USERS/mascenci
-export FL=$USERS/flemmons
-
-# /annie/app/users/neverett/
-export B=$NE/bin
-export R=$NE/runs
-export G=$NE/geometry
-export T=$NE/ToolAnalysis
-export C=$NE/config
-export GR=$NE/grid
-export BA=$NE/backups
-
-# /pnfs/annie/scratch/users/
-export PUSERS=/pnfs/annie/scratch/users
-
-# /pnfs/annie/scratch/users/neverett/
-export PNE=$PUSERS/neverett
-export PG=$PNE/genie_output
+export ANNIE=/annie
+# /annie/
+    # app/
+    export USERS=$ANNIE/app/users
+        # users/
+        export NE=$USERS/neverett
+        export RH=$USERS/rhatcher
+        export JM=$USERS/jminock
+        export MO=$USERS/moflaher
+        export MA=$USERS/mascenci
+        export FL=$USERS/flemmons
+            # neverett/
+            export B=$NE/bin
+            export R=$NE/runs
+            export G=$NE/geometry
+            export C=$NE/config
+            export GR=$NE/grid
+            export BA=$NE/backups
+            export T=$NE/ToolAnalysis
+            # ToolAnalysis
+                export TU=$T/UserTools
+                export TC=$T/configfiles
+            export W=$NE/WCSim
+            # WCSim
+                export WB=$W/wcsim/build
+                export WS=$W/wcsim/WCSim
+    # data/flux/
+    export FLUX=$ANNIE/data/flux/bnb
+export PANNIE=/pnfs/annie
+# /pnfs/annie
+    # persistent/
+    export PUSERS=$PANNIE/persistent/users
+        # users/
+        export PNE=$PUSERS/neverett
+    # scratch/
+    export SUSERS=$PANNIE/scratch/users
+        # users/
+        export SNE=$SUSERS/neverett
+            # neverett/
+            export SG=$SNE/genie_output
+            export SW=$SNE/wcsim_output
 ```
 
 ## Information on Scripts

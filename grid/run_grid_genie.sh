@@ -1,9 +1,3 @@
-#============================COMMAND=============================#
-#jobsub_submit -G annie -M -N 5 --memory=2000MB --disk=2GB --cpu=2 --expected-lifetime=24h --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' --tar_file_name=dropbox:///annie/app/users/neverett/grid/genie_grid.tar.gz file:///annie/app/users/neverett/grid/run_grid_genie.sh
-#======================================================================#
-
-
-
 #===========================GRID INIT========================#
 set -x
 echo Start `date`
@@ -50,14 +44,14 @@ F=$INPUT_TAR_DIR_LOCAL/annie/data/flux/bnb
 
 for i in "$@"; do
   case $i in
-    -r=*                   ) export RUNBASE="${i#*=}"   shift ;;
-    -n=*                   ) export NEVENTS="${i#*=}"      shift ;;
-    -g=*                   ) export GEOMETRY="${i#*=}"      shift ;;
-    -t=*                   ) export TOPVOL="${i#*=}"    shift ;;
-    -f=*                   ) export FLUXFILENUM="${i#*=}"  shift ;;
-    -m=*                   ) export MAXPL="${i#*=}"     shift ;;
-    --message-thresholds=* ) export MESTHRE="${i#*=}"   shift ;;
-    -*                     ) echo "unknown option $i" exit 1 ;;
+    -r=*                   ) export RUNBASE="${i#*=}"     shift  ;;
+    -n=*                   ) export NEVENTS="${i#*=}"     shift  ;;
+    -g=*                   ) export GEOMETRY="${i#*=}"    shift  ;;
+    -t=*                   ) export TOPVOL="${i#*=}"      shift  ;;
+    -f=*                   ) export FLUXFILENUM="${i#*=}" shift  ;;
+    -m=*                   ) export MAXPL="${i#*=}"       shift  ;;
+    --message-thresholds=* ) export MESTHRE="${i#*=}"     shift  ;;
+    -*                     ) echo "unknown option $i";    exit 1 ;;
    esac
 done
 
@@ -85,12 +79,15 @@ if [ -z "$TOPVOL" ]; then
   export $TOPVOL="TARGON_LV"
 fi
 
+cp /cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALbig.xml.gz .
+gzip -d gxspl-FNALbig.xml.gz
+
 export MAXPL=${G}/${MAXPL}
 export RUN=${RUNBASE}${PROCESS}
 export SEED=${RUNBASE}${PROCESS}${CLUSTER}
 export FLXPSET="ANNIE-tank"
 export FLUX="${F}/${FLUXFILE},${FLXPSET}"
-export GENIEXSEC=/cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALsmall.xml
+export GENIEXSEC=gxspl-FNALbig.xml
 export UNITS="-L cm -D g_cm3"
 export XYZHALL=( -393.70 -213.36   0.0  307.34 1021.08 487.68 )
 export XYZBLDG=( -434.34 -259.08 -40.64 347.98 1066.80 528.32 )

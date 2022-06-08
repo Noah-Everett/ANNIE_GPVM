@@ -1,5 +1,6 @@
 source /annie/app/users/neverett/bin/setup_shortcuts.sh
 source /annie/app/users/neverett/bin/setup_grid.sh
 source /annie/app/users/neverett/bin/setup_singularity.sh
+source /annie/app/users/neverett/bin/setup_wcsim.sh
 # source /annie/app/users/neverett/bin/setup_genie3_00_04.sh
 # source /annie/app/users/neverett/bin/setup_genie3_00_06.sh

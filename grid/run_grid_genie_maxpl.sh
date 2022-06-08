@@ -44,11 +44,11 @@ F=$INPUT_TAR_DIR_LOCAL/annie/data/flux/bnb
 
 for i in "$@"; do
   case $i in
-    --geomDir=*            ) export GEOMDIR="${i#*=}"      shift  ;;
-    -t=*                   ) export TOPVOL="${i#*=}"       shift  ;;
-    -f=*                   ) export FLUXFILENUM="${i#*=}"  shift  ;;
-    --message-thresholds=* ) export MESTHRE="${i#*=}"      shift  ;;
-    -*                     ) echo "unknown option $i";     exit 1 ;;
+    --geomDir=*            ) export GEOMDIR="${i#*=}"     shift  ;;
+    -t=*                   ) export TOPVOL="${i#*=}"      shift  ;;
+    -f=*                   ) export FLUXFILENUM="${i#*=}" shift  ;;
+    --message-thresholds=* ) export MESTHRE="${i#*=}"     shift  ;;
+    -*                     ) echo "unknown option $i";    exit 1 ;;
    esac
 done
 
