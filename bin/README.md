@@ -76,18 +76,7 @@ $ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t
 Currently, this script (and `$GR/run_grid_genie.sh`, which is called by this script) is specialized to my directory (`$NE`); though, with moderately minor modifications, this script (and `$GR/run_grid_genie.sh`) could be modified to work for any user.
 As stated above in the About section of run_genie.sh, this script can (and should) be used to run large groups of GENIE Generator runs as opposed to running them on the ANNIE gpvm. 
 
-To pass files like flux, geometry, and maxpl to the grid node, we use tarballs, specifically `$GR/grid_genie.tar.gz`.
-For more information on this file and how to generate it, visit the [`make_tar_genie.sh` section](#make_tar_geniesh).
 
-This script requires you to give the amount of memory, disk, cpus, and run time for your grid run. 
-It can be tricky to know the appropriate values for each (I myself am still finding the right amounts). 
-However, note that we want to use the least amount of each we can. 
-This will allow our fellow collaborators to run their grid jobs faster as well as allow other collaboration to run their jobs faster as more resources will be available.
-
-Please look through the following to learn more about the grid and how to properly use it:
-- [Storage Spaces](https://dune.github.io/computing-training-202105/02-storage-spaces/index.html)
-- [Grid Job Sumbission and Common Errors](https://dune.github.io/computing-training-202105/07-grid-job-submission/index.html)
-- Any other sessions will also probably be of use: [DUNE Computing Training May 2021 edition](https://dune.github.io/computing-training-202105/index.html)
 
 ### Usage
 ```
