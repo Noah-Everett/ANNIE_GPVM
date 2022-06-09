@@ -169,15 +169,17 @@ make_genie_gst.sh -r (run in all directories one level down)
 
 ### Example Usage
 
-This will convert all files in the current directory of the form `gntp.3<#>.ghep.root` to files of the form `gntp.3<#>.gst.root`.
+This will convert all files in the current directory of the form `gntp.3<#>.ghep.root` to files of the form `gntp.3<#>.gst.root`:
 ```
 $ source $B/make_genie_gst.sh '3*'
 ```
 
-This is my most common use case. It will convert all files of the form `gntp.<#>.ghep.root` to files of the form `gntp.<#>.gst.root` in the directories down one level (child directories). It will also change GENIE message thresholds to `warn`.
+Most common use case:
 ```
 $ source $B/make_genie_gst.sh -r '*' --message-thresholds=Messenger_warn.xml
 ```
+- Converts all files of the form `gntp.<#>.ghep.root` to files of the form `gntp.<#>.gst.root` in the directories down one level (child directories). 
+- Changes the GENIE message thresholds to `warn` to reduce run time.
 
 ## `make_tar_genie.sh`
 
@@ -194,26 +196,83 @@ If any of these files have been changed, and you wish to use the new versions, m
 `$ source $B/make_tar_genie.sh`
 
 ## `make_geoms_1D.sh`
+
 ### About
+`make_geoms_1D.sh` is used to produce variations of the ANNIE geometry (in `gdml`). 
+It can be used to vary the size and position of the container, the shape of the container, the and the material in the container.
+The script varies size and position of the container based on the number of files generated (set by `--nFiles=`).
+If the user wants two files, one will have a very small (radius = 50mm) container at the very front of the fiducial volume, and the other will be the largest container volume (radius ~ 607mm), taking up roughly the whole fiducial volume.
+Similarly, if the user wants ten geometry files, the script will produce ten files with container sizes in a spectrum from smallest (radius = 50mm) to largest (radius ~ 607mm).
+
 ### Usage
+```
+make_geoms_1D.sh --outDir=</path/to/output/directory>
+                 [--containerThickness=<thickness of the container in mm (default is 4.76, same as ANNIE tank walls)>]
+                 --material=<argon || water || vacuum>
+                 --shape=<tube || sphere>
+                 --state<gas or liquid (only needed if using argon)>
+                 --density<number times atm (ex: 20 --> 20atm in geom)>
+                 --nFiles<number of geometry files produced>
+```
+
 ### Example Usage
+Create `$G/annie_v02_tube_argon_gas_20atm/*`:
+```
+$ make_geoms_1D.sh --outDir=$G/annie_v02_tube_argon_gas_20atm --material=argon --shape=tube --state=gas --density=20 --nFiles=5
+```
+
 ## `setup`
+
 ### About
+`setup` is a script that runs other scripts that setup environmental variables and aliases to make using the GPVM easier and faster. These are the scripts sourced by `setup`:
+- `$B/setup_shortcuts.sh`
+- `$B/setup_grid.sh`
+- `$B/setup_singularity.sh`
+- `$B/setup_wcsim.sh`
+
 ### Usage
-### Example Usage
+```
+$ source /annie/app/users/neverett/bin/setup
+```
+
 ## `setup_genie3_00_06.sh`
+
 ### About
+`setup_genie3_00_06.sh` sets up GENIE v3_00_06 through ups on the GPVM. The user should almost never have to directly run this script, as it is mainly intended and used by other scripts that run GENIE products.
+
 ### Usage
-### Example Usage
+```
+$ source $B/setup_genie3_00_06.sh
+```
+
 ## `setup_grid.sh`
+
 ### About
+`setup_grid.sh` sets up the Grid. This script is ran by `$B/setup`.
+
 ### Usage
-### Example Usage
+```
+$ source $B/setup_grid.sh
+```
+
+
 ## `setup_shortcuts.sh`
+
 ### About
+`setup_shortcuts.sh` sets up environmental variables which act as shortcuts to make navigation of the GPVM faster.
+
 ### Usage
-### Example Usage
+```
+$ source $B/setup_shortcuts.sh
+```
+
+
 ## `setup_singularity.sh`
+
 ### About
+`setup_singularity.sh` does in fact *not* setup singularity (used by ToolAnalysis), however it does create a couple aliases to make using the singularity easier.
+
 ### Usage
-### Example Usage
+```
+$ source $B/setup_singularity.sh
+```

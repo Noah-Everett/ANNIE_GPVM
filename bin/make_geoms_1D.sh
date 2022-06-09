@@ -10,14 +10,14 @@ NFILES=""
 echo "Processing command line arguments."
 for i in "$@"; do
   case $i in
-    --outDir=*         ) export OUTDIR="${i#*=}"      shift    ;;
-    --dewarThickness=* ) export DWTH="${i#*=}"        shift    ;;
-    --material=*       ) export MATERIAL="${i#*=}"    shift    ;;
-    --shape*           ) export SHAPE="${i#*=}"       shift    ;;
-    --state=*          ) export STATE="${i#*=}"       shift    ;;
-    --density=*        ) export DENSITY="${i#*=}"     shift    ;;
-    --nFiles=*         ) export NFILES="${i#*=}"      shift    ;;
-    -*                 ) echo "Unknown option \"$i\"" return 1 ;;
+    --outDir=*             ) export OUTDIR="${i#*=}"      shift    ;;
+    --containerThickness=* ) export DWTH="${i#*=}"        shift    ;;
+    --material=*           ) export MATERIAL="${i#*=}"    shift    ;;
+    --shape*               ) export SHAPE="${i#*=}"       shift    ;;
+    --state=*              ) export STATE="${i#*=}"       shift    ;;
+    --density=*            ) export DENSITY="${i#*=}"     shift    ;;
+    --nFiles=*             ) export NFILES="${i#*=}"      shift    ;;
+    -*                     ) echo "Unknown option \"$i\"" return 1 ;;
   esac
 done
 
