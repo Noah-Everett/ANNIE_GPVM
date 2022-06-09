@@ -11,11 +11,11 @@
         make_gst.sh                  # runs GENIE gntpc to convert ghep files to gst files
         make_tar_genie.sh            # makes tarball for running GENIE on grid
         make_geoms_1D.sh             # makes versions of the ANNIE geometry (1 variable)
-        make_geoms_4D.sh             # makes versions of the ANNIE geometry (4 variables)
+        make_geoms_4D.sh             # makes versions of the ANNIE geometry (4 variables) (depreciated)
         setup                        # general user setup
         setup_genie3_00_06.sh        # setup for GENIE v3.0.6
-        setup_genie3_00_04.sh        # setup for GENIE v3.0.4
-        setup_genie2_12_10.sh        # setup for GENIE v2.12.10
+        setup_genie3_00_04.sh        # setup for GENIE v3.0.4 (depreciated)
+        setup_genie2_12_10.sh        # setup for GENIE v2.12.10 (depreciated)
         setup_grid.sh                # setup for grid commands
         setup_shortcuts.sh           # setup for personal shortcuts
         setup_singularity.sh         # setup for ToolAnalysis singularity

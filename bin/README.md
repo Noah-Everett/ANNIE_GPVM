@@ -1,4 +1,4 @@
-# Information on Scripts in `$B` (this dir)
+# Information on Scripts in `$B` (this directory)
 
 ### Note:
 - As of now, these scripts have not been made to be the most user-friendly. They lack things like error messages and option/argument checking. These may or may not be added in the future.
@@ -13,11 +13,8 @@
 - [make_gst.sh](#make_gstsh)
 - [make_tar_genie.sh](#make_tar_geniesh)
 - [make_geoms_1D.sh](#make_geoms_1Dsh)
-- [make_geoms_4D.sh](#make_geoms_4Dsh)
 - [setup](#setup)
 - [setup_genie3_00_06.sh](#setup_genie3_00_06sh)
-- [setup_genie3_00_04.sh](#setup_genie3_00_04sh)
-- [setup_genie2_12_10.sh](#setup_genie2_12_10sh)
 - [setup_grid.sh](#setup_gridsh)
 - [setup_shortcuts.sh](#setup_shortcutssh)
 - [setup_singularity.sh](#setup_singularitysh)
@@ -32,16 +29,16 @@ Any larger batches of runs should be run on the Grid both to save the user time 
 
 ### Usage
 ```
-run_genie.sh      -r=<run number>
-                  -n=<number of events>
-                  -g=<geometry file name (in $G)>.gdml
-                  -t=<top volume name>_LV
-                  -f=<flux file number (or numbers using '*') (in $FLUX)>
-                  -m=[+]<max path length file (in $G)>.maxpl.xml
-                  -o=</path/to/output/dir>
-                  -S=[-]<number of particles used to scan geometry (default = 0)>
---message-thresholds=Messenger_<name (in $C) (default = "")>.xml
-           -h|--help
+run_genie.sh -r=<run number>
+             -n=<number of events>
+             -g=<geometry file name (in $G)>.gdml
+             -t=<top volume name>_LV
+             -f=<flux file number (or numbers using '*') (in $FLUX)>
+             -m=[+]<max path length file (in $G)>.maxpl.xml
+             -o=</path/to/output/dir>
+             -S=[-]<number of particles used to scan geometry (default = 0)>
+             --message-thresholds=Messenger_<name (in $C) (default = "")>.xml
+             -h|--help
 ```
 
 ### Example Usage
@@ -86,13 +83,13 @@ run_genie_grid.sh -r=<run base number>
                   -t=<top volume name>_LV
                   -f=<flux file number (or numbers using '*') (in $FLUX)>
                   -m=<max path length file (in $G)>.maxpl.xml
---message-thresholds=Messenger_<name (in $C) (default = "")>.xml
+                  --message-thresholds=Messenger_<name (in $C) (default = "")>.xml
                   -N=<number of identical runs>
-            --memory=<amount of ram in MB>MB
-              --disk=<amount of disk space in MB>MB
-               --cpu=<number of cpus>
- --expected-lifetime=<number of hours>h
-           -h|--help
+                  --memory=<amount of ram in MB or GB><MB || GB>
+                  --disk=<amount of disk space in MB or GB><MB || GB>
+                  --cpu=<number of CPUs>
+                  --expected-lifetime=<number of hours>h
+                  -h|--help
 ```
 
 ### Example Usage
@@ -139,16 +136,16 @@ For additional information on the Grid, consult [`$GR/README.md`](https://github
 
 ### Usage
 ```
- run_genie_grid.sh   --geomDir=</path/to/geoms (geometry files location (in $G))>
-                  --nGeomFiles=<number of gdml files in geomDir)>
-                            -t=<top volume name>_LV
-                            -f=<flux file number (or numbers using '*') (in $FLUX)>
-          --message-thresholds=Messenger_<name (in $C) (default = "")>.xml
-                      --memory=<amount of ram in MB or GB><MB || GB>
-                        --disk=<amount of disk space in MB or GB><MB || GB>
-                         --cpu=<number of cpus>
-           --expected-lifetime=<number of hours>h
-                     -h|--help
+ run_genie_grid.sh --geomDir=</path/to/geoms (geometry files location (in $G))>
+                   --nGeomFiles=<number of gdml files in geomDir)>
+                   -t=<top volume name>_LV
+                   -f=<flux file number (or numbers using '*') (in $FLUX)>
+                   --message-thresholds=Messenger_<name (in $C) (default = "")>.xml
+                   --memory=<amount of ram in MB or GB><MB || GB>
+                   --disk=<amount of disk space in MB or GB><MB || GB>
+                   --cpu=<number of CPUs>
+                   --expected-lifetime=<number of hours>h
+                   -h|--help
 ```
 ### Example Usage
 Usage to generate `$G/annie_v02_tube_argon_liquid/*.maxpl.xml`:
@@ -164,11 +161,10 @@ Specifically, this script runs `gntpc` to convert `gntp.<#>.ghep.root` files to 
 
 ### Usage
 ```
-make_genie_gst.sh -r                 (recursive (directories))
+make_genie_gst.sh -r (run in all directories one level down)
                   --message-thresholds=Messenger_<name (in $C) (default = "")>.xml
-                  -h|--help          (display the usage statement (this output))
-                  <ghep file number> (number (numbers with '*') of the ghep file to convert to gst)
-If your usage of this command did not work, use "source $B/make_genie_gst.sh '##*'"
+                  -h|--help
+                  <number (numbers with '*') of the ghep file to convert to gst>
 ```
 
 ### Example Usage
@@ -201,23 +197,11 @@ If any of these files have been changed, and you wish to use the new versions, m
 ### About
 ### Usage
 ### Example Usage
-## `make_geoms_4D.sh`
-### About
-### Usage
-### Example Usage
 ## `setup`
 ### About
 ### Usage
 ### Example Usage
 ## `setup_genie3_00_06.sh`
-### About
-### Usage
-### Example Usage
-## `setup_genie3_00_04.sh`
-### About
-### Usage
-### Example Usage
-## `setup_genie2_12_10.sh`
 ### About
 ### Usage
 ### Example Usage
