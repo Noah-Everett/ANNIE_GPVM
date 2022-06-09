@@ -2,7 +2,7 @@
 
 ### Note:
 - As of now, these scripts have not been made to be the most user-friendly. They lack things like error messages and option/argument checking. These may or may not be added in the future.
-- These scripts where made to make my life more convenient, thus they include shortcuts to directories in `$NE` which is of little use to others. However, this should be fairly easy to change in each script.
+- These scripts where made to make my life more convenient, thus they include shortcuts to directories in `$NE` which is of little use to others. However, this should be fairly easy to change in each script. Again, this may or may not be changed in the future.
 - To use the following commands make sure to run: `source /annie/app/users/neverett/bin/setup`
 - `<>` denotes required option or argument, `[]` denotes optional option or argument.
 
@@ -76,7 +76,7 @@ $ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t
 Currently, this script (and `$GR/run_grid_genie.sh`, which is called by this script) is specialized to my directory (`$NE`); though, with moderately minor modifications, this script (and `$GR/run_grid_genie.sh`) could be modified to work for any user.
 As stated above in the About section of run_genie.sh, this script can (and should) be used to run large groups of GENIE Generator runs as opposed to running them on the ANNIE GPVM. 
 
-For additional information on the Grid, look at [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/grid#readme).
+For additional information on the Grid, consult [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/grid#readme).
 
 ### Usage
 ```
@@ -135,7 +135,7 @@ Currently, this script is specialized to my directory (`$NE`); though, with mode
 As stated previously, the Grid should be used to decrease pressure on the annie GPVM. 
 Thus, when generating `.maxpl.xml` files for multiple `gdml` geometry files, it is highly recommended to use the Grid via this script.
 
-For additional information on the Grid, look at [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/grid#readme).
+For additional information on the Grid, consult [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/grid#readme).
 
 ### Usage
 ```

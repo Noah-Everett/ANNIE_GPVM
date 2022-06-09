@@ -3,8 +3,8 @@
 ## Repository Contents
 ```
 /annie/app/users/neverett/
-    /backups/                    # miscilanious backup folders and files
-    /bin/                        # user runnable scripts
+    backups/                    # miscilanious backup folders and files
+    bin/                        # user runnable scripts
         run_genie.sh                 # runs GENIE Generator on ANNIE gpvm
         run_genie_grid.sh            # runs GENIE Generator on the grid
         make_maxpl_grid.sh           # runs GENIE Generator on the grid to produce maxpl.xml files
@@ -19,16 +19,19 @@
         setup_grid.sh                # setup for grid commands
         setup_shortcuts.sh           # setup for personal shortcuts
         setup_singularity.sh         # setup for ToolAnalysis singularity
-    /config/                     # contains GENIE config files
+    config/                     # contains GENIE config files
         Messenger_debug.xml          # GENIE messenger config w/ all priorities set to DEBUG
         Messenger_warn.xml           # GENIE messenger config w/ all priorities set to WARN
         Messenger_fatal.xml          # GENIE messenger config w/ all priorities set to FATAL
-        GNuMIFlux.xml                # Normal GNuMIFlux.xml with minor modifications
-    /geometry/                   # contains gdml geometry files
-    /grid/                       # contains grid runable scripts (and their required files)
+        GNuMIFlux.xml                # normal GNuMIFlux.xml with minor modifications
+    geometry/                   # contains gdml geometry files
+        annie_v02_<specifiers>/      # multiple directories containing variations of proposed ANNIE geometry
+        depreciated/                 # depreciated versions of ANNIE geometry
+        other/                       # misc geometries
+    grid/                       # contains grid runable scripts (and their required files)
         run_grid_genie.sh            # grid runnable script for GENIE (ran by $B/run_genie_grid.sh)
         run_grid_genie_maxpl.sh      # grid runnable script for GENIE (ran by $B/make_maxpl_grid.sh)
-    /runs/                       # directory that contains GENIE Generator runs output (before analysis)
+    runs/                       # directory that contains program outputs (GENIE, WCSim, and/or ToolAnalysis) (before analysis)
 ```
 
 To use more easily follow the contents of all README.md files in this repository make sure to run:
