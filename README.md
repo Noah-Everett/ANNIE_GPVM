@@ -84,7 +84,9 @@ export PANNIE=/pnfs/annie
 
 ## Information on Scripts
 
-Usage statements for scripts in [`$B`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/bin) can be found in [`$B/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/bin#readme)
+Usage statements for scripts in [`$B`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/bin) can be found in [`$B/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/bin#readme).
+
+Information on the Grid can be found in [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/grid#readme).
 
 ## Previous Work by Robert Hatcher
 Previous work by Robert Hatcher has been extremely usefull and can be found [here](https://cdcvs.fnal.gov/redmine/projects/anniesoft/wiki/GENIE_and_Geant4_neutrons_from_rock_propagation), [here](https://cdcvs.fnal.gov/redmine/projects/genie/wiki/Running_gevgen_fnal), and in `$RH`. 
