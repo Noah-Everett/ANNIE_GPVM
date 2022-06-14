@@ -1,22 +1,22 @@
-# ANNIE_gpvm
+# ANNIE_GPVM
 
 ## Repository Contents
 ```
 /annie/app/users/neverett/
     backups/                    # miscilanious backup folders and files
     bin/                        # user runnable scripts
-        run_genie.sh                 # runs GENIE Generator on ANNIE gpvm
-        run_genie_grid.sh            # runs GENIE Generator on the grid
-        make_maxpl_grid.sh           # runs GENIE Generator on the grid to produce maxpl.xml files
+        run_genie.sh                 # runs GENIE Generator on ANNIE GPVM
+        run_genie_grid.sh            # runs GENIE Generator on the Grid
+        make_maxpl_grid.sh           # runs GENIE Generator on the Grid to produce maxpl.xml files
         make_gst.sh                  # runs GENIE gntpc to convert ghep files to gst files
-        make_tar_genie.sh            # makes tarball for running GENIE on grid
+        make_tar_genie.sh            # makes tarball for running GENIE on Grid
         make_geoms_1D.sh             # makes versions of the ANNIE geometry (1 variable)
         make_geoms_4D.sh             # makes versions of the ANNIE geometry (4 variables) (depreciated)
         setup                        # general user setup
         setup_genie3_00_06.sh        # setup for GENIE v3.0.6
         setup_genie3_00_04.sh        # setup for GENIE v3.0.4 (depreciated)
         setup_genie2_12_10.sh        # setup for GENIE v2.12.10 (depreciated)
-        setup_grid.sh                # setup for grid commands
+        setup_grid.sh                # setup for Grid commands
         setup_shortcuts.sh           # setup for personal shortcuts
         setup_singularity.sh         # setup for ToolAnalysis singularity
     config/                     # contains GENIE config files
@@ -87,9 +87,9 @@ export PANNIE=/pnfs/annie
 
 ## Information on Scripts
 
-Usage statements for scripts in [`$B`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/bin) can be found in [`$B/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/bin#readme).
+Usage statements for scripts in [`$B`](https://github.com/Noah-Everett/ANNIE_GPVM/tree/main/bin) can be found in [`$B/README.md`](https://github.com/Noah-Everett/ANNIE_GPVM/tree/main/bin#readme).
 
-Information on the Grid can be found in [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/grid#readme).
+Information on the Grid can be found in [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_GPVM/tree/main/grid#readme).
 
 ## Previous Work by Robert Hatcher
 Previous work by Robert Hatcher has been extremely usefull and can be found [here](https://cdcvs.fnal.gov/redmine/projects/anniesoft/wiki/GENIE_and_Geant4_neutrons_from_rock_propagation), [here](https://cdcvs.fnal.gov/redmine/projects/genie/wiki/Running_gevgen_fnal), and in `$RH`. 
