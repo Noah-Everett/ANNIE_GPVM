@@ -1,0 +1,2 @@
+/annie/app/users/rhatcher/tank_flux_new/G4ANNIE-cmakebuild/CMakeFiles/G4SA.dir
+/annie/app/users/rhatcher/tank_flux_new/G4ANNIE-cmakebuild/CMakeFiles/g4annie_dirt_flux.dir

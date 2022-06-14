@@ -5,11 +5,12 @@ for i in "$@"; do
     -p=*                   ) export PRIMARIES="${i#*=}"    shift    ;;
     -n=*                   ) export NEVENTS="${i#*=}"      shift    ;;
     -g=*                   ) export GEOMETRY="${i#*=}"     shift    ;;
-    -N=*                   ) export NJOBS="${i#*=}"        shift    ;;
-    --memory=*             ) export MEMORY="${i#*=}"       shift    ;;
-    --disk=*               ) export DISK="${i#*=}"         shift    ;;
-    --cpu=*                ) export CPU="${i#*=}"          shift    ;;
-    --expected-lifetime=*  ) export EXPLT="${i#*=}"        shift    ;;
+    -o=*                   ) export OUTDIR="${i#*=}"       shift    ;;
+    -N=*                   ) export NFILES="${i#*=}"       shift    ;;
+#    --memory=*             ) export MEMORY="${i#*=}"       shift    ;;
+#    --disk=*               ) export DISK="${i#*=}"         shift    ;;
+#    --cpu=*                ) export CPU="${i#*=}"          shift    ;;
+#    --expected-lifetime=*  ) export EXPLT="${i#*=}"        shift    ;;
     -h*|--help*            ) usage;                        return 1 ;;
     -*                     ) echo "unknown option \"$i\""; return 1 ;;
   esac
@@ -21,7 +22,7 @@ if [ -z "${RUNBASE}" ]; then
 fi
 
 if [ -z "${PRIMARIES}" ]; then
-  echo "Use \`-p=\` to set the primaries directory (in \`$R\`)."
+  echo "Use \`-p=\` to set the primaries directory (ex: -p=/pnfs/annie/persistent/users/...)."
   return 2
 fi
 
@@ -31,51 +32,72 @@ if [ -z "${NEVENTS}" ]; then
 fi
 
 if [ -z "${GEOMETRY}" ]; then
-  echo "Use \`-g=\` to set the annie geometry (in \`$G\`)."
+  echo "Use \`-g=\` to set the annie geometry (ex: -g=/pnfs/annie/persistent/users/.../name.gdml)"
   return 4
 fi
+
+if [ -z "${OUTDIR}" ]; then
+  echo "Use \`-o=\` to set the output directory (Use \`-o=\` to set the output geometry (Note: a directory will be created in this folder. That directory will contain outputs)."
+  return 5
+fi
+
+if [ -z "${NFILES}" ]; then
+  echo "Use \`-N=\` to set the number of genie files to propagate."
+  return 6
+fi
+
+let NJOBS=${NFILES}
+let MEMORY=${NFILES}*2000
+let DISK=${NFILES}*1000
+let CPU=${NFILES}/4
+if [ "${CPU}" == "0" ]; then
+  let CPU=1
+fi
+let EXPLT=5
 
 echo jobsub_submit \
 -G annie \
 -M \
 -N $NJOBS \
---memory=$MEMORY \
---disk=$DISK \
+--memory=${MEMORY}MB \
+--disk=${DISK}MB \
 --cpu=$CPU \
---expected-lifetime=$EXPLT \
+--expected-lifetime=${EXPLT}h \
 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
 -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
 --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
---tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_genie.tar.gz \
+--tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_wcsim.tar.gz \
 --lines '+FERMIHTC_AutoRelease=True' \
 --lines '+FERMIHTC_GraceMemory=2048' \
 --lines '+FERMIHTC_GraceLifetime=7200' \
 file:///annie/app/users/neverett/grid/run_grid_wcsim.sh \
--r=$RUNBASE \
--p=$PRIMARIES \
--n=$NEVT \
--g=$GEOMETRY \
+-r=${RUNBASE} \
+-p=${PRIMARIES} \
+-n=${NEVENTS} \
+-g=${GEOMETRY} \
+-o=${OUTDIR}
 
 jobsub_submit \
 -G annie \
 -M \
 -N $NJOBS \
---memory=$MEMORY \
---disk=$DISK \
+--memory=${MEMORY}MB \
+--disk=${DISK}MB \
 --cpu=$CPU \
---expected-lifetime=$EXPLT \
+--expected-lifetime=${EXPLT}h \
 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
 -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
 --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
---tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_genie.tar.gz \
+--tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_wcsim.tar.gz \
 --lines '+FERMIHTC_AutoRelease=True' \
 --lines '+FERMIHTC_GraceMemory=2048' \
 --lines '+FERMIHTC_GraceLifetime=7200' \
 file:///annie/app/users/neverett/grid/run_grid_wcsim.sh \
--r=$RUNBASE \
--p=$PRIMARIES \
--n=$NEVT \
--g=$GEOMETRY \
+-r=${RUNBASE} \
+-p=${PRIMARIES} \
+-n=${NEVENTS} \
+-g=${GEOMETRY} \
+-o=${OUTDIR}
 }
 
 usage() {

@@ -1,32 +1,34 @@
 #!/bin/bash
 
+#=============================================INIT SCRIPT=========================================#
+
+export HOMEDIR=${PWD}
+let N=0
+
 #=========================================GET USER VARIABLES======================================#
 
 for i in "$@"; do
   case $i in
     -r=*                   ) export RUNBASE="${i#*=}"   shift  ;;
-    -p=*                   ) export PRIMARIES="${i#*=}" shift  ;;
+    -p=*                   ) export PRIMARIESDIR="${i#*=}" shift  ;;
     -n=*                   ) export NEVENTS="${i#*=}"   shift  ;;
     -g=*                   ) export GEOMETRY="${i#*=}"  shift  ;;
+    -o=*                   ) export OUTDIR="${i#*=}"    shift  ;;
     -*                     ) echo "Unknown option \`$i\`.";  exit 1 ;;
   esac
 done
 
 #=========================================PROCESS VARIABLES=======================================#
 
-R=$INPUT_TAR_DIR_LOCAL/annie/app/users/neverett/runs
-G=$INPUT_TAR_DIR_LOCAL/annie/app/users/neverett/geometry
-
 if [ -z "${RUNBASE}" ]; then
   echo "Use \`-r=\` to set the run base number."
   return 1
 fi
 
-if [ -z "${PRIMARIES}" ]; then
-  echo "Use \`-p=\` to set the primaries directory (in \`$R\`)."
+if [ -z "${PRIMARIESDIR}" ]; then
+  echo "Use \`-p=\` to set the primaries directory (ex: -p=/pnfs/annie/persistent/users/...)."
   return 2
 fi
-export PRIMARIES=${R}/${PRIMARIES}
 
 if [ -z "${NEVENTS}" ]; then
   echo "Use \`-n=\` to set the number of events to propigate."
@@ -34,43 +36,107 @@ if [ -z "${NEVENTS}" ]; then
 fi
 
 if [ -z "${GEOMETRY}" ]; then
-  echo "Use \`-g=\` to set the annie geometry (in \`$G\`)."
+  echo "Use \`-g=\` to set the annie geometry (ex: -g=/pnfs/annie/persistent/users/.../name.gdml)"
   return 4
 fi
-export GEOMETRY=${G}/${GEOMETRY}
 
-#======================================CALCULATE EVENT NUMBERS====================================#
+if [ -z "${OUTDIR}" ]; then
+  echo "Use \`-o=\` to set the output geometry (Note: a directory will be created in this folder. That directory will contain outputs)."
+  return 5
+fi
+export OUTDIR=${OUTDIR}/${RUNBASE}_${CLUSTER}
 
-let PRIMARIES_OFFSET=$((${PROCESS}*${NEVENTS}))
+#==============================================SETUPS=============================================#
 
-#============================================SETUP IFDH===========================================#
+export CODE_BASE=/cvmfs/larsoft.opensciencegrid.org/products
+source ${CODE_BASE}/setup
+export PRODUCTS=${PRODUCTS}:${CODE_BASE}
 
-source /cvmfs/fermilab.opensciencegrid.org/products/common/etc/setup
-setup ifdhc # ifdh is used to interact with gpvm from grid node
+setup ifdhc        v2_6_3       -q c7:debug:p392
+setup geant4       v4_10_3_p03c -q debug:e15
+setup genie        v2_12_10b    -q debug:e15  
+setup genie_phyopt v2_12_10     -q dkcharmtau
+setup genie_xsec   v2_12_10     -q DefaultPlusMECWithNC
+setup xerces_c     v3_2_0a      -q debug:e15
+setup root         v6_12_06a    -q debug:e15
+setup cmake        v3_10_1
+
+source ${CODE_BASE}/larsoft/root/v6_06_08/Linux64bit+2.6-2.12-e10-nu-debug/bin/thisroot.sh
+export CXX=$(which g++)
+export CC=$(which gcc)
+export XERCESROOT=${CODE_BASE}/larsoft/xerces_c/v3_1_3/Linux64bit+2.6-2.12-e10-debug
+export G4SYSTEM=Linux-g++
+export ROOT_PATH=${CODE_BASE}/larsoft/root/v6_06_08/Linux64bit+2.6-2.12-e10-nu-debug/cmake
+export GEANT4_PATH=${GEANT4_FQ_DIR}/lib64/Geant4-10.1.3
+export ROOT_INCLUDE_PATH=${ROOT_INCLUDE_PATH}:${GENIE}/../include/GENIE
+export ROOT_LIBRARY_PATH=${ROOT_LIBRARY_PATH}:${GENIE}/../lib
 
 #==========================================SETUP OUT DIR==========================================#
 
-export SNE=/pnfs/annie/scratch/users/neverett/
-export SW=${SNE}/wcsim_output
+ifdh mkdir_p ${OUTDIR}
 
-ifdh mkdir_p ${SW}/wcsim_output/${RUNBASE}_${CLUSTER}
+#=============================================MAKE LOG============================================#
 
-export OUTDIR=${SW}/wcsim_output/${RUNBASE}_${CLUSTER}
+cat <<EOF > ${RUNBASE}_${CLUSTER}_${PROCESS}.log
+            Cluster: ${CLUSTER}
+            Process: ${PROCESS}
+            Program: WCSim
+           Run base: ${RUNBASE}
+          Primaries: ${PRIMARIESDIR}
+           Geometry: ${GEOMETRY}
+   Number of Events: ${NEVENTS}
+   Primaries Offset: 0
+EOF
+ifdh cp -D ${RUNBASE}_${CLUSTER}_${PROCESS}.log ${OUTDIR}
+if [ $? -ne 0 ]; then 
+  echo "Something went wrong when copying \`${PWD}/${RUNBASE}_${CLUSTER}_${PROCESS}.log\` to \`${OUTDIR}\`."
+  return 8
+fi
 
 #============================================MAKE WCSim===========================================#
 
-export W=${INPUT_TAR_DIR_LOCAL}/annie/app/users/neverett/bin/WCSim/
+export W=${INPUT_TAR_DIR_LOCAL}/annie/app/users/neverett/WCSim
 export WB=${W}/wcsim/build
 export WS=${W}/wcsim/WCSim
 
+export HW=${HOMEDIR}/WCSim
+export HB=${HW}/wcsim/build
+export HS=${HW}/wcsim/WCSim
+
+
+cp -r ${W} ${HOMEDIR}
+mkdir ${HB}
+cp ${HW}/modified_code/GdNeutronHPCaptureFS.hh      ${HS}/include
+cp ${HW}/modified_code/GdNeutronHPCaptureFS.cc      ${HS}/src
+cp ${HW}/modified_code/GdNeutronHPCaptureFSANNRI.hh ${HS}/include
+cp ${HW}/modified_code/GdNeutronHPCaptureFSANNRI.cc ${HS}/src
+cp ${HW}/modified_code/GdNeutronHPCapture.hh        ${HS}/include
+cp ${HW}/modified_code/GdNeutronHPCapture.cc        ${HS}/src
+
+cd ${HS}
+make clean
+make rootcint
+make
+
+ifdh mkdir_p ${OUTDIR}/done
+
+cd ${HB}
+cmake ${HS} 2>&1 | tee out_${N}.log
+ifdh cp -D out_${N}.log ${OUTDIR}/done
+let N=${N}+1
+
+make 2>&1 | tee out_${N}.log
+ifdh cp -D out_${N}.log ${OUTDIR}/done
+let N=${N}+1
+
 #========================================MOVE GEOMETRY FILE=======================================#
 
-cp ${INPUT_TAR_DIR_LOCAL}/${GEOMETRY} ${WS}/annie_v04.gdml  # Geometry may not be `annie_v04.gdml` (probably isnt); 
-                                                            # however, this name is in the code (easier to give into the code than change it).
+ifdh -D cp ${GEOMETRY} ${HS}/annie_v04.gdml  # Geometry may not be `annie_v04.gdml` (probably isnt); 
+                                             # however, this name is in the code (easier to give into the code than change it).
 
 #==========================================MAKE MAC FILE==========================================#
 
-cat <<EOF > ${WB}/WCSim_${CLUSTER}_${PROCESS}.mac
+cat <<EOF > ${HB}/WCSim_${CLUSTER}_${PROCESS}.mac
 #!/bin/sh 
 
 /run/verbose 0
@@ -119,56 +185,52 @@ cat <<EOF > ${WB}/WCSim_${CLUSTER}_${PROCESS}.mac
 /run/beamOn ${NEVENTS}
 EOF
 
-ifdh cp -D ${WB}/WCSim_${CLUSTER}_${PROCESS}.mac ${OUTDIR}
+ifdh cp -D ${HB}/WCSim_${CLUSTER}_${PROCESS}.mac ${OUTDIR}
 if [ $? -ne 0 ]; then 
-  echo "Something went wrong when copying \`${WB}/WCSim_${CLUSTER}_${PROCESS}.mac\` to \`${OUTDIR}\`."
-  return 5
-fi
-
-#====================================MAKE primaries_directory.mac=================================#
-
-rm ${WB}/macros/primaries_directory.mac
-cat <<EOF > ${WB}/macros/primaries_directory.mac
-/mygen/neutrinosdirectory ${PRIMARIES}
-/mygen/primariesdirectory ${INPUT_TAR_DIR_LOCAL}/pnfs/annie/persistent/users/moflaher/g4dirt_vincentsgenie/BNB_Water_10k_22-05-17/annie_tank_flux.*.root
-/mygen/primariesoffset ${PRIMARIES_OFFSET}
-EOF
-ifdh cp -D ${WB}/macros/primaries_directory.mac ${OUTDIR}
-if [ $? -ne 0 ]; then 
-  echo "Something went wrong when copying \`${WB}/macros/primaries_directory.mac\` to \`${OUTDIR}\`."
+  echo "Something went wrong when copying \`${HB}/WCSim_${CLUSTER}_${PROCESS}.mac\` to \`${OUTDIR}\`."
   return 6
 fi
 
-#=============================================MAKE LOG============================================#
+#===========================================GET PRIMARIES=========================================#
 
-cat <<EOF > ${RUNBASE}_${CLUSTER}_${PROCESS}.log
-            Cluster: ${CLUSTER}
-            Process: ${PROCESS}
-            Program: WCSim
-           Run base: ${RUNBASE}
-          Primaries: ${PRIMARIES}
-           Geometry: ${GEOMETRY}
-   Number of Events: ${NEVENTS}
-   Primaries Offset: ${PRIMARIES_OFFSET}
+ifdh cp -D ${PRIMARIESDIR}/gntp.${RUNBASE}${PROCESS}.ghep.root ${HB}
+ifdh cp -D ${PRIMARIESDIR}/annie_tank_flux.${RUNBASE}${PROCESS}.root ${HB}
+
+#==================================MAKE primaries_directory.mac===================================#
+
+rm ${HB}/macros/primaries_directory.mac
+cat <<EOF > ${HB}/macros/primaries_directory.mac
+/mygen/neutrinosdirectory ${HB}/gntp.${RUNBASE}${PROCESS}.ghep.root
+/mygen/primariesdirectory ${HB}/annie_tank_flux.${RUNBASE}${PROCESS}.root
+/mygen/primariesoffset 0
 EOF
-ifdh cp -D ${RUNBASE}_${CLUSTER}_${PROCESS}.log ${OUTDIR}
+ifdh cp -D ${HB}/macros/primaries_directory.mac ${OUTDIR}
 if [ $? -ne 0 ]; then 
-  echo "Something went wrong when copying \`${PWD}/${RUNBASE}_${CLUSTER}_${PROCESS}.log\` to \`${OUTDIR}\`."
+  echo "Something went wrong when copying \`${HB}/macros/primaries_directory.mac\` to \`${OUTDIR}\`."
   return 7
 fi
+
+#==================================MOVE WCSimRootDict_rdict.pcm===================================#
+
+cp ${HS}/WSCimRootDict_rdict.pcm ${HB}
 
 #=============================================RUN WCSim===========================================#
 
-cd ${WB}
+cd ${HB}
 ./WCSim WCSim_${CLUSTER}_${PROCESS}.mac 2>&1 | tee WCSim_${CLUSTER}_${PROCESS}.log
-
-#=============================================END GRID============================================#
-
 ifdh cp -D WCSim_${CLUSTER}_${PROCESS}* ${OUTDIR}
 if [ $? -ne 0 ]; then 
   echo "Something went wrong when copying \`${PWD}/WCSim_${CLUSTER}_${PROCESS}*\` to \`${OUTDIR}\`."
-  return 7
+  return 9
 fi
+
+#===========================================REMOVE FILES==========================================#
+
+cd ${HOMEDIR}
+rm -rf ${INPUT_TAT_DIR_LOCAL}
+rm -rf ${HW}
+
+#=============================================END GRID============================================#
 
 echo "End `date`"
 exit 0
