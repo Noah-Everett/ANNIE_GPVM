@@ -51,6 +51,7 @@ for i in "$@"; do
     -f=*                   ) export FLUXFILENUM="${i#*=}" shift  ;;
     -m=*                   ) export MAXPL="${i#*=}"       shift  ;;
     --message-thresholds=* ) export MESTHRE="${i#*=}"     shift  ;;
+    -o=*                   ) export OUTDIR="${i#*=}"      shift  ;;
     -*                     ) echo "unknown option $i";    exit 1 ;;
    esac
 done
@@ -67,12 +68,9 @@ fi
 if [ -z "$GEOMETRY" ]; then
   export GEOMETRY="annie_v02.gdml"
 fi
-export GEOMETRY="${G}/${GEOMETRY}"
 
 if [-z "$MESTHRE" ]; then
   export MESTHRE=""
-else
-  export MESTHRE="${C}/${MESTHRE}"
 fi
 
 if [ -z "$TOPVOL" ]; then
@@ -82,7 +80,6 @@ fi
 cp /cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALbig.xml.gz .
 gzip -d gxspl-FNALbig.xml.gz
 
-export MAXPL=${G}/${MAXPL}
 export RUN=${RUNBASE}${PROCESS}
 export SEED=${RUNBASE}${PROCESS}${CLUSTER}
 export FLXPSET="ANNIE-tank"
@@ -103,7 +100,8 @@ export GXMLPATH=${C}:${GXMLPATH} #$CONDOR_DIR_INPUT:${GXMLPATH}
 
 
 #=============================MAKE LOG========================#
-ifdh mkdir_p ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
+export OUTDIR=${OUTDIR}/${RUNBASE}_${CLUSTER}
+ifdh mkdir_p ${OUTDIR}
 cat <<EOF > ${RUN}.log
             Program: /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal
                 Run: ${RUN}
@@ -118,7 +116,7 @@ cat <<EOF > ${RUN}.log
 Maximum Path Length: ${MAXPL}
  Message Thresholds: ${MESTHRE}
 EOF
-ifdh cp -D $IFDH_OPTION ${RUN}.log ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
+ifdh cp -D $IFDH_OPTION ${RUN}.log ${OUTDIR}
 #          Z Minimum: ${ZMIN}
 #======================================================================#
 
@@ -180,7 +178,7 @@ export IFDH_GRIDFTP_EXTRA="-st 1000"
     else
         # directory already exists, so let's copy
 #   ifdh cp -D $IFDH_OPTION job_output_${CLUSTER}.${PROCESS}.log ${SCRATCH_DIR}/${GRID_USER}/job_output
-    ifdh cp -D $IFDH_OPTION *.root ${SCRATCH_DIR}/${GRID_USER}/genie_output/${RUNBASE}_${CLUSTER}
+    ifdh cp -D $IFDH_OPTION *.root ${OUTDIR}/${RUNBASE}_${CLUSTER}
       if [ $? -ne 0 ]; then
           echo "Error $? when copying to dCache scratch area!"
           echo "If you created ${SCRATCH_DIR}/${GRID_USER} yourself,"

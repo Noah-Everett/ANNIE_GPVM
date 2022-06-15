@@ -7,12 +7,9 @@ for i in "$@"; do
     -t=*                   ) export TOPVOL="${i#*=}"       shift    ;;
     -f=*                   ) export FLUXFILE="${i#*=}"     shift    ;;
     -m=*                   ) export MAXPL="${i#*=}"        shift    ;;
+    -o=*                   ) export OUTDIR="${i#*=}"       shift    ;;
     --message-thresholds=* ) export MESTHRE="${i#*=}"      shift    ;;
     -N=*                   ) export NJOBS="${i#*=}"        shift    ;;
-    --memory=*             ) export MEMORY="${i#*=}"       shift    ;;
-    --disk=*               ) export DISK="${i#*=}"         shift    ;;
-    --cpu=*                ) export CPU="${i#*=}"          shift    ;;
-    --expected-lifetime=*  ) export EXPLT="${i#*=}"        shift    ;;
     -h*|--help*            ) usage;                        return 1 ;;
     -*                     ) echo "unknown option \"$i\""; return 1 ;;
   esac
@@ -29,7 +26,7 @@ if [ -z ${NEVT} ]; then
 fi
 
 if [ -z ${GDML} ]; then
-  echo "Use \`-g=\` to set the gdml geometry file (path from \`$G\`)."
+  echo "Use \`-g=\` to set the path to the gdml geometry file."
   return 1
 fi
 
@@ -44,12 +41,17 @@ if [ -z ${FLUXFILE} ]; then
 fi
 
 if [ -z ${MAXPL} ]; then
-  echo "Use \`-m=\` to set max pathlength file (path from \`$G\`)."
+  echo "Use \`-m=\` to set the path to the max pathlength file."
   return 1
 fi
 
 if [ -z ${MESTHRE} ]; then
-  echo "Use \`--message-thresholds=\` to set message thresholds filee (path from \`$C\`)."
+  echo "Use \`--message-thresholds=\` to set the path to the message thresholds file (typically a file in \`$C\`)."
+  return 1
+fi
+
+if [ -z "${OUTDIR}" ]; then
+  echo "Use \`-o=\` to set the output directory (Use \`-o=\` to set the output geometry (Note: a directory will be created in this folder. That directory will contain outputs)."
   return 1
 fi
 
@@ -58,24 +60,12 @@ if [ -z ${NJOBS} ]; then
   return 1
 fi
 
-if [ -z ${MEMORY} ]; then
-  echo "Use \`--memory=\` to set the memory allocated."
-  return 1
-fi
-
-if [ -z ${DISK} ]; then
-  echo "Use \`--disk=\` to set disk allocation."
-  return 1
-fi
-
-if [ -z ${CPU} ]; then
-  echo "Use \`--cpu=\` to set number of cpus."
-  return 1
-fi
-
-if [ -z ${EXPLT} ]; then
-  echo "Use \`--expected-lifetime=\` to set the exepected lifetime of each job."
-  return 1
+export CPU="1"
+export MEMORY="1500MB"
+export DISK="2700MB"
+let EXPLT=$NEVT/100
+if [ "$EXPLT" == "0" ]; then
+  EXPLT=2
 fi
 
 echo jobsub_submit \
@@ -85,7 +75,7 @@ echo jobsub_submit \
 --memory=$MEMORY \
 --disk=$DISK \
 --cpu=$CPU \
---expected-lifetime=$EXPLT \
+--expected-lifetime=${EXPLT}h \
 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
 -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
 --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
@@ -100,7 +90,8 @@ file:///annie/app/users/neverett/grid/run_grid_genie.sh \
 -t=$TOPVOL \
 -f=$FLUXFILE \
 -m=$MAXPL \
---message-thresholds=$MESTHRE
+--message-thresholds=$MESTHRE \
+-o=$OUTDIR
 
 jobsub_submit \
 -G annie \
@@ -109,7 +100,7 @@ jobsub_submit \
 --memory=$MEMORY \
 --disk=$DISK \
 --cpu=$CPU \
---expected-lifetime=$EXPLT \
+--expected-lifetime=${EXPLT}h \
 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
 -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
 --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
@@ -124,24 +115,21 @@ file:///annie/app/users/neverett/grid/run_grid_genie.sh \
 -t=$TOPVOL \
 -f=$FLUXFILE \
 -m=$MAXPL \
---message-thresholds=$MESTHRE
+--message-thresholds=$MESTHRE \
+-o=$OUTDIR
 }
 
 usage() {
 cat >&2 <<EOF
-run_genie_grid.sh -r=#                 (run base number)
-                  -n=#                 (number of events)
-                  -g=abc.gdml          (geometry file (in $G))
-                  -t=ABC_LV            (geometry top volume)
-                  -f=123*              (flux file number (in $F))
-                  -m=abc.maxpl.xml     (max path length file (in $G))
---message-thresholds=Messenger_abc.xml (output type priorities (in $C))
-                  -N=#                 (number of identical jobs)
-            --memory=#MB               (amount of memory)
-              --disk=#MB               (amount of disk space)
-               --cpu=#                 (number of cpus)
- --expected-lifetime=#h                (maximum run time)
-           -h|--help                   (print script usage statement (this output))
+run_genie_grid.sh -r=<run base number>
+                  -n=<number of events>
+                  -g=</path/to/geometry/file.gdml>
+                  -t=<geometry top volume name>
+                  -f=<flux file number (or numbers using '*') (in $F)>
+                  -m=</path/to/max/path/length/file.maxpl.xml>
+--message-thresholds=Messenger_<name>.xml
+                  -N=<number of identical jobs>
+           -h|--help
 EOF
 }
 

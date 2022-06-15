@@ -22,27 +22,27 @@ done
 
 if [ -z "${RUNBASE}" ]; then
   echo "Use \`-r=\` to set the run base number."
-  return 1
+  exit 1
 fi
 
 if [ -z "${PRIMARIESDIR}" ]; then
   echo "Use \`-p=\` to set the primaries directory (ex: -p=/pnfs/annie/persistent/users/...)."
-  return 2
+  exit 2
 fi
 
 if [ -z "${NEVENTS}" ]; then
   echo "Use \`-n=\` to set the number of events to propigate."
-  return 3
+  exit 3
 fi
 
 if [ -z "${GEOMETRY}" ]; then
   echo "Use \`-g=\` to set the annie geometry (ex: -g=/pnfs/annie/persistent/users/.../name.gdml)"
-  return 4
+  exit 4
 fi
 
 if [ -z "${OUTDIR}" ]; then
-  echo "Use \`-o=\` to set the output geometry (Note: a directory will be created in this folder. That directory will contain outputs)."
-  return 5
+  echo "Use \`-o=\` to set the output directory (Note: a directory (${CLUSTER}_${PROCESS}/) will be created in this folder. That directory will contain outputs)."
+  exit 5
 fi
 export OUTDIR=${OUTDIR}/${RUNBASE}_${CLUSTER}
 
@@ -90,7 +90,6 @@ EOF
 ifdh cp -D ${RUNBASE}_${CLUSTER}_${PROCESS}.log ${OUTDIR}
 if [ $? -ne 0 ]; then 
   echo "Something went wrong when copying \`${PWD}/${RUNBASE}_${CLUSTER}_${PROCESS}.log\` to \`${OUTDIR}\`."
-  return 8
 fi
 
 #============================================MAKE WCSim===========================================#
@@ -118,16 +117,9 @@ make clean
 make rootcint
 make
 
-ifdh mkdir_p ${OUTDIR}/done
-
 cd ${HB}
-cmake ${HS} 2>&1 | tee out_${N}.log
-ifdh cp -D out_${N}.log ${OUTDIR}/done
-let N=${N}+1
-
-make 2>&1 | tee out_${N}.log
-ifdh cp -D out_${N}.log ${OUTDIR}/done
-let N=${N}+1
+cmake ${HS}
+make
 
 #========================================MOVE GEOMETRY FILE=======================================#
 
@@ -188,7 +180,6 @@ EOF
 ifdh cp -D ${HB}/WCSim_${CLUSTER}_${PROCESS}.mac ${OUTDIR}
 if [ $? -ne 0 ]; then 
   echo "Something went wrong when copying \`${HB}/WCSim_${CLUSTER}_${PROCESS}.mac\` to \`${OUTDIR}\`."
-  return 6
 fi
 
 #===========================================GET PRIMARIES=========================================#
@@ -207,21 +198,22 @@ EOF
 ifdh cp -D ${HB}/macros/primaries_directory.mac ${OUTDIR}
 if [ $? -ne 0 ]; then 
   echo "Something went wrong when copying \`${HB}/macros/primaries_directory.mac\` to \`${OUTDIR}\`."
-  return 7
 fi
 
 #==================================MOVE WCSimRootDict_rdict.pcm===================================#
 
-cp ${HS}/WSCimRootDict_rdict.pcm ${HB}
+cp ${HS}/WCSimRootDict_rdict.pcm ${HB}
 
 #=============================================RUN WCSim===========================================#
 
 cd ${HB}
 ./WCSim WCSim_${CLUSTER}_${PROCESS}.mac 2>&1 | tee WCSim_${CLUSTER}_${PROCESS}.log
-ifdh cp -D WCSim_${CLUSTER}_${PROCESS}* ${OUTDIR}
+ifdh cp WCSim_${CLUSTER}_${PROCESS}.log          ${OUTDIR}/WCSim_${CLUSTER}_${PROCESS}.log
+ifdh cp WCSim_${CLUSTER}_${PROCESS}_0.root       ${OUTDIR}/WCSim_${CLUSTER}_${PROCESS}.root
+ifdh cp WCSim_${CLUSTER}_${PROCESS}_lappd_0.root ${OUTDIR}/WCSim_${CLUSTER}_${PROCESS}_lappd.root
+
 if [ $? -ne 0 ]; then 
   echo "Something went wrong when copying \`${PWD}/WCSim_${CLUSTER}_${PROCESS}*\` to \`${OUTDIR}\`."
-  return 9
 fi
 
 #===========================================REMOVE FILES==========================================#
