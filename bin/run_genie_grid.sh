@@ -127,9 +127,9 @@ run_genie_grid.sh -r=<run base number>
                   -t=<geometry top volume name>
                   -f=<flux file number (or numbers using '*') (in $F)>
                   -m=</path/to/max/path/length/file.maxpl.xml>
---message-thresholds=Messenger_<name>.xml
+                  --message-thresholds=Messenger_<name>.xml
                   -N=<number of identical jobs>
-           -h|--help
+                  -h|--help
 EOF
 }
 

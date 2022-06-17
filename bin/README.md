@@ -1,20 +1,25 @@
 # Information on Scripts in `$B` (this directory)
 
 ### Note:
-- As of now, these scripts have not been made to be the most user-friendly. They lack things like error messages and option/argument checking. These may or may not be added in the future.
-- These scripts where made to make my life more convenient, thus they include shortcuts to directories in `$NE` which is of little use to others. However, this should be fairly easy to change in each script. Again, this may or may not be changed in the future.
-- To use the following commands make sure to run: `source /annie/app/users/neverett/bin/setup`
+- As of now, not all of these scripts have been made to be the most user-friendly. Some are lack things like error messages and option/argument checking. These may or may not be added in the future.
+- These scripts where made to make my life more convenient, thus they include shortcuts to directories in `$NE` which is of little use to others. However, this should be fairly easy to change in each script. Again, this may or may not be changed in the future. Some newer scripts have been make to work with any directory. See either the below usage statement or by using the `-h` option for more information.
+- To use the following commands make sure to run: `source /annie/app/users/neverett/bin/setup`. Note, none of the scripts themselves require `$B/setup` to be sourced.
 - `<>` denotes required option or argument, `[]` denotes optional option or argument.
 
 ## Table of Contents
 - [run_genie.sh](#run_geniesh)
 - [run_genie_grid.sh](#run_genie_gridsh)
+- [run_wcsim.sh](#run_wcsimsh)
+- [run_wcsim_grid.sh](#run_wcsim_gridsh)
+- [run_g4dirt.sh](#run_g4dirtsh)
 - [make_maxpl_grid.sh](#make_maxpl_gridsh)
 - [make_gst.sh](#make_gstsh)
 - [make_tar_genie.sh](#make_tar_geniesh)
+- [make_tar_wcsim.sh](#make_tar_geniesh)
 - [make_geoms_1D.sh](#make_geoms_1Dsh)
 - [setup](#setup)
 - [setup_genie3_00_06.sh](#setup_genie3_00_06sh)
+- [setup_wcsim.sh](#setup_wcsimsh)
 - [setup_grid.sh](#setup_gridsh)
 - [setup_shortcuts.sh](#setup_shortcutssh)
 - [setup_singularity.sh](#setup_singularitysh)
@@ -24,7 +29,7 @@
 ### About
 `run_genie.sh` is used to run the GENIE Generator on the GPVM. 
 Currently, the script is specialized to my directory (`$NE`); though, with moderately minor modifications, the script could be modified to work for any user.
-In general, this script (or any GENIE usage on the GPVM) should be limited to relatively small or experimental runs. 
+In general, this script (or any GENIE usage on the GPVM) should be limited to relatively small or experimental runs/run batches. 
 Any larger batches of runs should be run on the Grid both to save the user time and also so ensure that the GPVM remains usable for all other collaboration members.
 
 ### Usage
@@ -45,21 +50,21 @@ run_genie.sh -r=<run number>
 
 #### Typical GENIE Run (modified slightly to make the run time lower):
 ```
-$ nohup $B/run_genie.sh -r=0 -n=100 -g=annie_v01.gdml -t=TWATER_LV -f=000* -m=annie_v01.maxpl.xml -o=. | tee -a ./run_0.out
+$ nohup $B/run_genie.sh -r=0 -n=100 -g=depreciated/annie_v01.gdml -t=TWATER_LV -f=000* -m=depreciated/annie_v01.maxpl.xml -o=. | tee -a ./run_0.log
 ```
 - Run 0
 - 100 events
 - Using original ANNIE geometry (`annie_v01.gdml`) and its precomputed `.maxpl.xml` file (`annie_v01.maxpl.xml`)
 - Events generated in `TWATER_LV`
-- Using flux files [`bnb_annie_0000.root`,`bnb_annie_0009.root`] (10 flux files)
-- A copy of the program output will be saved to `./run_0.out`
+- Using flux files [`bnb_annie_0000.root`,`bnb_annie_0009.root`] (10 flux files) (I normally use all 5,000 which takes much longer)
+- Program run log will be saved to `./run_0.log`
 
 #### Generating `.maxpl.xml` file: 
 ```
 $ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t=EXP_HALL_LV -f=* -m=+annie_v02_sphere_vacuum/annie_v02_1.maxpl.xml -S=30000 --message-thresholds=Messenger_warn.xml -o=. | tee /dev/null
 ```
 - Run 1
-- 1 Event (small to take less time)
+- 1 Event (small to take less time. Quality of `.maxpl.xml` file dont depend on number of events)
 - `$G/annie_v02_sphere_vacuum/annie_v02_1.gdml` geometry file
 - NOTE: `+` at the beginning of `-m=` tells GENIE to create a new `.maxpl.xml` file
 - NOTE: `-S=30000` tells GENIE to use 30,000 flux particles to approximate the max path length of materials in the geometry
@@ -70,25 +75,23 @@ $ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t
 
 ### About
 `run_genie_grid.sh` is used to run the GENIE Generator on the Grid.
-Currently, this script (and `$GR/run_grid_genie.sh`, which is called by this script) is specialized to my directory (`$NE`); though, with moderately minor modifications, this script (and `$GR/run_grid_genie.sh`) could be modified to work for any user.
 As stated above in the About section of run_genie.sh, this script can (and should) be used to run large groups of GENIE Generator runs as opposed to running them on the ANNIE GPVM. 
+Note, this script *is not* specalized to my user directory (`$NE`), thus all options that point to a file require paths to the files. 
+Also, remember all these files *must* be in `$GR/grid_genie.tar.gz`; if you use files not in `$GR/grid_genie.tar.gz` you will have to create your own tar file and modify `run_genie_grid.sh` to use that tarball.
+The grid requirements (memory, disk, cpus, and expected runtime) are calculated by the script based on number of events per run.
 
-For additional information on the Grid, consult [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/grid#readme).
+For additional information on the Grid (and tarballs), consult [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/grid#readme).
 
 ### Usage
 ```
 run_genie_grid.sh -r=<run base number>
-                  -n=<number of events (in each run)>
-                  -g=<geometry file name (in $G)>.gdml
-                  -t=<top volume name>_LV
-                  -f=<flux file number (or numbers using '*') (in $FLUX)>
-                  -m=<max path length file (in $G)>.maxpl.xml
-                  --message-thresholds=Messenger_<name (in $C) (default = "")>.xml
-                  -N=<number of identical runs>
-                  --memory=<amount of ram in MB or GB><MB || GB>
-                  --disk=<amount of disk space in MB or GB><MB || GB>
-                  --cpu=<number of CPUs>
-                  --expected-lifetime=<number of hours>h
+                  -n=<number of events>
+                  -g=</path/to/geometry/file.gdml>
+                  -t=<geometry top volume name>
+                  -f=<flux file number (or numbers using '*') (in $F)>
+                  -m=</path/to/max/path/length/file.maxpl.xml>
+                  --message-thresholds=</path/to/message/thresholds/Messenger_<name>.xml (typically a file in $C)>
+                  -N=<number of identical jobs>
                   -h|--help
 ```
 
@@ -96,22 +99,18 @@ run_genie_grid.sh -r=<run base number>
 
 #### Fast to Run Example:
 ```
-$ source $B/run_genie_grid.sh -r=0 -n=100 -g=annie_v02.gdml -t=TWATER_LV -f=000* -m=annie_v02.maxpl.xml --message-thresholds=Messenger_warn.xml -N=2 --memory=2GB --disk=1GB --cpu=1 --expected-lifetime=1h
+$ source $B/run_genie_grid.sh -r=0 -n=100 -g=$G/depreciated/annie_v02.gdml -t=TWATER_LV -f=000* -m=$G/depreciated/annie_v02.maxpl.xml --message-thresholds=$C/Messenger_warn.xml -N=2
 ```
 - Run base = 0
 - 100 events in each run
-- `$G/annie_v02.gdml` geometry file, with events in TWATER_LV (and its sub volumes), using its max path length file (`$G/annie_v02.maxpl.xml`)
+- `$G/depreciated/annie_v02.gdml` geometry file, with events in `TWATER_LV` (and its sub volumes), using its max path length file (`$G/depreciated/annie_v02.maxpl.xml`)
 - Using flux files [`bnb_annie_0000.root`,`bnb_annie_0009.root`] (10 flux files)
 - Set all message thresholds to `warn`
 - 2 identical runs
-- 2GB of memory
-- 1GB of disk space
-- 1 cpu
-- Expected lifetime of 1hr
 
 #### Realistic Run:
 ```
-$ source $B/run_genie_grid.sh -r=0 -n=1000 -g=annie_v02_sphere_argon_gas_20atm/annie_v02_4.gdml -t=TWATER_LV -f=* -m=annie_v02_sphere_argon_gas_20atm/annie_v02_4.maxpl.xml --message-thresholds=Messenger_warn.xml -N=20 --memory=8000MB --disk=5GB --cpu=4 --expected-lifetime=9h
+$ source $B/run_genie_grid.sh -r=0 -n=1000 -g=$G/annie_v02_sphere_argon_gas_20atm/annie_v02_4.gdml -t=TWATER_LV -f=* -m=$G/annie_v02_sphere_argon_gas_20atm/annie_v02_4.maxpl.xml --message-thresholds=$C/Messenger_warn.xml -N=20
 ```
 - Run base = 0
 - 1000 events in each run (20 runs --> 20,000 total events)
@@ -119,15 +118,65 @@ $ source $B/run_genie_grid.sh -r=0 -n=1000 -g=annie_v02_sphere_argon_gas_20atm/a
 - Using all flux files ([`bnb_annie_0000.root`,`bnb_annie_4999.root`] (5000 flux files))
 - Set all message thresholds to `warn` (decrease run time and lower disk usage)
 - 20 identical runs (each with different run number and seed)
-- 8GB of memory
-- 5GB of disk space
-- 4 cpu
-- Expected lifetime of 9hr
+
+## `run_wcsim.sh`
+
+### About
+
+`run_wcsim.sh` is used to run WCSim to propigate events from GENIE/g4dirt files.
+
+### Usage
+```
+run_wcsim.sh -r=<run number (or numbers using `*`. Ex: \`-r='4*'\`)>
+             -p=</path/to/primaries/dir>
+             -n=<number of events per primary file to propigate>
+             -g=</path/to/geometry/file.gdml>
+             -o=</path/to/output/dir>
+             -h|--help
+```
+
+### Example Usage
+
+#### Typical usage:
+```
+$ source $B/run_wcsim.sh -r=0 -p=$R/nonExistentRun -n=1000 -g=$G/annie_tube_argon_liquid/annie_v02_4.gdml -o=$R/newFolder
+```
+
+## `run_wcsim_grid.sh`
+
+### About
+`run_wcsim_grid.sh` is used to do single or batch runs of WCSim on the Grid.
+Because `$GR/run_grid_wcsim.sh` (called by this script) uses `ifdh`, all files specified as options must be in `/pnfs/` as it is accessable to Grid worker nodes.
+
+### Usage
+```
+run_wcsim_grid.sh -r=<run base number>
+                  -p=</path/to/primaries (should be in /pnfs/)>
+                  -d=<number of events per g4dirt file (annie_tank_flux.<#>.root) and GENIE file>
+                  -w=<number of events per output wcsim file>
+                  -g=</path/to/geometry/file (should be in /pnfs/)>
+                  -o=</path/to/output/directory (should be in /pnfs/)>
+                  -N=<number of files/identical runs>
+                  -h|--help
+```
+Note: (number of WCSim events/file (`-w`))\*(number of files (`-N`))=(total number of GENIE events)=(number of events per GENIE file (`-d`))\*(number of GENIE files)
+
+### Example Usage
+
+#### Typical usage:
+```
+$ $B/run_wcsim_grid.sh -r=0 -p=$PNE/runs -d=1000 -w=500 -g=$PNE/geometry/annie_v02_argon_liquid/annie_v02_4.gdml -o=$PNE/runs -N=600
+```
+- 1000 events per g4dirt/GENIE file
+- 500 events per WCSim file
+- 600 identical runs
+- Will result in 600 files, each with 500 events. Thus 300,000 events propigated.
 
 ## `make_maxpl_grid.sh`
+
 ### About
 `make_maxpl_grid.sh` is used to generate `.maxpl.xml` files using the Grid. 
-`.maxpl.xml` files, while not nessecary to use the GENIE Generator, do decrease its runtime significantly. 
+`.maxpl.xml` files, while not nessecary to use the GENIE Generator, do decrease its runtime. 
 Currently, this script is specialized to my directory (`$NE`); though, with moderately minor modifications, this script could be modified to work for any user. 
 As stated previously, the Grid should be used to decrease pressure on the annie GPVM. 
 Thus, when generating `.maxpl.xml` files for multiple `gdml` geometry files, it is highly recommended to use the Grid via this script.

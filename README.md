@@ -8,9 +8,13 @@
     bin/                        # user runnable scripts
         run_genie.sh                 # runs GENIE Generator on ANNIE GPVM
         run_genie_grid.sh            # runs GENIE Generator on the Grid
+        run_wcsim.sh                 # runs WCSim on ANNIE GPVM
+        run_wcsim_grid.sh            # runs WCSim on the Grid
         make_maxpl_grid.sh           # runs GENIE Generator on the Grid to produce maxpl.xml files
         make_gst.sh                  # runs GENIE gntpc to convert ghep files to gst files
         make_tar_genie.sh            # makes tarball for running GENIE on Grid
+        make_tar_g4dirt.sh           # makes tarball for running GENIE on Grid
+        make_tar_wcsim.sh            # makes tarball for running GENIE on Grid
         make_geoms_1D.sh             # makes versions of the ANNIE geometry (1 variable)
         make_geoms_4D.sh             # makes versions of the ANNIE geometry (4 variables) (depreciated)
         setup                        # general user setup
@@ -33,6 +37,7 @@
     grid/                       # contains grid runable scripts (and their required files)
         run_grid_genie.sh            # grid runnable script for GENIE (ran by $B/run_genie_grid.sh)
         run_grid_genie_maxpl.sh      # grid runnable script for GENIE (ran by $B/make_maxpl_grid.sh)
+        run_grid_wcsim.sh            # grid runnable script for WCSim (ran by $B/run_wcsim_grid.sh)
     runs/                       # directory that contains program outputs (GENIE, WCSim, and/or ToolAnalysis) (before analysis)
 ```
 
@@ -89,7 +94,7 @@ export PANNIE=/pnfs/annie
 
 ## Information on Scripts
 
-Usage statements for scripts in [`$B`](https://github.com/Noah-Everett/ANNIE_GPVM/tree/main/bin) can be found in [`$B/README.md`](https://github.com/Noah-Everett/ANNIE_GPVM/tree/main/bin#readme).
+Usage statements for user runnable scripts in [`$B`](https://github.com/Noah-Everett/ANNIE_GPVM/tree/main/bin) can be found in [`$B/README.md`](https://github.com/Noah-Everett/ANNIE_GPVM/tree/main/bin#readme).
 
 Information on the Grid can be found in [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_GPVM/tree/main/grid#readme).
 
