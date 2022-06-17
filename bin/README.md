@@ -15,7 +15,7 @@
 - [make_maxpl_grid.sh](#make_maxpl_gridsh)
 - [make_gst.sh](#make_gstsh)
 - [make_tar_genie.sh](#make_tar_geniesh)
-- [make_tar_wcsim.sh](#make_tar_geniesh)
+- [make_tar_wcsim.sh](#make_tar_wcsimsh)
 - [make_geoms_1D.sh](#make_geoms_1Dsh)
 - [setup](#setup)
 - [setup_genie3_00_06.sh](#setup_genie3_00_06sh)
@@ -273,7 +273,26 @@ $B/make_genie_gst.sh -r '*' --message-thresholds=Messenger_warn.xml
 If any of these files have been changed, and you wish to use the new versions, make sure to rerun `$B/make_tar_genie.sh` to produce an up to date `$GR/grid_genie.tar.gz`.
 
 ### Usage
-`$ source $B/make_tar_genie.sh`
+```
+$B/make_tar_genie.sh
+```
+
+## `make_tar_wcsim.sh`
+
+### About
+`make_tar_wcsim.sh` is used to create a tarball (`$GR/grid_wcsim.tar.gz`) that contains all the files needed to run WCSim on the Grid. 
+This tarball contains the following files:
+- `$W/modified_code/*`
+- `$W/setupenvs.sh`
+- `$WB/*`
+- `$WS/*`
+
+If any of these files have been changed, and you wish to use the new versions, make sure to rerun `$B/make_tar_wcsim.sh` to produce an up to date `$GR/grid_wcsim.tar.gz`.
+
+### Usage
+```
+$B/make_tar_wcsim.sh
+```
 
 ## `make_geoms_1D.sh`
 
@@ -318,11 +337,21 @@ $ source /annie/app/users/neverett/bin/setup
 ## `setup_genie3_00_06.sh`
 
 ### About
-`setup_genie3_00_06.sh` sets up GENIE v3_00_06 through ups on the GPVM. The user should almost never have to directly run this script, as it is mainly intended and used by other scripts that run GENIE products.
+`setup_genie3_00_06.sh` sets up GENIE v3_00_06 through UPS on the GPVM. The user should almost never have to directly run this script, as it is mainly intended and used by other scripts that run GENIE products.
 
 ### Usage
 ```
 source $B/setup_genie3_00_06.sh
+```
+
+## `setup_wcsim.sh`
+
+### About
+`setup_wcsim.sh` sets up WCSim's dependencies through UPS on the GPVM. The user should almost never have to directly run this script, as it is mainly intended and used by other scripts that run WCSim.
+
+### Usage
+```
+source $B/setup_wcsim.sh
 ```
 
 ## `setup_grid.sh`
