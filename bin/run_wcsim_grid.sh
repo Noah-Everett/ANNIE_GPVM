@@ -3,14 +3,11 @@ for i in "$@"; do
   case $i in
     -r=*                   ) export RUNBASE="${i#*=}"      shift    ;;
     -p=*                   ) export PRIMARIES="${i#*=}"    shift    ;;
-    -n=*                   ) export NEVENTS="${i#*=}"      shift    ;;
+    -d=*                   ) export NDIRT="${i#*=}"        shift    ;;
+    -w=*                   ) export NWCSIM="${i#*=}"       shift    ;;
     -g=*                   ) export GEOMETRY="${i#*=}"     shift    ;;
     -o=*                   ) export OUTDIR="${i#*=}"       shift    ;;
     -N=*                   ) export NFILES="${i#*=}"       shift    ;;
-#    --memory=*             ) export MEMORY="${i#*=}"       shift    ;;
-#    --disk=*               ) export DISK="${i#*=}"         shift    ;;
-#    --cpu=*                ) export CPU="${i#*=}"          shift    ;;
-#    --expected-lifetime=*  ) export EXPLT="${i#*=}"        shift    ;;
     -h*|--help*            ) usage;                        return 1 ;;
     -*                     ) echo "unknown option \"$i\""; return 1 ;;
   esac
@@ -26,34 +23,37 @@ if [ -z "${PRIMARIES}" ]; then
   return 2
 fi
 
-if [ -z "${NEVENTS}" ]; then
-  echo "Use \`-n=\` to set the number of events to propigate."
+if [ -z "${NDIRT}" ]; then
+  echo "Use \`-d=\` to set the number of events per annie_dirt_flux file to propigate."
   return 3
+fi
+
+if [ -z "${NWCSIM}" ]; then
+  echo "Use \`-w=\` to set the number of events per WCSim output file."
+  return 4
 fi
 
 if [ -z "${GEOMETRY}" ]; then
   echo "Use \`-g=\` to set the annie geometry (ex: -g=/pnfs/annie/persistent/users/.../name.gdml)"
-  return 4
+  return 5
 fi
 
 if [ -z "${OUTDIR}" ]; then
   echo "Use \`-o=\` to set the output directory (Use \`-o=\` to set the output geometry (Note: a directory will be created in this folder. That directory will contain outputs)."
-  return 5
+  return 6
 fi
 
 if [ -z "${NFILES}" ]; then
   echo "Use \`-N=\` to set the number of genie files to propagate."
-  return 6
+  return 7
 fi
 
 let NJOBS=${NFILES}
-let MEMORY=${NFILES}*2000
-let DISK=${NFILES}*1000
-let CPU=${NFILES}/4
-if [ "${CPU}" == "0" ]; then
-  let CPU=1
-fi
-let EXPLT=5
+let MEMORY=1536
+let DISK=512
+let CPU=1
+let EXPLT=${NWCSIM}/80
+let EXPLT=${EXPLT}+1
 
 echo jobsub_submit \
 -G annie \
@@ -73,7 +73,8 @@ echo jobsub_submit \
 file:///annie/app/users/neverett/grid/run_grid_wcsim.sh \
 -r=${RUNBASE} \
 -p=${PRIMARIES} \
--n=${NEVENTS} \
+-d=${NDIRT} \
+-w=${NWCSIM} \
 -g=${GEOMETRY} \
 -o=${OUTDIR}
 
@@ -95,7 +96,8 @@ jobsub_submit \
 file:///annie/app/users/neverett/grid/run_grid_wcsim.sh \
 -r=${RUNBASE} \
 -p=${PRIMARIES} \
--n=${NEVENTS} \
+-d=${NDIRT} \
+-w=${NWCSIM} \
 -g=${GEOMETRY} \
 -o=${OUTDIR}
 }

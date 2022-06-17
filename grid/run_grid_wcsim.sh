@@ -9,42 +9,28 @@ let N=0
 
 for i in "$@"; do
   case $i in
-    -r=*                   ) export RUNBASE="${i#*=}"   shift  ;;
-    -p=*                   ) export PRIMARIESDIR="${i#*=}" shift  ;;
-    -n=*                   ) export NEVENTS="${i#*=}"   shift  ;;
-    -g=*                   ) export GEOMETRY="${i#*=}"  shift  ;;
-    -o=*                   ) export OUTDIR="${i#*=}"    shift  ;;
-    -*                     ) echo "Unknown option \`$i\`.";  exit 1 ;;
+    -r=*                   ) export RUNBASE="${i#*=}"       shift  ;;
+    -p=*                   ) export PRIMARIESDIR="${i#*=}"  shift  ;;
+    -d=*                   ) export NDIRT="${i#*=}"         shift  ;;
+    -w=*                   ) export NWCSIM="${i#*=}"        shift  ;;
+    -g=*                   ) export GEOMETRY="${i#*=}"      shift  ;;
+    -o=*                   ) export OUTDIR="${i#*=}"        shift  ;;
+    -*                     ) echo "Unknown option \`$i\`."; exit 1 ;;
   esac
 done
 
-#=========================================PROCESS VARIABLES=======================================#
-
-if [ -z "${RUNBASE}" ]; then
-  echo "Use \`-r=\` to set the run base number."
-  exit 1
-fi
-
-if [ -z "${PRIMARIESDIR}" ]; then
-  echo "Use \`-p=\` to set the primaries directory (ex: -p=/pnfs/annie/persistent/users/...)."
-  exit 2
-fi
-
-if [ -z "${NEVENTS}" ]; then
-  echo "Use \`-n=\` to set the number of events to propigate."
-  exit 3
-fi
-
-if [ -z "${GEOMETRY}" ]; then
-  echo "Use \`-g=\` to set the annie geometry (ex: -g=/pnfs/annie/persistent/users/.../name.gdml)"
-  exit 4
-fi
-
-if [ -z "${OUTDIR}" ]; then
-  echo "Use \`-o=\` to set the output directory (Note: a directory (${CLUSTER}_${PROCESS}/) will be created in this folder. That directory will contain outputs)."
-  exit 5
-fi
 export OUTDIR=${OUTDIR}/${RUNBASE}_${CLUSTER}
+
+#==========================================CALCULATE NUMBERS======================================#
+
+let NUM=$(((${PROCESS}*${NWCSIM})/${NDIRT}))
+let OFFSET=$(((${PROCESS}*${NWCSIM})-(${NUM}*${NDIRT})))
+
+if [ "${RUNBASE}" == "0" ]; then
+  export NUM=${NUM}
+else
+  export NUM=${RUNBASE}${NUM}
+fi
 
 #==============================================SETUPS=============================================#
 
@@ -77,15 +63,20 @@ ifdh mkdir_p ${OUTDIR}
 
 #=============================================MAKE LOG============================================#
 
-cat <<EOF > ${RUNBASE}_${CLUSTER}_${PROCESS}.log
+cat <<EOF > ${HOMEDIR}/WCSim_${CLUSTER}_${PROCESS}.log
+#==================== RUN SETTINGS ====================#
             Cluster: ${CLUSTER}
             Process: ${PROCESS}
             Program: WCSim
            Run base: ${RUNBASE}
           Primaries: ${PRIMARIESDIR}
+Primary File Number: ${NUM}
+     Primary Offset: ${OFFSET}
            Geometry: ${GEOMETRY}
    Number of Events: ${NEVENTS}
    Primaries Offset: 0
+
+#==================== RUN LOG ====================#
 EOF
 ifdh cp -D ${RUNBASE}_${CLUSTER}_${PROCESS}.log ${OUTDIR}
 if [ $? -ne 0 ]; then 
@@ -174,7 +165,7 @@ cat <<EOF > ${HB}/WCSim_${CLUSTER}_${PROCESS}.mac
 
 /WCSimIO/RootFile WCSim_${CLUSTER}_${PROCESS}
 
-/run/beamOn ${NEVENTS}
+/run/beamOn ${NWCSIM}
 EOF
 
 ifdh cp -D ${HB}/WCSim_${CLUSTER}_${PROCESS}.mac ${OUTDIR}
@@ -184,21 +175,17 @@ fi
 
 #===========================================GET PRIMARIES=========================================#
 
-ifdh cp -D ${PRIMARIESDIR}/gntp.${RUNBASE}${PROCESS}.ghep.root ${HB}
-ifdh cp -D ${PRIMARIESDIR}/annie_tank_flux.${RUNBASE}${PROCESS}.root ${HB}
+ifdh cp -D ${PRIMARIESDIR}/gntp.${NUM}.ghep.root ${HB}
+ifdh cp -D ${PRIMARIESDIR}/annie_tank_flux.${NUM}.root ${HB}
 
 #==================================MAKE primaries_directory.mac===================================#
 
 rm ${HB}/macros/primaries_directory.mac
 cat <<EOF > ${HB}/macros/primaries_directory.mac
-/mygen/neutrinosdirectory ${HB}/gntp.${RUNBASE}${PROCESS}.ghep.root
-/mygen/primariesdirectory ${HB}/annie_tank_flux.${RUNBASE}${PROCESS}.root
-/mygen/primariesoffset 0
+/mygen/neutrinosdirectory ${HB}/gntp.*.ghep.root
+/mygen/primariesdirectory ${HB}/annie_tank_flux.*.root
+/mygen/primariesoffset ${OFFSET}
 EOF
-ifdh cp -D ${HB}/macros/primaries_directory.mac ${OUTDIR}
-if [ $? -ne 0 ]; then 
-  echo "Something went wrong when copying \`${HB}/macros/primaries_directory.mac\` to \`${OUTDIR}\`."
-fi
 
 #==================================MOVE WCSimRootDict_rdict.pcm===================================#
 
@@ -207,10 +194,10 @@ cp ${HS}/WCSimRootDict_rdict.pcm ${HB}
 #=============================================RUN WCSim===========================================#
 
 cd ${HB}
-./WCSim WCSim_${CLUSTER}_${PROCESS}.mac 2>&1 | tee WCSim_${CLUSTER}_${PROCESS}.log
-ifdh cp WCSim_${CLUSTER}_${PROCESS}.log          ${OUTDIR}/WCSim_${CLUSTER}_${PROCESS}.log
-ifdh cp WCSim_${CLUSTER}_${PROCESS}_0.root       ${OUTDIR}/WCSim_${CLUSTER}_${PROCESS}.root
-ifdh cp WCSim_${CLUSTER}_${PROCESS}_lappd_0.root ${OUTDIR}/WCSim_${CLUSTER}_${PROCESS}_lappd.root
+./WCSim WCSim_${CLUSTER}_${PROCESS}.mac 2>&1 | tee -a ${HOMEDIR}/WCSim_${CLUSTER}_${PROCESS}.log
+ifdh cp ${HOMEDIR}/WCSim_${CLUSTER}_${PROCESS}.log ${OUTDIR}/WCSim_${CLUSTER}_${PROCESS}.log
+ifdh cp WCSim_${CLUSTER}_${PROCESS}_0.root         ${OUTDIR}/WCSim_${CLUSTER}_${PROCESS}.root
+ifdh cp WCSim_${CLUSTER}_${PROCESS}_lappd_0.root   ${OUTDIR}/WCSim_${CLUSTER}_${PROCESS}_lappd.root
 
 if [ $? -ne 0 ]; then 
   echo "Something went wrong when copying \`${PWD}/WCSim_${CLUSTER}_${PROCESS}*\` to \`${OUTDIR}\`."

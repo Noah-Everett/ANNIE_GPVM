@@ -122,19 +122,27 @@ ifdh cp -D $IFDH_OPTION ${RUN}.log ${OUTDIR}
 
 
 
+#============================GET FILES==========================#
+ifdh cp -D $IFDH_OPTION ${GEOMETRY} .
+ifdh cp -D $IFDH_OPTION ${MAXPL} .
+ifdh cp -D $IFDH_OPTION ${MESTHRE} .
+#===============================================================#
+
+
+
 #===============================RUN GENIE=============================#
 /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal \
 -r ${RUN} \
 --seed ${SEED} \
 -t ${TOPVOL} \
 -f ${FLUX} \
--g ${GEOMETRY} \
+-g $(basename ${GEOMETRY}) \
 ${UNITS} \
 --cross-sections ${GENIEXSEC} \
 --tune G18_10a_02_11a \
 -n ${NEVENTS} \
--m $MAXPL \
---message-thresholds $MESTHRE
+-m $(basename ${MAXPL}) \
+--message-thresholds $(basename ${MESTHRE})
 #-z $ZMIN \
 #======================================================================#
 
@@ -178,7 +186,7 @@ export IFDH_GRIDFTP_EXTRA="-st 1000"
     else
         # directory already exists, so let's copy
 #   ifdh cp -D $IFDH_OPTION job_output_${CLUSTER}.${PROCESS}.log ${SCRATCH_DIR}/${GRID_USER}/job_output
-    ifdh cp -D $IFDH_OPTION *.root ${OUTDIR}/${RUNBASE}_${CLUSTER}
+    ifdh cp -D $IFDH_OPTION *.root ${OUTDIR}
       if [ $? -ne 0 ]; then
           echo "Error $? when copying to dCache scratch area!"
           echo "If you created ${SCRATCH_DIR}/${GRID_USER} yourself,"

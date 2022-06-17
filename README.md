@@ -3,7 +3,8 @@
 ## Repository Contents
 ```
 /annie/app/users/neverett/
-    backups/                    # miscilanious backup folders and files
+    backups/                    # miscellaneous backup folders and files
+        tank_flux_new/              # source code and built code for g4annie_dirt_flux (by Robert Hatcher)
     bin/                        # user runnable scripts
         run_genie.sh                 # runs GENIE Generator on ANNIE GPVM
         run_genie_grid.sh            # runs GENIE Generator on the Grid
@@ -19,6 +20,7 @@
         setup_grid.sh                # setup for Grid commands
         setup_shortcuts.sh           # setup for personal shortcuts
         setup_singularity.sh         # setup for ToolAnalysis singularity
+        g4annie_dirt_flux            # executable for primary propagation (run by run_g4dirt.sh) (by Robert Hatcher)
     config/                     # contains GENIE config files
         Messenger_debug.xml          # GENIE messenger config w/ all priorities set to DEBUG
         Messenger_warn.xml           # GENIE messenger config w/ all priorities set to WARN
