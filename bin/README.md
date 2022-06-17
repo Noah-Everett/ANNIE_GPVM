@@ -50,7 +50,7 @@ run_genie.sh -r=<run number>
 
 #### Typical GENIE Run (modified slightly to make the run time lower):
 ```
-$ nohup $B/run_genie.sh -r=0 -n=100 -g=depreciated/annie_v01.gdml -t=TWATER_LV -f=000* -m=depreciated/annie_v01.maxpl.xml -o=. | tee -a ./run_0.log
+nohup $B/run_genie.sh -r=0 -n=100 -g=depreciated/annie_v01.gdml -t=TWATER_LV -f=000* -m=depreciated/annie_v01.maxpl.xml -o=. | tee -a ./run_0.log
 ```
 - Run 0
 - 100 events
@@ -61,7 +61,7 @@ $ nohup $B/run_genie.sh -r=0 -n=100 -g=depreciated/annie_v01.gdml -t=TWATER_LV -
 
 #### Generating `.maxpl.xml` file: 
 ```
-$ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t=EXP_HALL_LV -f=* -m=+annie_v02_sphere_vacuum/annie_v02_1.maxpl.xml -S=30000 --message-thresholds=Messenger_warn.xml -o=. | tee /dev/null
+nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t=EXP_HALL_LV -f=* -m=+annie_v02_sphere_vacuum/annie_v02_1.maxpl.xml -S=30000 --message-thresholds=Messenger_warn.xml -o=. | tee /dev/null
 ```
 - Run 1
 - 1 Event (small to take less time. Quality of `.maxpl.xml` file dont depend on number of events)
@@ -99,7 +99,7 @@ run_genie_grid.sh -r=<run base number>
 
 #### Fast to Run Example:
 ```
-$ source $B/run_genie_grid.sh -r=0 -n=100 -g=$G/depreciated/annie_v02.gdml -t=TWATER_LV -f=000* -m=$G/depreciated/annie_v02.maxpl.xml --message-thresholds=$C/Messenger_warn.xml -N=2
+$B/run_genie_grid.sh -r=0 -n=100 -g=$G/depreciated/annie_v02.gdml -t=TWATER_LV -f=000* -m=$G/depreciated/annie_v02.maxpl.xml --message-thresholds=$C/Messenger_warn.xml -N=2
 ```
 - Run base = 0
 - 100 events in each run
@@ -110,7 +110,7 @@ $ source $B/run_genie_grid.sh -r=0 -n=100 -g=$G/depreciated/annie_v02.gdml -t=TW
 
 #### Realistic Run:
 ```
-$ source $B/run_genie_grid.sh -r=0 -n=1000 -g=$G/annie_v02_sphere_argon_gas_20atm/annie_v02_4.gdml -t=TWATER_LV -f=* -m=$G/annie_v02_sphere_argon_gas_20atm/annie_v02_4.maxpl.xml --message-thresholds=$C/Messenger_warn.xml -N=20
+$B/run_genie_grid.sh -r=0 -n=1000 -g=$G/annie_v02_sphere_argon_gas_20atm/annie_v02_4.gdml -t=TWATER_LV -f=* -m=$G/annie_v02_sphere_argon_gas_20atm/annie_v02_4.maxpl.xml --message-thresholds=$C/Messenger_warn.xml -N=20
 ```
 - Run base = 0
 - 1000 events in each run (20 runs --> 20,000 total events)
@@ -137,9 +137,9 @@ run_wcsim.sh -r=<run number (or numbers using `*`. Ex: \`-r='4*'\`)>
 
 ### Example Usage
 
-#### Typical usage:
+#### Typical Usage:
 ```
-$ source $B/run_wcsim.sh -r=0 -p=$R/nonExistentRun -n=1000 -g=$G/annie_tube_argon_liquid/annie_v02_4.gdml -o=$R/newFolder
+$B/run_wcsim.sh -r=0 -p=$R/nonExistentRun -n=1000 -g=$G/annie_tube_argon_liquid/annie_v02_4.gdml -o=$R/newFolder
 ```
 
 ## `run_wcsim_grid.sh`
@@ -163,14 +163,43 @@ Note: (number of WCSim events/file (`-w`))\*(number of files (`-N`))=(total numb
 
 ### Example Usage
 
-#### Typical usage:
+#### Typical Usage:
 ```
-$ $B/run_wcsim_grid.sh -r=0 -p=$PNE/runs -d=1000 -w=500 -g=$PNE/geometry/annie_v02_argon_liquid/annie_v02_4.gdml -o=$PNE/runs -N=600
+$B/run_wcsim_grid.sh -r=0 -p=$PNE/runs -d=1000 -w=500 -g=$PNE/geometry/annie_v02_argon_liquid/annie_v02_4.gdml -o=$PNE/runs -N=600
 ```
 - 1000 events per g4dirt/GENIE file
 - 500 events per WCSim file
 - 600 identical runs
 - Will result in 600 files, each with 500 events. Thus 300,000 events propigated.
+
+## `run_g4dirt.sh`
+
+### About
+`run_g4dirt.sh` is used to run Robert Hatcher's `g4annie_dirt_flux` (executable is in `$B` and source code is in `$BA` and `$RH`). 
+`g4annie_dirt_flux` is used to propigate final state GENIE particles until they either reach the ANNIE detector (`TWATER_LV`/`TWATER_PV`) or dont.
+There is no Grid runnable script for this program. For each GENIE file conaining 1000 events, the program run time is ~40 sec.
+
+### Usage
+```
+run_g4dirt.sh -r=<run number (or numbers using `*`. Ex: \`-r='4*'\`)>
+              -i=</path/to/input/genie/files/dir>
+              -n=<number of events per genie file to propigate>
+              -g=</path/to/geometry/file.gdml>
+              -o=</path/to/output/dir>
+              -h|--help
+```
+
+### Example Usage
+
+#### Short Trial Run
+```
+$B/run_g4dirt.sh -r=13* -i=$R/nonExistentRun -n=10 -g=$G/depreciated/annie_v02.gdml -o=$R/newDir
+```
+
+#### Typical Run
+```
+nohup $B/run_g4dirt.sh -r=* -i=$SNE/runs -n=1000 -g=$G/annie_v02_tube_argon/annie_v02_4.gdml -o=$SNE/runs
+```
 
 ## `make_maxpl_grid.sh`
 
@@ -199,7 +228,7 @@ For additional information on the Grid, consult [`$GR/README.md`](https://github
 ### Example Usage
 Usage to generate `$G/annie_v02_tube_argon_liquid/*.maxpl.xml`:
 ```
-$ source $B/make_maxpl_grid.sh --geomDir=annie_v02_tube_argon_liquid --nGeomFiles=5 -t=EXP_HALL_LV -f=* --message-thresholds=Messenger_warn.xml --memory=2GB --disk=3GB --cup=1 --expected-lifetime=4h
+$B/make_maxpl_grid.sh --geomDir=annie_v02_tube_argon_liquid --nGeomFiles=5 -t=EXP_HALL_LV -f=* --message-thresholds=Messenger_warn.xml --memory=2GB --disk=3GB --cup=1 --expected-lifetime=4h
 ```
 
 ## `make_gst.sh`
@@ -218,14 +247,16 @@ make_genie_gst.sh -r (run in all directories one level down)
 
 ### Example Usage
 
+#### Short Trial Run
+```
+$B/make_genie_gst.sh '3*'
+```
 This will convert all files in the current directory of the form `gntp.3<#>.ghep.root` to files of the form `gntp.3<#>.gst.root`:
-```
-$ source $B/make_genie_gst.sh '3*'
-```
 
-Most common use case:
+
+#### Most Common Use:
 ```
-$ source $B/make_genie_gst.sh -r '*' --message-thresholds=Messenger_warn.xml
+$B/make_genie_gst.sh -r '*' --message-thresholds=Messenger_warn.xml
 ```
 - Converts all files of the form `gntp.<#>.ghep.root` to files of the form `gntp.<#>.gst.root` in the directories down one level (child directories). 
 - Changes the GENIE message thresholds to `warn` to reduce run time.
@@ -267,7 +298,7 @@ make_geoms_1D.sh --outDir=</path/to/output/directory>
 ### Example Usage
 Create `$G/annie_v02_tube_argon_gas_20atm/*`:
 ```
-$ make_geoms_1D.sh --outDir=$G/annie_v02_tube_argon_gas_20atm --material=argon --shape=tube --state=gas --density=20 --nFiles=5
+$B/make_geoms_1D.sh --outDir=$G/annie_v02_tube_argon_gas_20atm --material=argon --shape=tube --state=gas --density=20 --nFiles=5
 ```
 
 ## `setup`
@@ -291,7 +322,7 @@ $ source /annie/app/users/neverett/bin/setup
 
 ### Usage
 ```
-$ source $B/setup_genie3_00_06.sh
+source $B/setup_genie3_00_06.sh
 ```
 
 ## `setup_grid.sh`
@@ -301,7 +332,7 @@ $ source $B/setup_genie3_00_06.sh
 
 ### Usage
 ```
-$ source $B/setup_grid.sh
+source $B/setup_grid.sh
 ```
 
 
@@ -312,7 +343,7 @@ $ source $B/setup_grid.sh
 
 ### Usage
 ```
-$ source $B/setup_shortcuts.sh
+source $B/setup_shortcuts.sh
 ```
 
 
@@ -323,5 +354,5 @@ $ source $B/setup_shortcuts.sh
 
 ### Usage
 ```
-$ source $B/setup_singularity.sh
+source $B/setup_singularity.sh
 ```
