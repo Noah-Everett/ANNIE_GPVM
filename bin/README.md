@@ -1,9 +1,9 @@
 # Information on Scripts in `$B` (this directory)
 
 ### Note:
-- As of now, not all of these scripts have been made to be the most user-friendly. Some are lack things like error messages and option/argument checking. These may or may not be added in the future.
+- As of now, not all of these scripts have been made to be the most user-friendly. Some are lacking things like error messages and option/argument checking. These may or may not be added in the future.
 - These scripts where made to make my life more convenient, thus they include shortcuts to directories in `$NE` which is of little use to others. However, this should be fairly easy to change in each script. Again, this may or may not be changed in the future. Some newer scripts have been make to work with any directory. See either the below usage statement or by using the `-h` option for more information.
-- To use the following commands make sure to run: `source /annie/app/users/neverett/bin/setup`. Note, none of the scripts themselves require `$B/setup` to be sourced.
+- To use the following commands make sure to run: `source /annie/app/users/neverett/bin/setup`. Note: none of the scripts themselves require `$B/setup` to be sourced.
 - `<>` denotes required option or argument, `[]` denotes optional option or argument.
 
 ## Table of Contents
@@ -36,7 +36,7 @@ Any larger batches of runs should be run on the Grid both to save the user time 
 ```
 run_genie.sh -r=<run number>
              -n=<number of events>
-             -g=<geometry file name (in $G)>.gdml
+             -g=</path/to/geometry/file>.gdml
              -t=<top volume name>_LV
              -f=<flux file number (or numbers using '*') (in $FLUX)>
              -m=[+]<max path length file (in $G)>.maxpl.xml
@@ -88,7 +88,7 @@ run_genie_grid.sh -r=<run base number>
                   -n=<number of events>
                   -g=</path/to/geometry/file.gdml>
                   -t=<geometry top volume name>
-                  -f=<flux file number (or numbers using '*') (in $F)>
+                  -f=<flux file number (or numbers using '*') (in $FLUX)>
                   -m=</path/to/max/path/length/file.maxpl.xml>
                   --message-thresholds=</path/to/message/thresholds/Messenger_<name>.xml (typically a file in $C)>
                   -N=<number of identical jobs>

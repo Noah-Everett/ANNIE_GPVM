@@ -23,7 +23,7 @@
         setup_genie2_12_10.sh        # setup for GENIE v2.12.10 (depreciated)
         setup_grid.sh                # setup for Grid commands
         setup_shortcuts.sh           # setup for personal shortcuts
-        setup_singularity.sh         # setup for ToolAnalysis singularity
+        setup_singularity.sh         # setup for ToolAnalysis Singularity
         g4annie_dirt_flux            # executable for primary propagation (run by run_g4dirt.sh) (by Robert Hatcher)
     config/                     # contains GENIE config files
         Messenger_debug.xml          # GENIE messenger config w/ all priorities set to DEBUG
