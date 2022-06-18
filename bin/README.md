@@ -75,8 +75,8 @@ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t=E
 
 ### About
 `run_genie_grid.sh` is used to run the GENIE Generator on the Grid.
-As stated above in the About section of run_genie.sh, this script can (and should) be used to run large groups of GENIE Generator runs as opposed to running them on the ANNIE GPVM. 
-Note, this script *is not* specalized to my user directory (`$NE`), thus all options that point to a file require paths to the files. 
+As stated above in the About section of `run_genie.sh`, this script can (and should) be used to run large groups of GENIE Generator runs as opposed to running them on the ANNIE GPVM. 
+Note, this script *is not* specalized to my user directory (`$NE`); thus, all options that point to a file require paths to the files. 
 Also, remember all these files *must* be in `$GR/grid_genie.tar.gz`; if you use files not in `$GR/grid_genie.tar.gz` you will have to create your own tar file and modify `run_genie_grid.sh` to use that tarball.
 The grid requirements (memory, disk, cpus, and expected runtime) are calculated by the script based on number of events per run.
 
@@ -123,13 +123,13 @@ $B/run_genie_grid.sh -r=0 -n=1000 -g=$G/annie_v02_sphere_argon_gas_20atm/annie_v
 
 ### About
 
-`run_wcsim.sh` is used to run WCSim to propigate events from GENIE/g4dirt files.
+`run_wcsim.sh` is used to run WCSim to propagate events from GENIE/g4dirt files.
 
 ### Usage
 ```
 run_wcsim.sh -r=<run number (or numbers using `*`. Ex: \`-r='4*'\`)>
              -p=</path/to/primaries/dir>
-             -n=<number of events per primary file to propigate>
+             -n=<number of events per primary file to propagate>
              -g=</path/to/geometry/file.gdml>
              -o=</path/to/output/dir>
              -h|--help
@@ -170,20 +170,20 @@ $B/run_wcsim_grid.sh -r=0 -p=$PNE/runs -d=1000 -w=500 -g=$PNE/geometry/annie_v02
 - 1000 events per g4dirt/GENIE file
 - 500 events per WCSim file
 - 600 identical runs
-- Will result in 600 files, each with 500 events. Thus 300,000 events propigated.
+- Will result in 600 files, each with 500 events. Thus 300,000 events propagated.
 
 ## `run_g4dirt.sh`
 
 ### About
 `run_g4dirt.sh` is used to run Robert Hatcher's `g4annie_dirt_flux` (executable is in `$B` and source code is in `$BA` and `$RH`). 
-`g4annie_dirt_flux` is used to propigate final state GENIE particles until they either reach the ANNIE detector (`TWATER_LV`/`TWATER_PV`) or dont.
-There is no Grid runnable script for this program. For each GENIE file conaining 1000 events, the program run time is ~40 sec.
+`g4annie_dirt_flux` is used to propagate final state GENIE particles until they either reach the ANNIE detector (`TWATER_LV`/`TWATER_PV`) or dont.
+There is no Grid runnable script for this program. For each GENIE file containing 1,000 events, the program run time is ~40 sec.
 
 ### Usage
 ```
 run_g4dirt.sh -r=<run number (or numbers using `*`. Ex: \`-r='4*'\`)>
               -i=</path/to/input/genie/files/dir>
-              -n=<number of events per genie file to propigate>
+              -n=<number of events per genie file to propagate>
               -g=</path/to/geometry/file.gdml>
               -o=</path/to/output/dir>
               -h|--help
@@ -205,7 +205,7 @@ nohup $B/run_g4dirt.sh -r=* -i=$SNE/runs -n=1000 -g=$G/annie_v02_tube_argon/anni
 
 ### About
 `make_maxpl_grid.sh` is used to generate `.maxpl.xml` files using the Grid. 
-`.maxpl.xml` files, while not nessecary to use the GENIE Generator, do decrease its runtime. 
+`.maxpl.xml` files, while not necessary to use the GENIE Generator, do decrease its runtime. 
 Currently, this script is specialized to my directory (`$NE`); though, with moderately minor modifications, this script could be modified to work for any user. 
 As stated previously, the Grid should be used to decrease pressure on the annie GPVM. 
 Thus, when generating `.maxpl.xml` files for multiple `gdml` geometry files, it is highly recommended to use the Grid via this script.
@@ -235,7 +235,7 @@ $B/make_maxpl_grid.sh --geomDir=annie_v02_tube_argon_liquid --nGeomFiles=5 -t=EX
 
 ### About
 `make_gst.sh` runs `gntpc` which is a GENIE executable. 
-Specifically, this script runs `gntpc` to convert `gntp.<#>.ghep.root` files to `gntp.<#>.gst.root` files which are then able to be used in analysis scripts in my [Analysis repository](https://github.com/Noah-Everett/ANNIE_Analysis) (specifically in [`Scripts/`](https://github.com/Noah-Everett/ANNIE_Analysis/tree/main/Scripts)).
+Specifically, this script runs `gntpc` to convert `gntp.<#>.ghep.root` files to `gntp.<#>.gst.root` files which are then able to be used in analysis scripts in [my Analysis repository](https://github.com/Noah-Everett/ANNIE_Analysis) (specifically in [`Scripts/`](https://github.com/Noah-Everett/ANNIE_Analysis/tree/main/Scripts)).
 
 ### Usage
 ```
@@ -270,7 +270,7 @@ $B/make_genie_gst.sh -r '*' --message-thresholds=Messenger_warn.xml
 - `$B/setup_genie3_00_06.sh`
 - `$FLUX/*`
 
-If any of these files have been changed, and you wish to use the new versions, make sure to rerun `$B/make_tar_genie.sh` to produce an up to date `$GR/grid_genie.tar.gz`.
+If any of these files have been changed, and you wish to use the new versions, make sure to rerun `$B/make_tar_genie.sh` to produce an up-to-date `$GR/grid_genie.tar.gz`.
 
 ### Usage
 ```
@@ -298,8 +298,8 @@ $B/make_tar_wcsim.sh
 
 ### About
 `make_geoms_1D.sh` is used to produce variations of the ANNIE geometry (in `gdml`). 
-It can be used to vary the size and position of the container, the shape of the container, the and the material in the container.
-The script varies size and position of the container based on the number of files generated (set by `--nFiles=`).
+It can be used to vary the size and position of the container, the shape of the container, and the material in the container.
+The script varies the size and position of the container based on the number of files generated (set by `--nFiles=`).
 If the user wants two files, one will have a very small (radius = 50mm) container at the very front of the fiducial volume, and the other will be the largest container volume (radius ~ 607mm), taking up roughly the whole fiducial volume.
 Similarly, if the user wants ten geometry files, the script will produce ten files with container sizes in a spectrum from smallest (radius = 50mm) to largest (radius ~ 607mm).
 
