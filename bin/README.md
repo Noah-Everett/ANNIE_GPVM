@@ -30,7 +30,7 @@
 `run_genie.sh` is used to run the GENIE Generator on the GPVM. 
 Currently, the script is specialized to my directory (`$NE`); though, with moderately minor modifications, the script could be modified to work for any user.
 In general, this script (or any GENIE usage on the GPVM) should be limited to relatively small or experimental runs/run batches. 
-Any larger batches of runs should be run on the Grid both to save the user time and also so ensure that the GPVM remains usable for all other collaboration members.
+Any larger batches of runs should be run on the Grid, both to save the user time and also to ensure that the GPVM remains usable for all other collaboration members.
 
 ### Usage
 ```
