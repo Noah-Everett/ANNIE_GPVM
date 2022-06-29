@@ -6,6 +6,7 @@
     backups/                    # miscellaneous backup folders and files
         tank_flux_new/              # source code and built code for g4annie_dirt_flux (by Robert Hatcher)
     bin/                        # user runnable scripts
+        depreciated/                 # depreciated user runnable scripts
         run_genie.sh                 # runs GENIE Generator on ANNIE GPVM
         run_genie_grid.sh            # runs GENIE Generator on the Grid
         run_wcsim.sh                 # runs WCSim on ANNIE GPVM
@@ -15,12 +16,9 @@
         make_tar_genie.sh            # makes tarball for running GENIE on Grid
         make_tar_g4dirt.sh           # makes tarball for running GENIE on Grid
         make_tar_wcsim.sh            # makes tarball for running GENIE on Grid
-        make_geoms_1D.sh             # makes versions of the ANNIE geometry (1 variable)
-        make_geoms_4D.sh             # makes versions of the ANNIE geometry (4 variables) (depreciated)
+        make_geoms_1D.sh             # makes versions of the ANNIE geometry
         setup                        # general user setup
         setup_genie3_00_06.sh        # setup for GENIE v3.0.6
-        setup_genie3_00_04.sh        # setup for GENIE v3.0.4 (depreciated)
-        setup_genie2_12_10.sh        # setup for GENIE v2.12.10 (depreciated)
         setup_grid.sh                # setup for Grid commands
         setup_shortcuts.sh           # setup for personal shortcuts
         setup_singularity.sh         # setup for ToolAnalysis Singularity
