@@ -76,7 +76,7 @@ nohup $B/run_genie.sh -r=1 -n=1 -g=annie_v02_sphere_vacuum/annie_v02_1.gdml -t=E
 ### About
 `run_genie_grid.sh` is used to run the GENIE Generator on the Grid.
 As stated above in the About section of `run_genie.sh`, this script can (and should) be used to run large groups of GENIE Generator runs as opposed to running them on the ANNIE GPVM. 
-Note, this script *is not* specalized to my user directory (`$NE`); thus, all options that point to a file require paths to the files. 
+Note, this script *is not* specalized to my user directory (`$NE`); thus, all options that point to a file require paths to the files.
 Also, remember all these files *must* be in `$GR/grid_genie.tar.gz`; if you use files not in `$GR/grid_genie.tar.gz` you will have to create your own tar file and modify `run_genie_grid.sh` to use that tarball.
 The grid requirements (memory, disk, cpus, and expected runtime) are calculated by the script based on number of events per run.
 
@@ -90,6 +90,7 @@ run_genie_grid.sh -r=<run base number>
                   -t=<geometry top volume name>
                   -f=<flux file number (or numbers using '*') (in $FLUX)>
                   -m=</path/to/max/path/length/file.maxpl.xml>
+                  -o=</path/to/output/directory> (script creates a new directory in specified directory which will contain output files)
                   --message-thresholds=</path/to/message/thresholds/Messenger_<name>.xml (typically a file in $C)>
                   -N=<number of identical jobs>
                   -h|--help
