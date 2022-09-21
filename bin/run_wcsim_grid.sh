@@ -104,19 +104,14 @@ file:///annie/app/users/neverett/grid/run_grid_wcsim.sh \
 
 usage() {
 cat >&2 <<EOF
-run_genie_grid.sh -r=#                 (run base number)
-                  -n=#                 (number of events)
-                  -g=abc.gdml          (geometry file (in $G))
-                  -t=ABC_LV            (geometry top volume)
-                  -f=123*              (flux file number (in $F))
-                  -m=abc.maxpl.xml     (max path length file (in $G))
---message-thresholds=Messenger_abc.xml (output type priorities (in $C))
-                  -N=#                 (number of identical jobs)
-            --memory=#MB               (amount of memory)
-              --disk=#MB               (amount of disk space)
-               --cpu=#                 (number of cpus)
- --expected-lifetime=#h                (maximum run time)
-           -h|--help                   (print script usage statement (this output))
+run_wcsim_grid.sh -r=<run base number>
+                  -p=</path/to/primaries (should be in /pnfs/)>
+                  -d=<number of events per g4dirt file (annie_tank_flux.<#>.root)>
+                  -w=<number of events per output wcsim file>
+                  -g=</path/to/geometry/file (should be in /pnfs/)>
+                  -o=</path/to/output/directory (should be in /pnfs/)>
+                  -N=<number of files/identical runs>
+                  -h|--help
 EOF
 }
 

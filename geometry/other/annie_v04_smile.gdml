@@ -300,13 +300,6 @@
       <D unit="g/cm3" value="1e-25"/>
       <fraction n="1" ref="H"/>
     </material>
-    <material name="BigDense" state="solid">
-      <T unit="K" value="293.15"/>
-      <MEE unit="eV" value="282.156966376465"/>
-      <D unit="g/cm3" value="20"/>
-      <fraction n="0.01" ref="Carbon"/>
-      <fraction n="0.99" ref="Iron"/>
-    </material>
   </materials>
 
   <solids>
@@ -317,9 +310,6 @@
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBASE_S" rmax="1549.4" rmin="0" startphi="0" z="6.35"/>
     <cone aunit="deg" deltaphi="360" lunit="mm" name="TOCONE_S" rmax1="1524.0" rmax2="0" rmin1="0" rmin2="0" startphi="0" z="228.6"/>
     <cone aunit="deg" deltaphi="360" lunit="mm" name="TICONE_S" rmax1="1495.03" rmax2="0" rmin1="0" rmin2="0" startphi="0" z="223.771807241576"/>
-    <tube aunit="deg" deltaphi="160" lunit="mm" name="MOUTH_S" rmax="1200" rmin="1000" startphi="10" z="3956.05"/>
-    <tube aunit="deg" deltaphi="360" lunit="mm" name="EYE1_S" rmax="400" rmin="0" startphi="0" z="3956.05"/>
-    <tube aunit="deg" deltaphi="360" lunit="mm" name="EYE2_S" rmax="400" rmin="0" startphi="0" z="3956.05"/>
     <subtraction name="TCONE_S">
       <first ref="TOCONE_S"/>
       <second ref="TICONE_S"/>
@@ -412,33 +402,9 @@
         <position name="ROOF_PV_pos" unit="mm" x="0" y="-225.425" z="0"/>
       </physvol>
     </volume>
-    <volume name="MOUTH_LV">
-      <materialref ref="BigDense"/>
-      <solidref ref="MOUTH_S"/>
-    </volume>
-    <volume name="EYE1_LV">
-      <materialref ref="BigDense"/>
-      <solidref ref="EYE1_S"/>
-    </volume>
-    <volume name="EYE2_LV">
-      <materialref ref="BigDense"/>
-      <solidref ref="EYE2_S"/>
-    </volume>
     <volume name="TWATER_LV">
       <materialref ref="TankWater"/>
       <solidref ref="WATER_S"/>
-      <physvol name="MOUTH_PV">
-        <volumeref ref="MOUTH_LV"/>
-        <position name="MOUTH_PV_pos" unit="mm" x="0" y="0" z="0"/>
-      </physvol>
-      <physvol name="EYE1_PV">
-        <volumeref ref="EYE1_LV"/>
-        <position name="EYE1_PV_pos" unit="mm" x="-700" y="-700" z="0"/>
-      </physvol>
-      <physvol name="EYE2_PV">
-        <volumeref ref="EYE2_LV"/>
-        <position name="EYE2_PV_pos" unit="mm" x="700" y="-700" z="0"/>
-      </physvol>
     </volume>
     <volume name="TBODY_LV">
       <materialref ref="TankSteel"/>

@@ -46,6 +46,7 @@ for i in "$@"; do
   case $i in
     -r=*                   ) export RUNBASE="${i#*=}"     shift  ;;
     -n=*                   ) export NEVENTS="${i#*=}"     shift  ;;
+    -e=*                   ) export NPOT="${i#*=}"        shift  ;;
     -g=*                   ) export GEOMETRY="${i#*=}"    shift  ;;
     -t=*                   ) export TOPVOL="${i#*=}"      shift  ;;
     -f=*                   ) export FLUXFILENUM="${i#*=}" shift  ;;
@@ -80,6 +81,13 @@ fi
 cp /cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALbig.xml.gz .
 gzip -d gxspl-FNALbig.xml.gz
 
+if [ -z ${NEVENTS} ]; then
+  export EXPOSURE="-e ${NPOT}"
+  export EXPMSG="      Number of POT: ${NPOT}"
+else
+  export EXPOSURE="-n ${NEVENTS}"
+  export EXPMSG="   Number of Events: ${NEVENTS}"
+fi
 export RUN=${RUNBASE}${PROCESS}
 export SEED=${RUNBASE}${PROCESS}${CLUSTER}
 export FLXPSET="ANNIE-tank"
@@ -99,10 +107,19 @@ export GXMLPATH=${C}:${GXMLPATH} #$CONDOR_DIR_INPUT:${GXMLPATH}
 
 
 
+#============================GET FILES==========================#
+ifdh cp -D $IFDH_OPTION $INPUT_TAR_DIR_LOCAL/${GEOMETRY} .
+ifdh cp -D $IFDH_OPTION $INPUT_TAR_DIR_LOCAL/${MAXPL} .
+ifdh cp -D $IFDH_OPTION $INPUT_TAR_DIR_LOCAL/${MESTHRE} .
+#===============================================================#
+
+
+
 #=============================MAKE LOG========================#
 export OUTDIR=${OUTDIR}/${RUNBASE}_${CLUSTER}
 ifdh mkdir_p ${OUTDIR}
 cat <<EOF > ${RUN}.log
+#===== SETTINGS =====#
             Program: /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal
                 Run: ${RUN}
                Seed: ${SEED}
@@ -111,22 +128,31 @@ cat <<EOF > ${RUN}.log
            Geometry: ${GEOMETRY}
               Units: ${UNITS}
      Cross Sections: ${GENIEXSEC}
+${EXPMSG}
                Tune: G18_10a_02_11a
-   Number of Events: ${NEVENTS}
 Maximum Path Length: ${MAXPL}
  Message Thresholds: ${MESTHRE}
+
+#===== COMMAND =====#
+/cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal \
+-r ${RUN} \
+--seed ${SEED} \
+-t ${TOPVOL} \
+-f ${FLUX} \
+-g $(basename ${GEOMETRY}) \
+${UNITS} \
+--cross-sections ${GENIEXSEC} \
+--tune G18_10a_02_11a \
+${EXPOSURE} \
+-m $(basename ${MAXPL}) \
+--message-thresholds $(basename ${MESTHRE})
+
+#===== ls =====#
+`ls`
 EOF
 ifdh cp -D $IFDH_OPTION ${RUN}.log ${OUTDIR}
 #          Z Minimum: ${ZMIN}
 #======================================================================#
-
-
-
-#============================GET FILES==========================#
-ifdh cp -D $IFDH_OPTION ${GEOMETRY} .
-ifdh cp -D $IFDH_OPTION ${MAXPL} .
-ifdh cp -D $IFDH_OPTION ${MESTHRE} .
-#===============================================================#
 
 
 
@@ -140,7 +166,7 @@ ifdh cp -D $IFDH_OPTION ${MESTHRE} .
 ${UNITS} \
 --cross-sections ${GENIEXSEC} \
 --tune G18_10a_02_11a \
--n ${NEVENTS} \
+${EXPOSURE} \
 -m $(basename ${MAXPL}) \
 --message-thresholds $(basename ${MESTHRE})
 #-z $ZMIN \
