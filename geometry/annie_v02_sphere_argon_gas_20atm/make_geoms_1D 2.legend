@@ -1,0 +1,11 @@
+All gdml files in  have the following properties:
+  Shape: sphere
+  Material: argon
+  Argon State (if Argon): gas
+  Argon Density (if Argon) (*1.66E-3 g/cm^3): 0.03324020
+annie_v02_<nFile>.gdml ---> y=<dewar y> rad=<dewar rad>
+annie_v02_0.gdml ---> y=1165 rad=50
+annie_v02_1.gdml ---> y=1026 rad=189
+annie_v02_2.gdml ---> y=887 rad=328
+annie_v02_3.gdml ---> y=748 rad=467
+annie_v02_4.gdml ---> y=609 rad=606
