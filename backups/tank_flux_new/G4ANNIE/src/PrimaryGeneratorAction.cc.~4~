@@ -1,0 +1,171 @@
+
+#include "PrimaryGeneratorAction.hh"
+
+#include "G4VUserDetectorConstruction.hh"
+#include "PrimaryGeneratorMessenger.hh"
+
+#include "G4LogicalVolumeStore.hh"
+#include "G4LogicalVolume.hh"
+#include "G4TransportationManager.hh"
+#include "G4Navigator.hh"
+
+#include "G4Event.hh"
+#include "G4ParticleTable.hh"
+#include "G4ParticleDefinition.hh"
+#include "Randomize.hh"
+
+// GENIE headers
+#include "GHEP/GHepParticle.h"
+#include "Ntuple/NtpMCTreeHeader.h"
+
+// ROOT headers
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+PrimaryGeneratorAction::PrimaryGeneratorAction(G4String infname, G4int verbose)
+  : fInputFileName(infname), fInputFile(0), fInputTree(0), 
+    fEntry(-1), fGenieRecord(0), fVerbosity(verbose)
+{
+  
+  //create a messenger for this class
+  genMessenger = new PrimaryGeneratorMessenger(this);
+
+  fInputFile = TFile::Open(fInputFileName.c_str(),"READONLY");
+  if ( ! fInputFile ) {
+    G4cerr << "%%% could not find input file \"" << fInputFileName << "\"" 
+           << G4endl;
+    exit(127);
+  }
+
+  genie::NtpMCTreeHeader* header = 0;
+  fInputFile->GetObject("header",header);
+  if ( ! header ) {
+    G4cerr << "%%% could not find NtpMCTreeHeader in \"" << fInputFileName << "\"" 
+           << G4endl;
+    exit(127);
+  }
+  G4cout << "from GENIE header: " << G4endl
+         << "  runnu " << header->runnu << G4endl
+         << "  cvstag " << header->cvstag.GetName() << G4endl
+         << "  format " << genie::NtpMCFormat::AsString(header->format) << G4endl
+         << "  datime " << header->datime << G4endl
+         << G4endl;
+//  NtpMCFormat_t format;  ///< Event Record format (GENIE support multiple formats)
+//  TObjString    cvstag;  ///< GENIE CVS Tag (to keep track of GENIE's version)
+//  NtpMCDTime    datime;  ///< Date and Time that the event ntuple was generated
+//  Long_t        runnu;   ///< MC Job run number
+
+ fInputFile->GetObject("gtree",fInputTree);
+  if ( ! fInputTree ) {
+    G4cerr << "%%% could not find input tree \"gtree\" in \"" 
+           << fInputFileName << "\"" << G4endl;
+    exit(127);
+  }
+  fNEntries = fInputTree->GetEntries();
+  G4cout << "%%% input file \"" << fInputFileName << "\" has " 
+            << fNEntries << " entries" << G4endl;
+
+  fGenieRecord = new genie::NtpMCEventRecord;
+  fInputTree->SetBranchAddress("gmcrec",&fGenieRecord); // gmcrec is branch name
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+PrimaryGeneratorAction::~PrimaryGeneratorAction()
+{
+  if ( fInputFile ) fInputFile->Close();
+  delete genMessenger;
+  delete fGenieRecord;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+{
+  //this function is called at the begining of event
+  // 
+  ++fEntry;
+  G4cout << G4endl << "---> GeneratePrimaries from GENIE file entry "
+         << fEntry << G4endl;
+
+  if ( fEntry >= fNEntries ) {
+    // no more input
+    return;
+  }
+  fInputTree->GetEntry(fEntry);
+  genie::EventRecord* gevtRec = fGenieRecord->event;
+
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+
+  TLorentzVector* genieVtx = gevtRec->Vertex();
+  G4double x = genieVtx->X() * m;  // GENIE uses meters
+  G4double y = genieVtx->Y() * m;  // GENIE uses meters
+  G4double z = genieVtx->Z() * m;  // GENIE uses meters
+  G4double t = genieVtx->T() * second;  // GENIE uses seconds for time
+  G4ThreeVector g4pos(x,y,z);
+  G4PrimaryVertex* evtVertex = new G4PrimaryVertex(g4pos,t);
+
+  G4Navigator* navigator = 
+    G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
+  
+  G4VPhysicalVolume* vol = 
+    navigator->LocateGlobalPointAndSetup(g4pos,0,false,true);
+
+  if ( vol && vol->GetName() == G4String("TWATER_PV") ) {
+    G4cout << "=========> particles start in TWATER_PV" << G4endl;
+    exit(1);
+  }
+
+
+  // in principle particles leaving the nucleus are offset from the
+  // actual vertex and should start from
+  //    evtVertex (meters) + part->V()*1.0e-15 (meters)
+  // for now ... just originate everything at center...
+  // and don't worry about femto-meter scale offsets
+  // (or slightly bigger for charm / tau decays)
+
+  if ( fVerbosity > 1 ) {
+    G4cout << "genieVtx T " << genieVtx->T() << " " << std::flush;
+    genieVtx->Print();
+    G4cout << " within " << ((vol)?vol->GetName():"<<no-volume>") << G4endl;
+  }
+
+  // loop over GENIE particles
+  int nparticles = gevtRec->GetEntries();
+  for (int ipart=0; ipart<nparticles; ++ipart ) {
+
+    genie::GHepParticle* part = gevtRec->Particle(ipart);
+    if ( part->Status() != 1 ) continue; // not to be tracked
+    G4ParticleDefinition* partDef = particleTable->FindParticle(part->Pdg());
+    if ( ! partDef ) {
+      G4cout << "skipping PDG " << part->Pdg() << G4endl;
+      continue;
+    }
+    G4ThreeVector voffset(part->Vx(),part->Vy(),part->Vz());
+    G4double toffset = part->Vt();
+
+    G4PrimaryParticle* g4part = 
+      new G4PrimaryParticle( partDef, 
+                             part->Px()*GeV, part->Py()*GeV, part->Pz()*GeV,
+                             part->E()*GeV);
+
+    evtVertex->SetPrimary( g4part ); // really add
+
+    if ( fVerbosity > 1 ) {
+      G4cout 
+        << "pdg " << part->Pdg()
+        << " E " << part->E()
+        << " Pz() " << part->Pz()
+        << " (" << part->Pz()*GeV << ") "
+        << "voffset " << voffset << " fm, t " << toffset << G4endl;
+    }
+  }
+  
+  anEvent->AddPrimaryVertex(evtVertex);
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+

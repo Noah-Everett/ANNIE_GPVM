@@ -1,3 +1,144 @@
+main() {
+OUTDIR=""
+DWTH=""
+MATERIAL=""
+SHAPE=""
+STATE=""
+DENSITY=""
+NFILES=""
+
+echo "Processing command line arguments."
+for i in "$@"; do
+  case $i in
+    --outDir=*             ) export OUTDIR="${i#*=}"      shift    ;;
+    --containerThickness=* ) export DWTH="${i#*=}"        shift    ;;
+    --material=*           ) export MATERIAL="${i#*=}"    shift    ;;
+    --shape=*              ) export SHAPE="${i#*=}"       shift    ;;
+    --rad_min=*            ) export RAD_MIN="${i#*=}"     shift    ;;
+    --rad_max=*            ) export RAD_MAX="${i#*=}"     shift    ;;
+    --rad_delta=*          ) export RAD_DELTA="${i#*=}"   shift    ;;
+    --state=*              ) export STATE="${i#*=}"       shift    ;;
+    --height=*             ) export HEIGHT="${i#*=}"      shift    ;;
+    --density=*            ) export DENSITY="${i#*=}"     shift    ;;
+    -*                     ) echo "Unknown option \"$i\"" return 1 ;;
+  esac
+done
+
+if [ -z ${OUTDIR} ]; then
+  echo "Use \`--outDir=</output/dir>\` to set the output directory"
+  return 1;
+fi
+
+if [[ -z ${MATERIAL} || ( ${MATERIAL} != "vacuum" && ${MATERIAL} != "argon" && ${MATERIAL} != "water" ) ]]; then
+  echo "Use either \`--material=argon\`, \`--material=water\`, or \`--material=vacuum\`."
+  return 1
+fi
+
+if [[ -z ${SHAPE} || ( ${SHAPE} != "tube" && ${SHAPE} != "sphere" ) ]]; then
+  echo "Use either \`--shape=tube\` or \`--shape=sphere\`."
+  return 1
+fi
+
+if [ -z ${RAD_MIN} ]; then
+  echo "Use \`--rad_min=<minimum radius in mm>\`."
+  return 1
+fi
+
+if [ -z ${RAD_MAX} ]; then
+  echo "Use \`--rad_max=<maximum radius in mm>\`."
+  return 1
+fi
+
+if [ -z ${RAD_DELTA} ]; then
+  echo "Use \`--rad_delta=<delta radius in mm>\`."
+  return 1
+fi
+
+if [[ ${MATERIAL} == "argon" && ( -z ${STATE} || ( ${STATE} != "gas" && ${STATE} != "liquid" ) ) ]]; then
+  echo "Use either \`--state=gas\` or \`--state=liquid\`."
+  return 1
+fi
+
+if [[ ${MATERIAL} == "argon" && ${STATE} == "gas" && -z ${DENSITY} ]]; then
+  echo "Use \`--density=#\` to set the density of the argon gas."
+  return 1
+else
+  export DENSITY="0$(echo "0.00166201*${DENSITY}" | bc)"
+fi
+
+if [[ ${SHAPE} == "tube" && -z ${HEIGHT} ]]; then
+  echo "Use \`--height=<height in mm>\` to set the height of the tube."
+  return 1;
+fi
+
+if [ -z ${DWTH} ]; then
+  echo "Setting dewar thickness to \`4.76\`."
+  export DWTH="4.76"
+fi
+
+mkdir $OUTDIR
+cat <<EOF > $OUTDIR/make_geoms.legend
+All gdml files in `${OUTDIR}` have the following properties:
+  Shape: ${SHAPE}
+  Material: ${MATERIAL}
+  Argon State (if argon): ${STATE}
+  Argon Density (if argon gas) (*1.66E-3 g/cm^3): ${DENSITY}
+annie_v02_<nFile>.gdml ---> y=<dewar y> rad=<dewar rad>
+EOF
+
+export c=0
+for (( rad=$RAD_MIN; ( rad<=$RAD_MAX && rad>=0 ); rad+=$RAD_DELTA )); do
+  mkfile_geom
+  update_legend
+  c=$((c+1))
+done
+}
+
+update_legend() {
+echo "annie_v02_${c}.gdml ---> y=$(echo 1519.24 - 600 - 500 | bc) rad=$rad" >> $OUTDIR/make_geoms.legend
+}
+
+mkfile_geom() {
+if [[ ${MATERIAL} == "argon" && ${STATE} == "gas" ]]; then
+  G4_Ar=$(cat <<-END
+    <material name="G4_Ar" state="gas">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="188.000"/>
+      <D unit="g/cm3" value="${DENSITY}"/>
+      <fraction n="1" ref="Ar"/>
+    </material>
+END
+)
+GDMLMATERIAL="G4_Ar"
+elif [[ ${MATERIAL} == "argon" && ${STATE} == "liquid" ]]; then
+  G4_Ar=$(cat <<-END
+    <material name="G4_Ar" state="liquid">
+      <T unit="K" value="87.45"/>
+      <MEE unit="eV" value="188.000"/>
+      <D unit="g/cm3" value="1.396"/>
+      <fraction n="1" ref="Ar"/>
+    </material>
+END
+)
+GDMLMATERIAL="G4_Ar"
+elif [[ ${MATERIAL} == "vacuum" ]]; then
+  G4_Ar=""
+  GDMLMATERIAL="Vacuum"
+elif [[ ${MATERIAL} == "water" ]]; then
+  G4_Ar=""
+  GDMLMATERIAL="TankWater"
+fi
+
+if [ ${SHAPE} == "tube" ]; then
+  TARGON_LV="<tube aunit=\"deg\" deltaphi=\"360\" lunit=\"mm\" name=\"TARGON_S\" rmax=\"$(echo ${rad} - ${DWTH} | bc)\" rmin=\"0\" startphi=\"0\" z=\"$(echo ${HEIGHT} - ${DWTH} - ${DWTH} | bc)\"/>"
+  TDEWAR_LV="<tube aunit=\"deg\" deltaphi=\"360\" lunit=\"mm\" name=\"TDEWAR_S\" rmax=\"${rad}\" rmin=\"0\" startphi=\"0\" z=\"${HEIGHT}\"/>"
+elif [ ${SHAPE} == "sphere" ]; then
+  TARGON_LV="<sphere aunit=\"deg\" lunit=\"mm\" name=\"TARGON_S\" rmax=\"$(echo ${rad} - ${DWTH} | bc)\" deltaphi=\"360\" deltatheta=\"180\"/>"
+  TDEWAR_LV="<sphere aunit=\"deg\" lunit=\"mm\" name=\"TDEWAR_S\" rmax=\"${rad}\" deltaphi=\"360\" deltatheta=\"180\"/>"
+fi
+
+echo making and writing to $OUTDIR/annie_v02_${c}.gdml
+cat <<EOF > $OUTDIR/annie_v02_${c}.gdml
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
   <define/>
@@ -353,18 +494,13 @@
       <D unit="g/cm3" value="1e-25"/>
       <fraction n="1" ref="H"/>
     </material>
-    <material name="G4_Ar" state="liquid">
-      <T unit="K" value="87.45"/>
-      <MEE unit="eV" value="188.000"/>
-      <D unit="g/cm3" value="1.396"/>
-      <fraction n="1" ref="Ar"/>
-    </material>
+${G4_Ar}
   </materials>
   <solids>
     <box lunit="mm" name="ROOF_S" x="7823.2" y="6.35" z="5689.6"/>
     <box lunit="mm" name="ROOFC_S" x="7823.2" y="457.2" z="5689.6"/>
-    <tube aunit="deg" deltaphi="360" lunit="mm" name="TARGON_S" rmax="45.24" rmin="0" startphi="0" z="1990.48"/>
-    <tube aunit="deg" deltaphi="360" lunit="mm" name="TDEWAR_S" rmax="50" rmin="0" startphi="0" z="2000"/>
+    ${TARGON_LV}
+    ${TDEWAR_LV}
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TWATER_S" rmax="1519.24" rmin="0" startphi="0" z="3956.05"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBODY_S" rmax="1524.0" rmin="0" startphi="0" z="3956.05"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBASE_S" rmax="1549.4" rmin="0" startphi="0" z="6.35"/>
@@ -462,7 +598,7 @@
       </physvol>
     </volume>
     <volume name="TARGON_LV">
-      <materialref ref="G4_Ar"/>
+      <materialref ref="$GDMLMATERIAL"/>
       <solidref ref="TARGON_S"/>
     </volume>
     <volume name="TDEWAR_LV">
@@ -477,7 +613,7 @@
       <solidref ref="TWATER_S"/>
       <physvol name="TDEWUR_PV">
         <volumeref ref="TDEWAR_LV"/>
-        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="419.24" z="0"/>
+        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="$(echo 1519.24 - 600 - 500 | bc)" z="0"/>
       </physvol>
     </volume>
     <volume name="TBODY_LV">
@@ -5366,3 +5502,7 @@
     <world ref="WORLD_LV"/>
   </setup>
 </gdml>
+EOF
+}
+
+main "$@"

@@ -3,17 +3,30 @@ for i in "$@"; do
   case $i in
     --nGeomFiles=*         ) export NGEOMFILES="${i#*=}"  shift    ;;
     --geomDir=*            ) export GEOMDIR="${i#*=}"     shift    ;;
-    -t=*                   ) export TOPVOL="${i#*=}"      shift    ;;
-    -f=*                   ) export FLUXFILE="${i#*=}"    shift    ;;
     --message-thresholds=* ) export MESTHRE="${i#*=}"     shift    ;;
-    --memory=*             ) export MEMORY="${i#*=}"      shift    ;;
-    --disk=*               ) export DISK="${i#*=}"        shift    ;;
-    --cpu=*                ) export CPU="${i#*=}"         shift    ;;
-    --expected-lifetime=*  ) export EXPLT="${i#*=}"       shift    ;;
     -h*|--help*            ) usage;                       return 1 ;;
     -*                     ) echo "unknown option \"$i\"" return 1 ;;
   esac
 done
+
+if [ -z $NGEOMFILES ]; then
+  echo "Use \`--nGeomFiles=\` to set the number of geometry files to generate maxpl.xml files for."
+fi
+
+if [ -z $GEOMDIR ]; then
+  echo "Use \`--geomDir=\` to set the directory that contains the geometry files used to generate maxpl.xml files for. Note, these files must be in $GR/grid_genie.tar.gz."
+fi
+
+if [ -z $MESTHRE ]; then 
+  echo "Use \`--message-thresholds=\` to set the message threshold file."
+fi
+
+MEMORY="1024MB"
+DISK="2048MB"
+CPU="1"
+EXPLT="1h"
+TOPVOL="EXP_HALL_LV"
+FLUXFILE="*"
 
 echo jobsub_submit \
 -G annie \
@@ -54,16 +67,10 @@ file:///annie/app/users/neverett/grid/run_grid_genie_maxpl.sh \
 
 usage() {
 cat >&2 <<EOF
-run_genie_grid.sh --nGeomFiles=#               (number of gdml files in geomDir)
-                     --geomDir=/path/to/geoms/ (geometry files location (in $G))
-                            -t=ABC_LV          (geometry top volume)
-                            -f=123*            (flux file number (in $F))
---message-thresholds=Messenger_abc.xml         (output type priorities (in $C))
-                      --memory=#MB             (amount of memory)
-                        --disk=#MB             (amount of disk space)
-                         --cpu=#               (number of cpus)
-           --expected-lifetime=#h              (maximum run time)
-                     -h|--help                 (print script usage statement (this output))
+run_genie_grid.sh --nGeomFiles=<#>                (number of gdml files in geomDir)
+                  --geomDir=</path/to/geoms/>     (geometry files location (in $G))
+--message-thresholds=<Messenger_abc>.xml (in \$C) (output type priorities (in $C))
+                  -h|--help                       (print script usage statement (this output))
 EOF
 }
 

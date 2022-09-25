@@ -1,0 +1,59 @@
+///----------------------------------------------------------------------------
+/**
+ * \class MyEventRecord
+ * \file  MyEventRecord.hh
+ *
+ * \brief What to write out for g4annie_dirt_flux
+ *
+ * \author (last to touch it) $Author: rhatcher $
+ *
+ * \version $Revision: 1.1 $
+ *
+ * \date $Date: 2015-08-27 04:47:28 $
+ *
+ * Contact: rhatcher@fnal.gov
+ *
+ * $Id: MyEventRecord.hh,v 1.1 2012-11-21 04:47:28 rhatcher Exp $
+ *
+ */
+///----------------------------------------------------------------------------
+
+#ifndef MYEVENTRECORD_H
+#define MYEVENTRECORD_H
+
+class MyEventRecord
+{
+public:
+  MyEventRecord();
+  virtual ~MyEventRecord();
+
+  void clear();
+
+public:
+
+  int         run;        ///< run number
+  int         entry;      ///< entry in GENIE ghep output tree
+  int         iter;       ///< n-th interation of the above (0...niter-1)
+  int         niter;      ///< max iterations
+
+  int         nupdg;      ///< neutrino PDG code
+  double      nuvtxx;     ///< neutrino interaction vertex x (cm)
+  double      nuvtxy;     ///< neutrino interaction vertex y (cm)
+  double      nuvtxz;     ///< neutrino interaction vertex z (cm)
+  double      nuvtxt;     ///< neutrino interaction vertex t (nanosec)
+
+  int         intank;     ///< interaction was in tank
+  std::string vtxvol;     ///< name of vtx volume
+  std::string vtxmat;     ///< material of vtx volume
+
+  int         ntank;      ///< number of particle entering tank
+  int         
+
+
+private:
+  // nothing
+
+}; // end-of-class MyEventRecord
+
+
+#endif // MYEVENTRECORD_H

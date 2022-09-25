@@ -9,6 +9,7 @@ for i in "$@"; do
     -f=*                   ) export FLUXFILE="${i#*=}"     shift    ;;
     -m=*                   ) export MAXPL="${i#*=}"        shift    ;;
     -o=*                   ) export OUTDIR="${i#*=}"       shift    ;;
+    -T=*                   ) export EXPLT="${i#*=}"        shift    ;;
     --message-thresholds=* ) export MESTHRE="${i#*=}"      shift    ;;
     -N=*                   ) export NJOBS="${i#*=}"        shift    ;;
     -h*|--help*            ) usage;                        return 1 ;;
@@ -61,14 +62,27 @@ if [ -z ${NJOBS} ]; then
   return 1
 fi
 
+if [ -z ${EXPLT} ]; then
+  echo "Use \`-T\` to set the lifetime of each job."
+  return 1
+fi
+
 export CPU="1"
 export MEMORY="1500MB"
 export DISK="2700MB"
-export EVTPERHR=100
-let EXPLT=$((NEVT / EVTPERHR))
-if [ "$EXPLT" == "0" ]; then
-  EXPLT=2
-fi
+#export EVTPERHR=100
+#export POTPERHR=15
+#if [ -z ${NEVT}  ]; then
+#  let EXPLT=$((NEVT / EVTPERHR))
+#  if [ "$EXPLT" == "0" ]; then
+#    EXPLT=2
+#  fi
+#else
+#  let EXPLT=$((NPOT / POTPERHR))
+#  if [ "$EXPLT" == "0" ]; then
+#    EXPLT=2
+#  fi
+#fi
 
 if [ -z ${NEVT} ]; then
   export EXP="-e=${NPOT}"
@@ -136,6 +150,7 @@ run_genie_grid.sh -r=<run base number>
                   -f=<flux file number (or numbers using '*') (in $F)>
                   -m=</path/to/max/path/length/file.maxpl.xml>
                   -o=</path/to/output/output/directory> (note: a directory will be created in the specified directory and will contain the output files)
+                  -T=<expected lifetime of each job in hours>
                   --message-thresholds=</path/to/message/thresholds/Messenger_<name>.xml (typically a file in $C)>
                   -N=<number of identical jobs>
                   -h|--help

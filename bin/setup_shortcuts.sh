@@ -18,6 +18,7 @@ export ANNIE=/annie
             export BA=$NE/backups
             export T=$NE/ToolAnalysis
 	    export T_R=$NE/ToolAnalysis_reco
+	    export T_U=$NE/ToolAnalysis_updated
             # ToolAnalysis
                 export TU=$T/UserTools
                 export TC=$T/configfiles

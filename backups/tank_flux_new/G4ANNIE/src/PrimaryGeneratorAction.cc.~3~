@@ -1,0 +1,169 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+//
+// $Id: PrimaryGeneratorAction.cc,v 1.1.1.1 2011-12-06 17:49:40 rhatcher Exp $
+// GEANT4 tag $Name: not supported by cvs2svn $
+//
+// 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+#include "PrimaryGeneratorAction.hh"
+
+#include "G4VUserDetectorConstruction.hh"
+#include "PrimaryGeneratorMessenger.hh"
+
+#include "G4Event.hh"
+#include "G4ParticleTable.hh"
+#include "G4ParticleDefinition.hh"
+#include "Randomize.hh"
+
+// GENIE headers
+#include "GHEP/GHepParticle.h"
+
+// ROOT headers
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+PrimaryGeneratorAction::PrimaryGeneratorAction(G4String infname, G4int verbose)
+  : fInputFileName(infname), fInputFile(0), fInputTree(0), 
+    fEntry(-1), fGenieRecord(0), fVerbosity(verbose)
+{
+  
+  //create a messenger for this class
+  genMessenger = new PrimaryGeneratorMessenger(this);
+
+  fInputFile = TFile::Open(fInputFileName.c_str(),"READONLY");
+  if ( ! fInputFile ) {
+    std::cerr << "%%% could not find input file \"" << fInputFileName << "\"" << std::endl;
+    exit(127);
+  }
+  fInputFile->GetObject("gtree",fInputTree);
+  if ( ! fInputTree ) {
+    std::cerr << "%%% could not find input tree \"gtree\" in \"" << fInputFileName << "\"" << std::endl;
+    exit(127);
+  }
+  fNEntries = fInputTree->GetEntries();
+  G4cout << "%%% input file \"" << fInputFileName << "\" has " 
+            << fNEntries << " entries" << G4endl;
+
+  fGenieRecord = new genie::NtpMCEventRecord;
+  fInputTree->SetBranchAddress("gmcrec",&fGenieRecord); // gmcrec is branch name
+
+  //  G4String particleName;
+  //  G4ParticleDefinition* particle
+  //                    = particleTable->FindParticle(particleName="e-");
+
+
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+PrimaryGeneratorAction::~PrimaryGeneratorAction()
+{
+  if ( fInputFile ) fInputFile->Close();
+  delete genMessenger;
+  delete fGenieRecord;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+{
+  //this function is called at the begining of event
+  // 
+  ++fEntry;
+  G4cout << G4endl << "---> GeneratePrimaries from GENIE file entry "
+         << fEntry << G4endl;
+
+  if ( fEntry >= fNEntries ) {
+    // no more input
+    return;
+  }
+  fInputTree->GetEntry(fEntry);
+  genie::EventRecord* gevtRec = fGenieRecord->event;
+
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+
+  TLorentzVector* genieVtx = gevtRec->Vertex();
+  G4double x = genieVtx->X() * m;  // GENIE uses meters
+  G4double y = genieVtx->Y() * m;  // GENIE uses meters
+  G4double z = genieVtx->Z() * m;  // GENIE uses meters
+  G4double t = genieVtx->T() * second;  // GENIE uses seconds for time
+  G4PrimaryVertex* evtVertex = new G4PrimaryVertex(x,y,z,t);
+
+  // in principle particles leaving the nucleus are offset from the
+  // actual vertex and should start from
+  //    evtVertex (meters) + part->V()*1.0e-15 (meters)
+  // for now ... just originate everything at center...
+  // and don't worry about femto-meter scale offsets
+  // (or slightly bigger for charm / tau decays)
+
+  if ( fVerbosity > 1 ) {
+    G4cout << "genieVtx T " << genieVtx->T() << " " << std::flush;
+    genieVtx->Print();
+  }
+
+  // loop over GENIE particles
+  int nparticles = gevtRec->GetEntries();
+  for (int ipart=0; ipart<nparticles; ++ipart ) {
+
+    genie::GHepParticle* part = gevtRec->Particle(ipart);
+    if ( part->Status() != 1 ) continue; // not to be tracked
+    G4ParticleDefinition* partDef = particleTable->FindParticle(part->Pdg());
+    if ( ! partDef ) {
+      G4cout << "skipping PDG " << part->Pdg() << G4endl;
+      continue;
+    }
+    G4ThreeVector voffset(part->Vx(),part->Vy(),part->Vz());
+    G4double toffset = part->Vt();
+
+    G4PrimaryParticle* g4part = 
+      new G4PrimaryParticle( partDef, 
+                             part->Px()*GeV, part->Py()*GeV, part->Pz()*GeV,
+                             part->E()*GeV);
+
+    evtVertex->SetPrimary( g4part ); // really add
+
+    if ( fVerbosity > 1 ) {
+      G4cout 
+        << "pdg " << part->Pdg()
+        << " E " << part->E()
+        << " Pz() " << part->Pz()
+        << " (" << part->Pz()*GeV << ") "
+        << "voffset " << voffset << " fm, t " << toffset << G4endl;
+    }
+  }
+  
+  anEvent->AddPrimaryVertex(evtVertex);
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+

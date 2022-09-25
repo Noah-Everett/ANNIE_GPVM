@@ -363,8 +363,8 @@
   <solids>
     <box lunit="mm" name="ROOF_S" x="7823.2" y="6.35" z="5689.6"/>
     <box lunit="mm" name="ROOFC_S" x="7823.2" y="457.2" z="5689.6"/>
-    <tube aunit="deg" deltaphi="360" lunit="mm" name="TARGON_S" rmax="462.24" rmin="0" startphi="0" z="490.28"/>
-    <tube aunit="deg" deltaphi="360" lunit="mm" name="TDEWAR_S" rmax="467" rmin="0" startphi="0" z="500"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="TARGON_S" rmax="195.24" rmin="0" startphi="0" z="1990.48"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="TDEWAR_S" rmax="200" rmin="0" startphi="0" z="2000"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TWATER_S" rmax="1519.24" rmin="0" startphi="0" z="3956.05"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBODY_S" rmax="1524.0" rmin="0" startphi="0" z="3956.05"/>
     <tube aunit="deg" deltaphi="360" lunit="mm" name="TBASE_S" rmax="1549.4" rmin="0" startphi="0" z="6.35"/>
@@ -477,7 +477,7 @@
       <solidref ref="TWATER_S"/>
       <physvol name="TDEWUR_PV">
         <volumeref ref="TDEWAR_LV"/>
-        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="748" z="0"/>
+        <position name="TDEWAR_PV_pos" unit="mm" x="0" y="419.24" z="0"/>
       </physvol>
     </volume>
     <volume name="TBODY_LV">
