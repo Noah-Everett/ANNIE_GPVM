@@ -1,10 +1,6 @@
 # ! /usr/bin/env bash
 
-# Directories
-B=/annie/app/users/neverett/bin
-C=/annie/app/users/neverett/config
-G=/annie/app/users/neverett/geometry
-F=/annie/data/flux/bnb
+export FLUX=/annie/data/flux/gsimple_bnb/
 
 main() {
 for i in "$@"; do
@@ -40,7 +36,7 @@ if [ -z "$OUTDIR"   ]; then
   return 1
 fi
 if [ -z "$MAXPLFILE" ]; then
-  echo "Use \`-m=\` to set the path to the max path length file. Use \`-m=+</path/to/file.maxpl.xml> to generate a max path length file."
+  echo "#== run_genie.sh |()| Missing argument |()| Use \`-m=[+]</path/to/file>.maxpl.xml\` to set the path to the max path length file."
   return 1
 elif [ ${MAXPLFILE:0:1} == "+" ]; then 
   export MAKEMAXPL="+" 

@@ -48,6 +48,7 @@ for i in "$@"; do
     -t=*                   ) export TOPVOL="${i#*=}"      shift  ;;
     -f=*                   ) export FLUXFILENUM="${i#*=}" shift  ;;
     --message-thresholds=* ) export MESTHRE="${i#*=}"     shift  ;;
+    -o=*                   ) export OUTDIR="${i#*=}"      shift  ;;
     -*                     ) echo "unknown option $i";    exit 1 ;;
    esac
 done
@@ -57,12 +58,12 @@ if [ -z "$FLUXFILENUM" ]; then
 fi
 export FLUXFILE="bnb_annie_${FLUXFILENUM}.root"
 
-export GEOMETRY="${G}/${GEOMDIR}/annie_v02_${PROCESS}.gdml"
+export GEOMETRY="${INPUT_TAR_DIR_LOCAL}/${GEOMDIR}/annie_v02_${PROCESS}.gdml"
 
 if [-z "$MESTHRE" ]; then
   export MESTHRE=""
 else
-  export MESTHRE="${C}/${MESTHRE}"
+  export MESTHRE="${INPUT_TAR_DIR_LOCAL}/${MESTHRE}"
 fi
 
 if [ -z "$TOPVOL" ]; then
@@ -72,9 +73,10 @@ fi
 cp /cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALbig.xml.gz .
 gzip -d gxspl-FNALbig.xml.gz
 
+export RUNBASE="0"
 export MAXPL=+annie_v02_${PROCESS}.maxpl.xml
 export NEVENTS="1"
-export RUN=${PROCESS}${CLUSTER}
+export RUN="${RUNBASE}${PROCESS}"
 export SEED=${PROCESS}${CLUSTER}
 export FLXPSET="ANNIE-tank"
 export FLUX="${F}/${FLUXFILE},${FLXPSET}"
@@ -94,14 +96,16 @@ export GXMLPATH=${C}:${GXMLPATH} #$CONDOR_DIR_INPUT:${GXMLPATH}
 
 
 #============================GET FILES==========================#
-ifdh cp -D $INPUT_TAR_DIR_LOCAL/${GEOMETRY} .
-ifdh cp -D $INPUT_TAR_DIR_LOCAL/${MESTHRE} .
+ifdh cp -D ${GEOMETRY} .
+ifdh cp -D ${MESTHRE} .
 #===============================================================#
 
 
 #=============================MAKE LOG========================#
-ifdh mkdir_p ${SCRATCH_DIR}/${GRID_USER}/genie_output/${GEOMDIR}
+export OUTDIR=${OUTDIR}/${RUNBASE}_${CLUSTER}
+ifdh mkdir_p ${OUTDIR}
 cat <<EOF > ${RUN}.log
+#===== SETTINGS =====#
             Program: /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal
                 Run: ${RUN}
                Seed: ${SEED}
@@ -110,12 +114,31 @@ cat <<EOF > ${RUN}.log
            Geometry: ${GEOMETRY}
               Units: ${UNITS}
      Cross Sections: ${GENIEXSEC}
+${EXPMSG}
                Tune: G18_10a_02_11a
-   Number of Events: ${NEVENTS}
 Maximum Path Length: ${MAXPL}
  Message Thresholds: ${MESTHRE}
+
+#===== COMMAND =====#
+/cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal \
+-r ${RUN} \
+--seed ${SEED} \
+-t ${TOPVOL} \
+-f ${FLUX} \
+-g ${GEOMETRY} \
+${UNITS} \
+--cross-sections ${GENIEXSEC} \
+--tune G18_10a_02_11a \
+-n ${NEVENTS} \
+-m $MAXPL \
+-S 30000 \
+--message-thresholds $MESTHRE
+
+#===== ls =====#
+`ls`
 EOF
-ifdh cp -D $IFDH_OPTION ${RUN}.log ${SCRATCH_DIR}/${GRID_USER}/genie_output/${GEOMDIR}
+ifdh cp -D $IFDH_OPTION ${RUN}.log ${OUTDIR}
+#          Z Minimum: ${ZMIN}
 #======================================================================#
 
 
@@ -176,7 +199,7 @@ export IFDH_GRIDFTP_EXTRA="-st 1000"
     else
         # directory already exists, so let's copy
 #   ifdh cp -D $IFDH_OPTION job_output_${CLUSTER}.${PROCESS}.log ${SCRATCH_DIR}/${GRID_USER}/job_output
-    ifdh cp -D $IFDH_OPTION *.maxpl.xml ${SCRATCH_DIR}/${GRID_USER}/genie_output/${GEOMDIR}
+    ifdh cp -D $IFDH_OPTION *.maxpl.xml ${OUTDIR}
     if [ $? -ne 0 ]; then
       echo "Error $? when copying to dCache scratch area!"
       echo "If you created ${SCRATCH_DIR}/${GRID_USER} yourself,"

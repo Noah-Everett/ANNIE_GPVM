@@ -4,6 +4,7 @@ for i in "$@"; do
     --nGeomFiles=*         ) export NGEOMFILES="${i#*=}"  shift    ;;
     --geomDir=*            ) export GEOMDIR="${i#*=}"     shift    ;;
     --message-thresholds=* ) export MESTHRE="${i#*=}"     shift    ;;
+    -o=*                   ) export OUTDIR="${i#*=}"      shift    ;;
     -h*|--help*            ) usage;                       return 1 ;;
     -*                     ) echo "unknown option \"$i\"" return 1 ;;
   esac
@@ -21,10 +22,10 @@ if [ -z $MESTHRE ]; then
   echo "Use \`--message-thresholds=\` to set the message threshold file."
 fi
 
-MEMORY="1024MB"
-DISK="2048MB"
+MEMORY="1500MB"
+DISK="2700MB"
 CPU="1"
-EXPLT="1h"
+EXPLT="3h"
 TOPVOL="EXP_HALL_LV"
 FLUXFILE="*"
 
@@ -44,7 +45,8 @@ file:///annie/app/users/neverett/grid/run_grid_genie_maxpl.sh \
 --geomDir=$GEOMDIR \
 -t=$TOPVOL \
 -f=$FLUXFILE \
---message-thresholds=$MESTHRE
+--message-thresholds=$MESTHRE \
+-o=$OUTDIR
 
 jobsub_submit \
 -G annie \
@@ -62,7 +64,8 @@ file:///annie/app/users/neverett/grid/run_grid_genie_maxpl.sh \
 --geomDir=$GEOMDIR \
 -t=$TOPVOL \
 -f=$FLUXFILE \
---message-thresholds=$MESTHRE
+--message-thresholds=$MESTHRE \
+-o=$OUTDIR
 }
 
 usage() {
@@ -70,6 +73,7 @@ cat >&2 <<EOF
 run_genie_grid.sh --nGeomFiles=<#>                (number of gdml files in geomDir)
                   --geomDir=</path/to/geoms/>     (geometry files location (in $G))
 --message-thresholds=<Messenger_abc>.xml (in \$C) (output type priorities (in $C))
+                  -o=</path/to/output/dir>
                   -h|--help                       (print script usage statement (this output))
 EOF
 }

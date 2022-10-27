@@ -1,7 +1,7 @@
 *.DS_Store
 config/*.tar.gz
-ToolAnalysis/
-ToolAnalysis_reco/
-ToolAnalysis_updated/
+ToolAnalysis_standard/
+ToolAnalysis_updatedReco/
+ToolAnalysis_currentReco/
 WCSim/
-ToolAnalysis*
+ToolAnalysis*/
