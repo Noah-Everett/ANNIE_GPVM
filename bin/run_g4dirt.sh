@@ -31,7 +31,7 @@ if [ -z "${INDIR}" ]; then
 fi
 
 if [ -z "${NEVENTS}" ]; then
-  echo "Use \`-n=\` to set the number of events per input file to propigate."
+  echo "Use \`-n=\` to set the number of events per input file to propigate (-n=-1 for all)."
   return 3
 fi
 
@@ -62,9 +62,6 @@ echo "Setting up genie_xsec"
     setup genie_xsec v2_12_10 -q DefaultPlusMECWithNC
 
 cd ${INDIR}
-export INDIR=${PWD}
-cd -
-cd ${OUTDIR}
 
 for INFILE in ${INDIR}/gntp.${RUNNUM}.ghep.root; do 
   if [ -f "${INFILE}" ]; then
@@ -76,16 +73,16 @@ for INFILE in ${INDIR}/gntp.${RUNNUM}.ghep.root; do
 
 cat <<EOF > ${OUTFILELOG}
 #=============== RUN SETTINGS ===============#
-     GENIE file: ${INFILE}
-    g4dirt file: ${OUTFILE}
-g4dirt file log: annie_tank_flux.${CURRUNNUM}.log
-
-#=============== RUN LOG ===============#
+  GENIE file (in dir): ${INFILE}
+g4dirt file (out dir): ${OUTFILE}
+      g4dirt file log: annie_tank_flux.${CURRUNNUM}.log
+             commmand: $B/g4annie_dirt_flux --batch -n $NEVENTS -g $GEOMETRY --physics=${USEPHYLIST} -i ${INFILE} -o $(basename ${OUTFILE})
 EOF
 
-echo $B/g4annie_dirt_flux --batch -n $NEVENTS -g $GEOMETRY --physics=${USEPHYLIST} -i ${INFILE} -o $(basename ${OUTFILE})
-     $B/g4annie_dirt_flux --batch -n $NEVENTS -g $GEOMETRY --physics=${USEPHYLIST} -i ${INFILE} -o $(basename ${OUTFILE})
+# I know the `-i ./$basename ${INFILE})` looks really dumb, but its necessary
+$B/g4annie_dirt_flux --batch -n $NEVENTS -g $GEOMETRY --physics=${USEPHYLIST} -i ./$(basename ${INFILE}) -o $(basename ${OUTFILE}) 2>&1 | tee -a ${OUTFILELOG}
 
+mv annie_tank_flux.* ${OUTDIR}
 rm currentEvent.rndm
 rm currentRun.rndm
   fi

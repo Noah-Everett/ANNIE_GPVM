@@ -16,7 +16,8 @@ export WS=${W}/wcsim/WCSim
 for i in "$@"; do
   case $i in
     -r=*                   ) export RUNNUM="${i#*=}"        shift    ;;
-    -p=*                   ) export PRIMARIESDIR="${i#*=}"  shift    ;;
+    -p_g=*                   ) export PRIMARIESDIR_GENIE="${i#*=}"  shift    ;;
+    -p_d=*                   ) export PRIMARIESDIR_G4DIRT="${i#*=}"  shift    ;;
     -n=*                   ) export NEVENTS="${i#*=}"       shift    ;;
     -g=*                   ) export GEOMETRY="${i#*=}"      shift    ;;
     -o=*                   ) export OUTDIR="${i#*=}"        shift    ;;
@@ -29,8 +30,12 @@ if [ -z "${RUNNUM}" ]; then
   return 1
 fi
 
-if [ -z "${PRIMARIESDIR}" ]; then
-  echo "Use \`-p=\` to set the primaries directory (ex: -p=/pnfs/annie/persistent/users/...)."
+if [ -z "${PRIMARIESDIR_GENIE}" ]; then
+  echo "Use \`-p_g=\` to set the genie primaries directory (ex: -p=/pnfs/annie/persistent/users/...)."
+  return 2
+fi
+if [ -z "${PRIMARIESDIR_G4DIRT}" ]; then
+  echo "Use \`-p_d=\` to set the g4dirt primaries directory (ex: -p=/pnfs/annie/persistent/users/...)."
   return 2
 fi
 
@@ -54,7 +59,8 @@ mkdir ${OUTDIR}
 cat <<EOF > ${OUTDIR}/${RUNNUM}.log
             Program: WCSim
          Run number: ${RUNNUM}
-          Primaries: ${PRIMARIESDIR}
+    GENIE Primaries: ${PRIMARIESDIR_GENIE}
+   g4dirt Primaries: ${PRIMARIESDIR_G4DIRT}
            Geometry: ${GEOMETRY}
    Number of Events: ${NEVENTS}
 EOF
@@ -63,19 +69,21 @@ cp ${GEOMETRY} ${WS}/annie_v04.gdml  # Geometry may not be `annie_v04.gdml` (pro
                                      # however, this name is in the code (easier to give into the code than change it).
 
 source ${W}/setupenvs.sh
+echo "Setup finished"
 
-for GENIEFILE in ${PRIMARIESDIR}/gntp.${RUNNUM}.ghep.root; do 
+for GENIEFILE in ${PRIMARIESDIR_GENIE}/gntp.${RUNNUM}.ghep.root; do 
+  echo "Current GENIE file: ${GENIEFILE}"
   if [ -f "${GENIEFILE}" ]; then
     export CURRUNNUM=$(basename ${GENIEFILE})
     export CURRUNNUM=${CURRUNNUM#gntp.}
     export CURRUNNUM=${CURRUNNUM%.ghep.root}
-    export G4DIRTFILE=${PRIMARIESDIR}/annie_tank_flux.${CURRUNNUM}.root
+    export G4DIRTFILE=${PRIMARIESDIR_G4DIRT}/annie_tank_flux.${CURRUNNUM}.root
 
 echo "GENIE file: ${GENIEFILE}"
 echo "g4dirt file: ${G4DIRTFILE}"
 
-rm ${WB}/WCSim_${CURRUNNUM}.mac
-cat <<EOF > ${WB}/WCSim_${CURRUNNUM}.mac
+rm ${WB}/run_wcsim_files/WCSim_${CURRUNNUM}.mac
+cat <<EOF > ${WB}/run_wcsim_files/WCSim_${CURRUNNUM}.mac
 #!/bin/sh 
 
 /run/verbose 0
@@ -119,24 +127,24 @@ cat <<EOF > ${WB}/WCSim_${CURRUNNUM}.mac
 
 /control/execute macros/setRandomParameters.mac
 
-/WCSimIO/RootFile WCSim_${CURRUNNUM}
+/WCSimIO/RootFile run_wcsim_files/WCSim_${CURRUNNUM}
 
 /run/beamOn ${NEVENTS}
 EOF
 
 rm ${WB}/macros/primaries_directory.mac
 cat <<EOF > ${WB}/macros/primaries_directory.mac
-/mygen/neutrinosdirectory ${PRIMARIESDIR}/gntp.${CURRUNNUM}.ghep.root
-/mygen/primariesdirectory ${PRIMARIESDIR}/annie_tank_flux.${CURRUNNUM}.root
+/mygen/neutrinosdirectory ${PRIMARIESDIR_GENIE}/gntp.${CURRUNNUM}.ghep.root
+/mygen/primariesdirectory ${PRIMARIESDIR_G4DIRT}/annie_tank_flux.${CURRUNNUM}.root
 /mygen/primariesoffset 0
 EOF
 
 cd ${WB}
-./WCSim ./WCSim_${CURRUNNUM}.mac | tee ${OUTDIR}/WCSim_${CURRUNNUM}.log
-mv WCSim_${CURRUNNUM}.mac          ${OUTDIR}
-mv WCSim_${CURRUNNUM}.log          ${OUTDIR}/WCSim_${CURRUNNUM}.log
-mv WCSim_${CURRUNNUM}_0.root       ${OUTDIR}/WCSim_${CURRUNNUM}.root
-mv WCSim_${CURRUNNUM}_lappd_0.root ${OUTDIR}/WCSim_${CURRUNNUM}_lappd.root
+./WCSim ./run_wcsim_files/WCSim_${CURRUNNUM}.mac | tee ${OUTDIR}/WCSim_${CURRUNNUM}.log
+mv run_wcsim_files/WCSim_${CURRUNNUM}.mac          ${OUTDIR}
+mv run_wcsim_files/WCSim_${CURRUNNUM}.log          ${OUTDIR}/WCSim_${CURRUNNUM}.log
+mv run_wcsim_files/WCSim_${CURRUNNUM}_0.root       ${OUTDIR}/WCSim_${CURRUNNUM}.root
+mv run_wcsim_files/WCSim_${CURRUNNUM}_lappd_0.root ${OUTDIR}/WCSim_${CURRUNNUM}_lappd.root
 cd -
     
   fi
@@ -146,8 +154,9 @@ done
 usage()
 {
 cat >&2 <<EOF
-run_wcsim.sh -r=<run number (or numbers using `*`. Ex: \`-r='4*'\`)>
-             -p=</path/to/primaries/dir>
+run_wcsim.sh -r=<run number(s)>
+             -p_g=</path/to/GENIE/primaries/dir>
+             -p_d=</path/to/g4dirt/primaries/dir>
              -n=<number of events per primary file to propigate>
              -g=</path/to/geometry/file.gdml>
              -o=</path/to/output/dir>
