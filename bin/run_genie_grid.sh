@@ -8,6 +8,7 @@ for i in "$@"; do
     -t=*                   ) export TOPVOL="${i#*=}"       shift    ;;
     -f=*                   ) export FLUXFILE="${i#*=}"     shift    ;;
     -m=*                   ) export MAXPL="${i#*=}"        shift    ;;
+    -i=*                   ) export INDIR="${i#*=}"        shift    ;;
     -o=*                   ) export OUTDIR="${i#*=}"       shift    ;;
     -T=*                   ) export EXPLT="${i#*=}"        shift    ;;
     --message-thresholds=* ) export MESTHRE="${i#*=}"      shift    ;;
@@ -52,8 +53,13 @@ if [ -z ${MESTHRE} ]; then
   return 1
 fi
 
+if [ -z "${INDIR}" ]; then
+  echo "Use \`-i=\` to set the input tar file."
+  return 1
+fi
+
 if [ -z "${OUTDIR}" ]; then
-  echo "Use \`-o=\` to set the output directory (Use \`-o=\` to set the output geometry (Note: a directory will be created in specified directory. The new directory will contain the output files)."
+  echo "Use \`-o=\` to set the output directory. (Note: a directory will be created in specified directory. The new directory will contain the output files.)"
   return 1
 fi
 
@@ -144,15 +150,16 @@ ${EXP} \
 usage() {
 cat >&2 <<EOF
 run_genie_grid.sh -r=<run base number>
-                  <-n=<number of events> or -e=<number of POT>>
+                 <-n=<number of events> or -e=<number of POT>>
                   -g=</path/to/geometry/file.gdml>
-                  -t=<geometry top volume name>
-                  -f=<flux file number (or numbers using '*') (in $F)>
+                  -t=<top volume name>_LV
+                  -f=<flux file number (or numbers using '*') (in /annie/data/flux/redecay_bnb/)>
                   -m=</path/to/max/path/length/file.maxpl.xml>
-                  -o=</path/to/output/output/directory> (note: a directory will be created in the specified directory and will contain the output files)
+                  -i=</path/to/input/tar/file.tar.gz>
+                  -o=</path/to/output/directory> (note: a directory will be created in the specified directory and will contain the output files)
                   -T=<expected lifetime of each job in hours>
-                  --message-thresholds=</path/to/message/thresholds/Messenger_<name>.xml (typically a file in $C)>
-                  -N=<number of identical jobs>
+                  --message-thresholds=</path/to/message/thresholds/Messenger_<name>.xml (typically a file in /annie/app/users/neverett/config/)>
+                  -N=<number of jobs>
                   -h|--help
 EOF
 }
