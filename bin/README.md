@@ -78,9 +78,9 @@ $B/run_genie.sh -r=1 -n=1 -g=$G/other/annie_v01.gdml -t=EXP_HALL_LV -f=* -m=+ann
 
 ### About
 `run_genie_grid.sh` is used to run the GENIE Generator on the Grid.
-It requires the use of a tar ball (`.tar.gz` file) to provide the needed input files to each Grid node. 
-The input tar file should include desired flux files from `/annie/data/flux/gsimple_bnb/`, geometry file, and the corresponding max path length file.
-See [`make_tar_genie.sh`](#make_tar_geniesh) for the generation of the input tar ball.
+It requires the use of a tarball (`.tar.gz` file) to provide the needed input files to each Grid node. 
+The input tar file should include desired flux files from `/annie/data/flux/gsimple_bnb/`, geometry file and the corresponding max path length file, and `$B/setup_genie3_00_06.sh`.
+Use [`$B/make_tar_genie.sh`](#make_tar_geniesh) as a template for the generation of the input tarball.
 
 Any larger batches of runs should be run on the Grid both to save the user time and also so ensure that the GPVM remains usable for all other collaboration members.
 For additional information on the Grid, consult [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/grid#readme).
@@ -130,12 +130,15 @@ $B/run_genie_grid.sh -r=0 -n=1000 -g=$G/other/annie_v02.gdml -t=TWATER_LV -f=* -
 ## `make_maxpl_grid.sh`
 ### About
 `make_maxpl_grid.sh` is used to generate `.maxpl.xml` files using the Grid. 
-`.maxpl.xml` files, while not nessecary to use the GENIE Generator, do decrease its runtime significantly. 
+`.maxpl.xml` files, while not nessecary to use the GENIE Generator, decrease its runtime and (depending on the flux file format) allow more events to be generated per run. 
 Currently, this script is specialized to my directory (`$NE`); though, with moderately minor modifications, this script could be modified to work for any user. 
-As stated previously, the Grid should be used to decrease pressure on the annie GPVM. 
-Thus, when generating `.maxpl.xml` files for multiple `gdml` geometry files, it is highly recommended to use the Grid via this script.
+This script also requires the use of a tarball; however, this script requirest that to be `$GR/grid_genie.tar.gz`.
+This can be easily changed to be an inupt variable like `run_genie_grid.sh`.
 
+When generating `.maxpl.xml` files for multiple GDML geometry files, it is recommended to use the Grid.
 For additional information on the Grid, consult [`$GR/README.md`](https://github.com/Noah-Everett/ANNIE_gpvm/tree/main/grid#readme).
+
+NOTE: This scipt will likely need modifications to be used. I have not used or updated it in some time.
 
 ### Usage
 ```
@@ -153,33 +156,33 @@ For additional information on the Grid, consult [`$GR/README.md`](https://github
 ### Example Usage
 Usage to generate `$G/annie_v02_tube_argon_liquid/*.maxpl.xml`:
 ```
-$ source $B/make_maxpl_grid.sh --geomDir=annie_v02_tube_argon_liquid --nGeomFiles=5 -t=EXP_HALL_LV -f=* --message-thresholds=Messenger_warn.xml --memory=2GB --disk=3GB --cup=1 --expected-lifetime=4h
+$B/make_maxpl_grid.sh --geomDir=annie_v02_tube_argon_liquid --nGeomFiles=5 -t=EXP_HALL_LV -f=* --message-thresholds=Messenger_warn.xml --memory=2GB --disk=3GB --cup=1 --expected-lifetime=4h
 ```
 
 ## `make_gst.sh`
 
 ### About
 `make_gst.sh` runs `gntpc` which is a GENIE executable. 
-Specifically, this script runs `gntpc` to convert `gntp.<#>.ghep.root` files to `gntp.<#>.gst.root` files which are then able to be used in analysis scripts in my [Analysis repository](https://github.com/Noah-Everett/ANNIE_Analysis) (specifically in [`Scripts/`](https://github.com/Noah-Everett/ANNIE_Analysis/tree/main/Scripts)).
+Specifically, this script runs `gntpc` to convert `gntp.<#>.ghep.root` files to `gntp.<#>.gst.root` files which are easier to use for analysis.
 
 ### Usage
 ```
 make_genie_gst.sh -r (run in all directories one level down)
                   --message-thresholds=Messenger_<name (in $C) (default = "")>.xml
                   -h|--help
-                  <number (numbers with '*') of the ghep file to convert to gst>
+                  <file number or number pattern>
 ```
 
 ### Example Usage
 
 This will convert all files in the current directory of the form `gntp.3<#>.ghep.root` to files of the form `gntp.3<#>.gst.root`:
 ```
-$ source $B/make_genie_gst.sh '3*'
+$B/make_genie_gst.sh '3*'
 ```
 
 Most common use case:
 ```
-$ source $B/make_genie_gst.sh -r '*' --message-thresholds=Messenger_warn.xml
+$B/make_genie_gst.sh -r '*' --message-thresholds=Messenger_warn.xml
 ```
 - Converts all files of the form `gntp.<#>.ghep.root` to files of the form `gntp.<#>.gst.root` in the directories down one level (child directories). 
 - Changes the GENIE message thresholds to `warn` to reduce run time.
@@ -187,7 +190,7 @@ $ source $B/make_genie_gst.sh -r '*' --message-thresholds=Messenger_warn.xml
 ## `make_tar_genie.sh`
 
 ### About
-`make_tar_genie.sh` is used to create a tarball that contains all the files needed to run the GENIE Generator on the Grid. All scripts that run the GENIE Generator on the Grid require `$GR/grid_genie.tar.gz`, which is created by running this script. `$GR/grid_genie.tar.gz` contains the following files:
+`make_tar_genie.sh` is used to create a tarball that contains all the files needed to run the GENIE Generator on the Grid. All scripts that run the GENIE Generator on the Grid require an input tarball, which can be created by running this script. `$GR/grid_genie.tar.gz` contains the following files:
 - `$G/*`
 - `$C/*`
 - `$B/setup_genie3_00_06.sh`
@@ -195,10 +198,14 @@ $ source $B/make_genie_gst.sh -r '*' --message-thresholds=Messenger_warn.xml
 
 If any of these files have been changed, and you wish to use the new versions, make sure to rerun `$B/make_tar_genie.sh` to produce an up to date `$GR/grid_genie.tar.gz`.
 
-### Usage
-`$ source $B/make_tar_genie.sh`
+NOTE: For other users, use this script as a template to create your tarball.
 
-## `make_geoms_1D.sh`
+### Usage
+```
+$B/make_tar_genie.sh
+```
+
+<!-- ## `make_geoms_1D.sh`
 
 ### About
 `make_geoms_1D.sh` is used to produce variations of the ANNIE geometry (in `gdml`). 
@@ -214,7 +221,7 @@ make_geoms_1D.sh --outDir=</path/to/output/directory>
                  --material=<argon || water || vacuum>
                  --shape=<tube || sphere>
                  --state<gas or liquid (only needed if using argon)>
-                 --density<number times atm (ex: 20 --> 20atm in geom)>
+                 --density<number times atm (ex: 20 ==> 20atm in geom)>
                  --nFiles<number of geometry files produced>
 ```
 
@@ -222,12 +229,13 @@ make_geoms_1D.sh --outDir=</path/to/output/directory>
 Create `$G/annie_v02_tube_argon_gas_20atm/*`:
 ```
 $ make_geoms_1D.sh --outDir=$G/annie_v02_tube_argon_gas_20atm --material=argon --shape=tube --state=gas --density=20 --nFiles=5
-```
+``` -->
 
 ## `setup`
 
 ### About
-`setup` is a script that runs other scripts that setup environmental variables and aliases to make using the GPVM easier and faster. These are the scripts sourced by `setup`:
+`setup` is a script that runs other scripts that setup environmental variables and aliases to make using the GPVM easier and faster. 
+These are the scripts sourced by `setup`:
 - `$B/setup_shortcuts.sh`
 - `$B/setup_grid.sh`
 - `$B/setup_singularity.sh`
@@ -241,7 +249,8 @@ $ source /annie/app/users/neverett/bin/setup
 ## `setup_genie3_00_06.sh`
 
 ### About
-`setup_genie3_00_06.sh` sets up GENIE v3_00_06 through ups on the GPVM. The user should almost never have to directly run this script, as it is mainly intended and used by other scripts that run GENIE products.
+`setup_genie3_00_06.sh` sets up GENIE v3_00_06 through ups on the GPVM. 
+The user should almost never have to directly run this script, as it is mainly intended and used by other scripts that run GENIE products.
 
 ### Usage
 ```
@@ -251,7 +260,8 @@ $ source $B/setup_genie3_00_06.sh
 ## `setup_grid.sh`
 
 ### About
-`setup_grid.sh` sets up the Grid. This script is ran by `$B/setup`.
+`setup_grid.sh` sets up the Grid. 
+This script is ran by `$B/setup`.
 
 ### Usage
 ```
