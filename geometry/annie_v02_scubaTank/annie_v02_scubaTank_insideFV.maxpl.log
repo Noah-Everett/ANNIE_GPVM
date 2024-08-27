@@ -1,0 +1,28 @@
+#===== SETTINGS =====#
+            Program: /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal
+                Run: 00
+               Seed: 055740401
+            Top Vol: EXP_HALL_LV
+               Flux: /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/c3d5c9f944e6677516ce2baa699f7e318b780f318a92fba4ba2c2c1c91cbd15a/annie/data/flux/gsimple_bnb/gsimple_beammc_annie_*.root,ANNIE-tank
+           Geometry: /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/c3d5c9f944e6677516ce2baa699f7e318b780f318a92fba4ba2c2c1c91cbd15a//exp/annie/app/users/neverett/geometry/annie_v02_scubaTank/annie_v02_0.gdml
+              Units: -L cm -D g_cm3
+     Cross Sections: /srv/gxspl-FNALbig.xml
+
+               Tune: G18_10a_02_11a
+Maximum Path Length: +annie_v02_0.maxpl.xml
+ Message Thresholds: /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/c3d5c9f944e6677516ce2baa699f7e318b780f318a92fba4ba2c2c1c91cbd15a//exp/annie/app/users/neverett/config/Messenger_warn.xml
+
+#===== COMMAND =====#
+/cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal -r 00 --seed 055740401 -t EXP_HALL_LV -f /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/c3d5c9f944e6677516ce2baa699f7e318b780f318a92fba4ba2c2c1c91cbd15a/annie/data/flux/gsimple_bnb/gsimple_beammc_annie_*.root,ANNIE-tank -g /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/c3d5c9f944e6677516ce2baa699f7e318b780f318a92fba4ba2c2c1c91cbd15a//exp/annie/app/users/neverett/geometry/annie_v02_scubaTank/annie_v02_0.gdml -L cm -D g_cm3 --cross-sections /srv/gxspl-FNALbig.xml --tune G18_10a_02_11a -n 1 -m +annie_v02_0.maxpl.xml -S 30000 --message-thresholds /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/c3d5c9f944e6677516ce2baa699f7e318b780f318a92fba4ba2c2c1c91cbd15a//exp/annie/app/users/neverett/config/Messenger_warn.xml
+
+#===== ls =====#
+Messenger_warn.xml
+_condor_stderr
+_condor_stdout
+annie_v02_0.gdml
+gxspl-FNALbig.xml
+jsb_tmp
+no_xfer
+run_grid_genie_maxpl.sh
+simple.sh
+x509up_annie_Analysis_58778

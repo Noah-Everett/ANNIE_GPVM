@@ -29,9 +29,48 @@ EXPLT="3h"
 TOPVOL="EXP_HALL_LV"
 FLUXFILE="*"
 
+# echo jobsub_submit \
+# -G annie \
+# -M \
+# -N $NGEOMFILES \
+# --memory=$MEMORY \
+# --disk=$DISK \
+# --cpu=$CPU \
+# --expected-lifetime=$EXPLT \
+# --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
+# -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
+# --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
+# --tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_genie.tar.gz \
+# file:///annie/app/users/neverett/grid/run_grid_genie_maxpl.sh \
+# --geomDir=$GEOMDIR \
+# -t=$TOPVOL \
+# -f=$FLUXFILE \
+# --message-thresholds=$MESTHRE \
+# -o=$OUTDIR
+# 
+# jobsub_submit \
+# -G annie \
+# -M \
+# -N $NGEOMFILES \
+# --memory=$MEMORY \
+# --disk=$DISK \
+# --cpu=$CPU \
+# --expected-lifetime=$EXPLT \
+# --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
+# -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
+# --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
+# --tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_genie.tar.gz \
+# file:///annie/app/users/neverett/grid/run_grid_genie_maxpl.sh \
+# --geomDir=$GEOMDIR \
+# -t=$TOPVOL \
+# -f=$FLUXFILE \
+# --message-thresholds=$MESTHRE \
+# -o=$OUTDIR
+# }
+
 echo jobsub_submit \
 -G annie \
--M \
+--mail_always \
 -N $NGEOMFILES \
 --memory=$MEMORY \
 --disk=$DISK \
@@ -40,17 +79,17 @@ echo jobsub_submit \
 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
 -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
 --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
---tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_genie.tar.gz \
-file:///annie/app/users/neverett/grid/run_grid_genie_maxpl.sh \
+--tar_file_name=dropbox://${GR}/grid_genie.tar.gz \
+file://${GR}/run_grid_genie_maxpl.sh \
 --geomDir=$GEOMDIR \
 -t=$TOPVOL \
 -f=$FLUXFILE \
 --message-thresholds=$MESTHRE \
 -o=$OUTDIR
-
+ 
 jobsub_submit \
 -G annie \
--M \
+--mail_always \
 -N $NGEOMFILES \
 --memory=$MEMORY \
 --disk=$DISK \
@@ -59,8 +98,8 @@ jobsub_submit \
 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
 -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
 --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
---tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_genie.tar.gz \
-file:///annie/app/users/neverett/grid/run_grid_genie_maxpl.sh \
+--tar_file_name=dropbox://${GR}/grid_genie.tar.gz \
+file://${GR}/run_grid_genie_maxpl.sh \
 --geomDir=$GEOMDIR \
 -t=$TOPVOL \
 -f=$FLUXFILE \
@@ -70,11 +109,12 @@ file:///annie/app/users/neverett/grid/run_grid_genie_maxpl.sh \
 
 usage() {
 cat >&2 <<EOF
-run_genie_grid.sh --nGeomFiles=<#>                (number of gdml files in geomDir)
-                  --geomDir=</path/to/geoms/>     (geometry files location (in $G))
---message-thresholds=<Messenger_abc>.xml (in \$C) (output type priorities (in $C))
+run_genie_grid.sh --nGeomFiles=<#>                   (number of gdml files in geomDir)
+                  --geomDir=</path/to/geoms/>        (geometry files location (in $G))
+                  --geomPattern=<file name pattern>  (geometry files location (in $G))
+--message-thresholds=<Messenger_abc>.xml (in \$C)    (output type priorities (in $C))
                   -o=</path/to/output/dir>
-                  -h|--help                       (print script usage statement (this output))
+                  -h|--help                          (print script usage statement (this output))
 EOF
 }
 

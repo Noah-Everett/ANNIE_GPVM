@@ -1,4 +1,4 @@
-export ANNIE=/annie
+export ANNIE=/exp/annie
 # /annie/
     # app/
     export USERS=$ANNIE/app/users

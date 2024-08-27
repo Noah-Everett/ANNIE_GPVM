@@ -54,7 +54,7 @@ if [ -z ${MESTHRE} ]; then
 fi
 
 if [ -z "${INDIR}" ]; then
-  echo "Use \`-i=\` to set the input tar file."
+  echo "Use \`-i=\` to set the path to the input tar file."
   return 1
 fi
 
@@ -74,7 +74,8 @@ if [ -z ${EXPLT} ]; then
 fi
 
 export CPU="1"
-export MEMORY="1500MB"
+#export MEMORY="1500MB"
+export MEMORY="3000MB"
 export DISK="2700MB"
 #export EVTPERHR=100
 #export POTPERHR=15
@@ -98,20 +99,21 @@ fi
 
 echo jobsub_submit \
 -G annie \
--M \
+--onsite-only \
+--mail_always \
 -N $NJOBS \
---memory=$MEMORY \
---disk=$DISK \
---cpu=$CPU \
---expected-lifetime=${EXPLT}h \
+--memory $MEMORY \
+--disk $DISK \
+--cpu $CPU \
+--expected-lifetime ${EXPLT}h \
 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
 -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
 --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
---tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_genie.tar.gz \
 --lines '+FERMIHTC_AutoRelease=True' \
 --lines '+FERMIHTC_GraceMemory=2048' \
 --lines '+FERMIHTC_GraceLifetime=7200' \
-file:///annie/app/users/neverett/grid/run_grid_genie.sh \
+--tar_file_name dropbox:///exp/annie/app/users/neverett/grid/grid_genie.tar.gz \
+file:///exp/annie/app/users/neverett/grid/run_grid_genie.sh \
 -r=$RUNBASE \
 ${EXP} \
 -g=$GDML \
@@ -119,24 +121,25 @@ ${EXP} \
 -f=$FLUXFILE \
 -m=$MAXPL \
 --message-thresholds=$MESTHRE \
+-i=$INDIR \
 -o=$OUTDIR
 
 jobsub_submit \
 -G annie \
--M \
+--onsite-only \
+--mail_always \
 -N $NJOBS \
---memory=$MEMORY \
---disk=$DISK \
---cpu=$CPU \
---expected-lifetime=${EXPLT}h \
+--memory $MEMORY \
+--disk $DISK \
+--cpu $CPU \
+--expected-lifetime ${EXPLT}h \
 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
 -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
 --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
 --lines '+FERMIHTC_AutoRelease=True' \
 --lines '+FERMIHTC_GraceMemory=2048' \
 --lines '+FERMIHTC_GraceLifetime=7200' \
---tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_genie.tar.gz \
-file:///annie/app/users/neverett/grid/run_grid_genie.sh \
+file:///exp/annie/app/users/neverett/grid/run_grid_genie.sh \
 -r=$RUNBASE \
 ${EXP} \
 -g=$GDML \
@@ -144,7 +147,10 @@ ${EXP} \
 -f=$FLUXFILE \
 -m=$MAXPL \
 --message-thresholds=$MESTHRE \
+-i=$INDIR \
 -o=$OUTDIR
+#--tar_file_name dropbox:/${INDIR} \
+#
 }
 
 usage() {
@@ -158,7 +164,7 @@ run_genie_grid.sh -r=<run base number>
                   -i=</path/to/input/tar/file.tar.gz>
                   -o=</path/to/output/directory> (note: a directory will be created in the specified directory and will contain the output files)
                   -T=<expected lifetime of each job in hours>
-                  --message-thresholds=</path/to/message/thresholds/Messenger_<name>.xml (typically a file in /annie/app/users/neverett/config/)>
+                  --message-thresholds=</path/to/message/thresholds/Messenger_<name>.xml (typically a file in /exp/annie/app/users/neverett/config/)>
                   -N=<number of jobs>
                   -h|--help
 EOF

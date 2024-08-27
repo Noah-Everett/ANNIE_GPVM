@@ -37,10 +37,11 @@ setup ifdhc -z /cvmfs/fermilab.opensciencegrid.org/products/common/db || { echo 
 
 #===================SCRIPT VARIABLES=====================#
 # Directories
-B=$INPUT_TAR_DIR_LOCAL/annie/app/users/neverett/bin
-C=$INPUT_TAR_DIR_LOCAL/annie/app/users/neverett/config
-G=$INPUT_TAR_DIR_LOCAL/annie/app/users/neverett/geometry
-F=$INPUT_TAR_DIR_LOCAL/annie/data/flux/bnb
+B=$INPUT_TAR_DIR_LOCAL/exp/annie/app/users/neverett/bin
+C=$INPUT_TAR_DIR_LOCAL/exp/annie/app/users/neverett/config
+G=$INPUT_TAR_DIR_LOCAL/exp/annie/app/users/neverett/geometry
+#F=$INPUT_TAR_DIR_LOCAL/annie/data/flux/bnb
+F=$INPUT_TAR_DIR_LOCAL/annie/data/flux/gsimple_bnb
 
 for i in "$@"; do
   case $i in
@@ -56,7 +57,8 @@ done
 if [ -z "$FLUXFILENUM" ]; then
   export FLUXFILENUM="0000"
 fi
-export FLUXFILE="bnb_annie_${FLUXFILENUM}.root"
+#export FLUXFILE="bnb_annie_${FLUXFILENUM}.root"
+export FLUXFILE="gsimple_beammc_annie_${FLUXFILENUM}.root"
 
 export GEOMETRY="${INPUT_TAR_DIR_LOCAL}/${GEOMDIR}/annie_v02_${PROCESS}.gdml"
 
@@ -72,6 +74,10 @@ fi
 
 cp /cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALbig.xml.gz .
 gzip -d gxspl-FNALbig.xml.gz
+ls
+cd gxspl-FNALbig
+ls
+cd -
 
 export RUNBASE="0"
 export MAXPL=+annie_v02_${PROCESS}.maxpl.xml

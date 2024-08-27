@@ -51,12 +51,12 @@ if [ -z "${OUTDIR}" ]; then
 fi
 
 if [ -z "${NFILES}" ]; then
-  echo "Use \`-N=\` to set the number of genie files to propagate."
+  echo "Use \`-N=\` to set the number of jobs to run. Each job will do the number of jobs specified by \`-w\`."
   return 7
 fi
 
 if [ -z "${EXPLT}" ]; then
-  echo "Use \`-T=\` to set the expected lifetime."
+  echo "Use \`-T=\` to set the expected lifetime [hrs]."
   return 8
 fi
 
@@ -69,7 +69,7 @@ let CPU=1
 
 echo jobsub_submit \
 -G annie \
--M \
+--mail_always \
 -N $NJOBS \
 --memory=${MEMORY}MB \
 --disk=${DISK}MB \
@@ -78,11 +78,11 @@ echo jobsub_submit \
 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
 -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
 --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
---tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_wcsim.tar.gz \
+--tar_file_name=dropbox:///exp/annie/app/users/neverett/grid/grid_wcsim.tar.gz \
 --lines '+FERMIHTC_AutoRelease=True' \
 --lines '+FERMIHTC_GraceMemory=2048' \
 --lines '+FERMIHTC_GraceLifetime=7200' \
-file:///annie/app/users/neverett/grid/run_grid_wcsim.sh \
+file:///exp/annie/app/users/neverett/grid/run_grid_wcsim.sh \
 -r=${RUNBASE} \
 -p_g=${PRIMARIES_GENIE} \
 -p_d=${PRIMARIES_G4DIRT} \
@@ -91,9 +91,11 @@ file:///annie/app/users/neverett/grid/run_grid_wcsim.sh \
 -g=${GEOMETRY} \
 -o=${OUTDIR}
 
+#--jobsub-server=fnpctest1 \
+
 jobsub_submit \
 -G annie \
--M \
+--mail_always \
 -N $NJOBS \
 --memory=${MEMORY}MB \
 --disk=${DISK}MB \
@@ -102,11 +104,11 @@ jobsub_submit \
 --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE \
 -l '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
 --append_condor_requirements='(TARGET.HAS_Singularity==true&&TARGET.HAS_CVMFS_larsoft_opensciencegrid_org==true)' \
---tar_file_name=dropbox:///annie/app/users/neverett/grid/grid_wcsim.tar.gz \
+--tar_file_name=dropbox:///exp/annie/app/users/neverett/grid/grid_wcsim.tar.gz \
 --lines '+FERMIHTC_AutoRelease=True' \
 --lines '+FERMIHTC_GraceMemory=2048' \
 --lines '+FERMIHTC_GraceLifetime=7200' \
-file:///annie/app/users/neverett/grid/run_grid_wcsim.sh \
+file:///exp/annie/app/users/neverett/grid/run_grid_wcsim.sh \
 -r=${RUNBASE} \
 -p_g=${PRIMARIES_GENIE} \
 -p_d=${PRIMARIES_G4DIRT} \

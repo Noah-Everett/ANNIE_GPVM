@@ -1,4 +1,5 @@
 #===========================GRID INIT========================#
+export BASE_NODE_DIR=`pwd`
 set -x
 echo Start `date`
 echo Site:${GLIDIEN_ResourceName}
@@ -37,10 +38,13 @@ setup ifdhc -z /cvmfs/fermilab.opensciencegrid.org/products/common/db || { echo 
 
 #===================SCRIPT VARIABLES=====================#
 # Directories
-B=$INPUT_TAR_DIR_LOCAL/annie/app/users/neverett/bin
-C=$INPUT_TAR_DIR_LOCAL/annie/app/users/neverett/config
-G=$INPUT_TAR_DIR_LOCAL/annie/app/users/neverett/geometry
-F=$INPUT_TAR_DIR_LOCAL/annie/data/flux/bnb
+export INPUT_TAR_DIR_LOCAL=${BASE_NODE_DIR}/tar
+mkdir ${INPUT_TAR_DIR_LOCAL}
+B=$INPUT_TAR_DIR_LOCAL/exp/annie/app/users/neverett/bin
+C=$INPUT_TAR_DIR_LOCAL/exp/annie/app/users/neverett/config
+G=$INPUT_TAR_DIR_LOCAL/exp/annie/app/users/neverett/geometry
+#F=$INPUT_TAR_DIR_LOCAL/annie/data/flux/bnb
+F=$INPUT_TAR_DIR_LOCAL/annie/data/flux/gsimple_bnb
 
 for i in "$@"; do
   case $i in
@@ -52,15 +56,18 @@ for i in "$@"; do
     -f=*                   ) export FLUXFILENUM="${i#*=}" shift  ;;
     -m=*                   ) export MAXPL="${i#*=}"       shift  ;;
     --message-thresholds=* ) export MESTHRE="${i#*=}"     shift  ;;
+    -i=*                   ) export INDIR="${i#*=}"       shift  ;;
     -o=*                   ) export OUTDIR="${i#*=}"      shift  ;;
-    -*                     ) echo "unknown option $i";    exit 1 ;;
+    #-*                     ) echo "unknown option $i";    exit 1 ;;
    esac
 done
 
 if [ -z "$FLUXFILENUM" ]; then
   export FLUXFILENUM="0000"
 fi
-export FLUXFILE="bnb_annie_${FLUXFILENUM}.root"
+#export FLUXFILE="beammc_annie_${FLUXFILENUM}.root"
+#export FLUXFILE="bnb_annie_${FLUXFILENUM}.root"
+export FLUXFILE="gsimple_beammc_annie_${FLUXFILENUM}.root"
 
 if [ -z "$ZMIN" ]; then
   export ZMIN="-2000"
@@ -77,6 +84,16 @@ fi
 if [ -z "$TOPVOL" ]; then
   export $TOPVOL="TARGON_LV"
 fi
+
+ifdh cp -D $IFDH_OPTION ${INDIR} ${INPUT_TAR_DIR_LOCAL}
+echo "Unzip dir: ${INPUT_TAR_DIR_LOCAL}/$(basename "${INDIR}")"
+cd ${INPUT_TAR_DIR_LOCAL}
+echo $(basename "${INDIR}")
+# gzip -dv $(basename "${INDIR}")
+tar -zxvf $(basename "${INDIR}")
+ls
+cd -
+echo "Unzip dir ls: `ls ${INPUT_TAR_DIR_LOCAL}/grid_genie`"
 
 cp /cvmfs/larsoft.opensciencegrid.org/products/genie_xsec/v3_00_04_ub2/NULL/G1810a0211a-k250-e1000/data/gxspl-FNALbig.xml.gz .
 gzip -d gxspl-FNALbig.xml.gz
@@ -115,10 +132,10 @@ ifdh cp -D $IFDH_OPTION $INPUT_TAR_DIR_LOCAL/${MESTHRE} .
 
 
 
-#=============================MAKE LOG========================#
+#==========================MAKE INFO LOG========================#
 export OUTDIR=${OUTDIR}/${RUNBASE}_${CLUSTER}
 ifdh mkdir_p ${OUTDIR}
-cat <<EOF > ${RUN}.log
+cat <<EOF > settings_${RUN}.log
 #===== SETTINGS =====#
             Program: /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal
                 Run: ${RUN}
@@ -150,9 +167,8 @@ ${EXPOSURE} \
 #===== ls =====#
 `ls`
 EOF
-ifdh cp -D $IFDH_OPTION ${RUN}.log ${OUTDIR}
-#          Z Minimum: ${ZMIN}
-#======================================================================#
+ifdh cp -D $IFDH_OPTION settings_${RUN}.log ${OUTDIR}
+#===============================================================#
 
 
 
@@ -168,8 +184,16 @@ ${UNITS} \
 --tune G18_10a_02_11a \
 ${EXPOSURE} \
 -m $(basename ${MAXPL}) \
---message-thresholds $(basename ${MESTHRE})
+--message-thresholds $(basename ${MESTHRE}) 2>&1 | tee stdall_${RUN}.log
 #-z $ZMIN \
+#======================================================================#
+
+
+
+#==============================COPY LOGS===============================#
+#ifdh cp -D $IFDH_OPTION stdout_${RUN}.log ${OUTDIR}
+#ifdh cp -D $IFDH_OPTION stderr_${RUN}.log ${OUTDIR}
+ifdh cp -D $IFDH_OPTION stdall_${RUN}.log ${OUTDIR}
 #======================================================================#
 
 

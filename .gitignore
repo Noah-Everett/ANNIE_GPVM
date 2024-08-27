@@ -1,10 +1,11 @@
 *.DS_Store
+*.swp
+
 grid/*.tar.gz
-ToolAnalysis_standard/
-ToolAnalysis_updatedReco/
-ToolAnalysis_currentReco/
-WCSim/
-WCSim_LAr/
-WCSim*/
+bin/*.tbz2
+
 ToolAnalysis*/
+WCSim*/
+G4ANNIE/
+
 geometry/other/annie_tot.gdml

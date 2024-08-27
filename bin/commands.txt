@@ -1,0 +1,100 @@
+################################
+##### GDML (make_geoms.sh) #####
+################################
+source make_geoms.sh \
+--outDir=/exp/annie/app/users/neverett/geometry \
+--material=argon \
+--shape=tube \
+--rad_min=0 \
+--rad_max=500 \
+--rad_delta=50 \
+--state=gas \
+--density=300 \
+--height=2000
+
+# GDML files must of the type annie_02_{N}.gdml
+source ${B}/make_maxpl_grid.sh \
+--nGeomFiles=11 \
+--geomDir=/exp/annie/app/users/neverett/geometry/annie_v02_tube_argon_gas_300atm \
+--message-thresholds=/exp/annie/app/users/neverett/config/Messenger_warn.xml \
+-o=/pnfs/annie/persistent/users/neverett/runs/
+
+
+
+#####################################
+##### GENIE (run_genie_grid.sh) #####
+#####################################
+source run_genie_grid.sh \
+-f='*' \
+-g=/exp/annie/app/users/neverett/geometry/annie_v02_tube_argon_liquid/annie_v02_9.gdml \
+-t=TWATER_LV \
+-o=/pnfs/annie/persistent/users/neverett/runs/ \
+-r=0 \
+-e=1E18 \
+-m=/exp/annie/app/users/neverett/geometry/annie_v02_tube_argon_liquid/annie_v02_9.maxpl.xml \
+--message-thresholds=/exp/annie/app/users/neverett/config/Messenger_warn.xml \
+-i=/pnfs/annie/persistent/users/neverett/grid_tar/grid_genie.tar.gz \
+-N=500 \
+-T=20
+
+# run from output dir (marked "-o" above)
+source /exp/annie/app/users/neverett/bin/make_gst.sh '*'
+
+
+
+##################################
+##### g4dirt (run_g4dirt.sh) #####
+##################################
+source run_g4dirt.sh \
+-r='*' \
+-i=/pnfs/annie/persistent/users/neverett/runs/annie_v02_tube_argon_liquid_9_TWATER_500_1E18_v2/genie_ghep \
+-o=/pnfs/annie/persistent/users/neverett/runs/annie_v02_tube_argon_liquid_9_TWATER_500_1E18_v2/annieDirt_root \
+-n=-1 \
+-g=/exp/annie/app/users/neverett/geometry/annie_v02_tube_argon_liquid/annie_v02_9.gdml
+
+
+
+#####################################
+##### WCSim (run_wcsim_grid.sh) #####
+#####################################
+source run_wcsim_grid.sh \
+-p_g=/pnfs/annie/persistent/users/neverett/runs/annie_v02_tube_argon_liquid_9_TWATER_500_1E18_v2/genie_ghep \
+-p_d=/pnfs/annie/persistent/users/neverett/runs/annie_v02_tube_argon_liquid_9_TWATER_500_1E18_v2/annieDirt_root \
+-d=500 \
+-w=500 \
+-g=/pnfs/annie/persistent/users/neverett/geometry/annie_v02_tube_argon_liquid/annie_v02_9.gdml \
+-o=/pnfs/annie/persistent/users/neverett/runs/annie_v02_tube_argon_liquid_9_TWATER_500_1E18_v2 \
+-N=50 \
+-T=24 \
+-r=0
+
+
+
+##########################
+##### Grid (jobsub)  #####
+##########################
+jobsub_rm -G annie neverett      # remove all user jobs
+jobsub_q -G annie neverett       # show job info for all user jobs
+jobsub_history -G annie neverett # show job history for all user jobs
+
+
+
+######################
+##### Tar Files  #####
+######################
+cd $GR \
+  && rm grid_genie.tar.gz \
+  && source $B/make_tar_genie.sh \
+  && cd -
+cd $PNE/grid_tar \
+  && rm grid_genie.tar.gz \
+  && source $B/make_tar_genie.sh \
+  && cd -
+cd $GR \
+  && rm grid_genie.tar.gz \
+  && source $B/make_tar_genie.sh \
+  && cd - \
+  && cd $PNE/grid_tar \
+  && rm grid_genie.tar.gz \
+  && cp $GR/grid_genie.tar.gz . \
+  && cd -

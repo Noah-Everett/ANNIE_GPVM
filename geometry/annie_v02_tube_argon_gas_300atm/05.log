@@ -1,0 +1,31 @@
+#===== SETTINGS =====#
+            Program: /cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal
+                Run: 05
+               Seed: 577105524
+            Top Vol: EXP_HALL_LV
+               Flux: /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/8ebecdc3b3a27502577e18eeb9aaf0a5b7a3a95b5ef8269c4509840ce601da74/annie/data/flux/bnb/bnb_annie_*.root,ANNIE-tank
+           Geometry: /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/8ebecdc3b3a27502577e18eeb9aaf0a5b7a3a95b5ef8269c4509840ce601da74//exp/annie/app/users/neverett/geometry/annie_v02_tube_argon_gas_300atm/annie_v02_5.gdml
+              Units: -L cm -D g_cm3
+     Cross Sections: /srv/gxspl-FNALbig.xml
+
+               Tune: G18_10a_02_11a
+Maximum Path Length: +annie_v02_5.maxpl.xml
+ Message Thresholds: /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/8ebecdc3b3a27502577e18eeb9aaf0a5b7a3a95b5ef8269c4509840ce601da74//exp/annie/app/users/neverett/config/Messenger_warn.xml
+
+#===== COMMAND =====#
+/cvmfs/larsoft.opensciencegrid.org/products/genie/v3_00_06k/Linux64bit+3.10-2.17-e20-debug/bin/gevgen_fnal -r 05 --seed 577105524 -t EXP_HALL_LV -f /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/8ebecdc3b3a27502577e18eeb9aaf0a5b7a3a95b5ef8269c4509840ce601da74/annie/data/flux/bnb/bnb_annie_*.root,ANNIE-tank -g /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/8ebecdc3b3a27502577e18eeb9aaf0a5b7a3a95b5ef8269c4509840ce601da74//exp/annie/app/users/neverett/geometry/annie_v02_tube_argon_gas_300atm/annie_v02_5.gdml -L cm -D g_cm3 --cross-sections /srv/gxspl-FNALbig.xml --tune G18_10a_02_11a -n 1 -m +annie_v02_5.maxpl.xml -S 30000 --message-thresholds /cvmfs/fifeuser1.opensciencegrid.org/sw/annie/8ebecdc3b3a27502577e18eeb9aaf0a5b7a3a95b5ef8269c4509840ce601da74//exp/annie/app/users/neverett/config/Messenger_warn.xml
+
+#===== ls =====#
+Messenger_warn.xml
+_condor_stderr
+_condor_stdout
+annie_v02_5.gdml
+condor_exec.exe
+docker_stderror
+gxspl-FNALbig.xml
+jsb_tmp
+no_xfer
+run_grid_genie_maxpl.sh
+tmp
+var
+x509up_annie_Analysis_58778
