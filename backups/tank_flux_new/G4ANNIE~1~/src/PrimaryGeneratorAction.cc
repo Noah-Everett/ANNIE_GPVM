@@ -183,14 +183,6 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     intank = 1;
     G4cout << "=========> particles start in TWATER_PV entry " 
            << fEntry << G4endl;
-  } else if ( vtxvol == "TARGON_PV" ) {
-    intank = 1;
-    G4cout << "=========> particles start in TARGON_PV entry " 
-           << fEntry << G4endl;
-  } else if ( vtxvol == "TDEWAR_PV" ) {
-    intank = 1;
-    G4cout << "=========> particles start in TDEWAR_PV entry " 
-           << fEntry << G4endl;
   }
   // other posssibilities ? ... tank wall, base, cone, airspace?
 

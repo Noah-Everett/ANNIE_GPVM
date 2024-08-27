@@ -6,10 +6,8 @@
 
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
-#include "G4Material.hh"
 #include "G4TransportationManager.hh"
 #include "G4Navigator.hh"
-#include "G4TouchableHistory.hh"
 
 #include "G4Event.hh"
 #include "G4ParticleTable.hh"
@@ -23,24 +21,11 @@
 // ROOT headers
 
 
-// this program's headers
-#include "MyEventRecord.hh"
-
-#include <cstring>
-
-using namespace CLHEP;
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(MyEventRecord* myevtrec,
-                                               G4String infname, G4int verbose)
-  : fMyEventRecord(myevtrec)
-  , fInputFileName(infname)
-  , fInputFile(0)
-  , fInputTree(0)
-  , fEntry(-1)
-  , fGenieRecord(0)
-  , fVerbosity(verbose)
+PrimaryGeneratorAction::PrimaryGeneratorAction(G4String infname, G4int verbose)
+  : fInputFileName(infname), fInputFile(0), fInputTree(0), 
+    fEntry(-1), fGenieRecord(0), fVerbosity(verbose)
 {
   
   //create a messenger for this class
@@ -66,7 +51,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(MyEventRecord* myevtrec,
          << "  format " << genie::NtpMCFormat::AsString(header->format) << G4endl
          << "  datime " << header->datime << G4endl
          << G4endl;
-
 //  NtpMCFormat_t format;  ///< Event Record format (GENIE support multiple formats)
 //  TObjString    cvstag;  ///< GENIE CVS Tag (to keep track of GENIE's version)
 //  NtpMCDTime    datime;  ///< Date and Time that the event ntuple was generated
@@ -79,15 +63,8 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(MyEventRecord* myevtrec,
     exit(127);
   }
   fNEntries = fInputTree->GetEntries();
-
-  fMyEventRecord->run            = header->runnu;
-  fMyEventRecord->inputFileName  = fInputFileName;
-  fMyEventRecord->inputNEntries  = fNEntries;
-  fMyEventRecord->inputTotalPOTs = fInputTree->GetWeight();
-  
   G4cout << "%%% input file \"" << fInputFileName << "\" has " 
-         << fNEntries << " entries, total POTS "
-         << fMyEventRecord->inputTotalPOTs << G4endl;
+            << fNEntries << " entries" << G4endl;
 
   fGenieRecord = new genie::NtpMCEventRecord;
   fInputTree->SetBranchAddress("gmcrec",&fGenieRecord); // gmcrec is branch name
@@ -110,10 +87,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   //this function is called at the begining of event
   // 
   ++fEntry;
-  if ( fVerbosity > 0 ) {
-    G4cout << G4endl << "---> GeneratePrimaries from GENIE file entry "
-           << fEntry << G4endl;
-  }
+  G4cout << G4endl << "---> GeneratePrimaries from GENIE file entry "
+         << fEntry << G4endl;
 
   if ( fEntry >= fNEntries ) {
     // no more input
@@ -132,89 +107,17 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ThreeVector g4pos(x,y,z);
   G4PrimaryVertex* evtVertex = new G4PrimaryVertex(g4pos,t);
 
-  int intank = 0;
-  int inhall = -1;  // not determining this right yet
-
   G4Navigator* navigator = 
     G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
-
-  G4VPhysicalVolume* pvol = 0;
-
-  pvol = navigator->LocateGlobalPointAndSetup(g4pos,0,false,true);
-
-  std::string vtxvol = ( ( pvol ) ? pvol->GetName() : "<<no-pvol>>" );
-  // really should walk up ... for hierarchy recording copy #
-
-  std::string vtxmat = 
-    ( ( pvol ) ? pvol->GetLogicalVolume()->GetMaterial()->GetName() : "<<unknown>>" );
-
-  /*
-  G4TouchableHistory* touchable = navigator->CreateTouchableHistory();
-  //navigator->LocateGlobalPointAndUpdateTouchable(g4pos,touchable,false);
-  // touchable not owned by navigator ... need to delete
-
-  pvol = navigator->ResetHierarchyAndLocate(g4pos,G4ThreeVector(),*touchable);
   
-  //touchable->GetVolume();  
+  G4VPhysicalVolume* vol = 
+    navigator->LocateGlobalPointAndSetup(g4pos,0,false,true);
 
-  G4int ndepth = touchable->GetHistoryDepth();
-  G4cout << "ndepth " << ndepth << G4endl;
-
-  for (G4int idepth=0; idepth<ndepth; ++idepth) {
-    pvol = touchable->GetVolume(idepth);
-    if ( pvol ) {
-      G4cout << "[" << idepth << "] " << pvol->GetName() << G4endl;
-    } else {
-      G4cout <<" [" << idepth << "]  no pvol " << G4endl;
-    }
+  if ( vol && vol->GetName() == G4String("TWATER_PV") ) {
+    G4cout << "=========> particles start in TWATER_PV" << G4endl;
+    exit(1);
   }
 
-  delete touchable;
-
-  while ( pvol ) {
-    G4String pvname = pvol->GetName();
-    if ( lvname.find("TWATER")   == 0 ) intank = 1;
-    if ( lvname.find("EXP_HALL") == 0 ) inhall = 1;
-    //lv = lv->
-  }
-  */
-
-  if ( vtxvol == "TWATER_PV" ) {
-    intank = 1;
-    G4cout << "=========> particles start in TWATER_PV entry " 
-           << fEntry << G4endl;
-  } else if ( vtxvol == "TARGON_PV" ) {
-    intank = 1;
-    G4cout << "=========> particles start in TARGON_PV entry " 
-           << fEntry << G4endl;
-  } else if ( vtxvol == "TDEWAR_PV" ) {
-    intank = 1;
-    G4cout << "=========> particles start in TDEWAR_PV entry " 
-           << fEntry << G4endl;
-  }
-  // other posssibilities ? ... tank wall, base, cone, airspace?
-
-
-  fMyEventRecord->clear();
-
-  fMyEventRecord->entry  = fEntry;
-  fMyEventRecord->nupdg  = gevtRec->Probe()->Pdg();
-  fMyEventRecord->nuvtxx = genieVtx->X();
-  fMyEventRecord->nuvtxy = genieVtx->Y();
-  fMyEventRecord->nuvtxz = genieVtx->Z();
-  fMyEventRecord->nuvtxt = genieVtx->T();
-
-  fMyEventRecord->intank = intank;
-  fMyEventRecord->inhall = inhall;
-  //fMyEventRecord->vtxvol = vtxvol;
-  //fMyEventRecord->vtxmat = vtxmat;
-  //char * strncpy ( char * destination, const char * source, size_t num );
-  fMyEventRecord->vtxvol[4095] = '\0';
-  fMyEventRecord->vtxmat[4095] = '\0';
-  strncpy(fMyEventRecord->vtxvol,vtxvol.c_str(),4094);
-  strncpy(fMyEventRecord->vtxmat,vtxmat.c_str(),4094);
-
-  fMyEventRecord->ntank  = 0;
 
   // in principle particles leaving the nucleus are offset from the
   // actual vertex and should start from
@@ -226,7 +129,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   if ( fVerbosity > 1 ) {
     G4cout << "genieVtx T " << genieVtx->T() << " " << std::flush;
     genieVtx->Print();
-    G4cout << " within " <<  vtxvol << G4endl;
+    G4cout << " within " << ((vol)?vol->GetName():"<<no-volume>") << G4endl;
   }
 
   // loop over GENIE particles
@@ -235,12 +138,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
     genie::GHepParticle* part = gevtRec->Particle(ipart);
     if ( part->Status() != 1 ) continue; // not to be tracked
-
     G4ParticleDefinition* partDef = particleTable->FindParticle(part->Pdg());
     if ( ! partDef ) {
-      if ( fVerbosity > 0 ) {
-        G4cout << "skipping PDG " << part->Pdg() << G4endl;
-      }
+      G4cout << "skipping PDG " << part->Pdg() << G4endl;
       continue;
     }
     G4ThreeVector voffset(part->Vx(),part->Vy(),part->Vz());
@@ -251,12 +151,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
                              part->Px()*GeV, part->Py()*GeV, part->Pz()*GeV,
                              part->E()*GeV);
 
-    if ( intank ) {
-      fMyEventRecord->AppendG4PrimaryParticle(evtVertex,g4part);
-      delete g4part;
-    } else {
-      evtVertex->SetPrimary( g4part ); // really add to G4 to process
-    }
+    evtVertex->SetPrimary( g4part ); // really add
 
     if ( fVerbosity > 1 ) {
       G4cout 

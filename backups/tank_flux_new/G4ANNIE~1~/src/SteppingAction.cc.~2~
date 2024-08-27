@@ -42,17 +42,13 @@
 
 #include "G4Step.hh"
 
-#include "MyEventRecord.hh"
-
 ////#include "G4RunManager.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-SteppingAction::SteppingAction(MyEventRecord* myevtrec,
-                               G4VUserDetectorConstruction* det,
+SteppingAction::SteppingAction(G4VUserDetectorConstruction* det,
                                EventAction* evt, G4int verbose)
-  : fMyEventRecord(myevtrec)
-  , detector(det)
+  : detector(det)
   , eventaction(evt)
   , fVerbosity(verbose)
 { }
@@ -66,84 +62,8 @@ SteppingAction::~SteppingAction()
 
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
-  
-  G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
-  if ( preStepPoint &&
-       preStepPoint->GetTouchableHandle() ) {
-    G4VPhysicalVolume* pv_start = 
-      preStepPoint->GetTouchableHandle()->GetVolume();
-    if ( pv_start ) {
-      G4LogicalVolume*   lv_start = pv_start->GetLogicalVolume();
-      G4Material*       mat_start = lv_start->GetMaterial();
-    } else {
-      std::cerr << "no pv_start" << std::endl;
-    }
-  }
-
-  // want to catch things _as_ they enter TWATER_PV
-  // but be wary of stuff
-
-  G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
-  if ( postStepPoint &&
-       postStepPoint->GetTouchableHandle() ) {
-    G4VPhysicalVolume* pv_end = 
-      postStepPoint->GetTouchableHandle()->GetVolume();
-    if ( ! pv_end ) return;
-
-    G4LogicalVolume*   lv_end = pv_end->GetLogicalVolume();
-    G4Material*       mat_end = lv_end->GetMaterial();
-   
-    // Retrieve the logical volume store
-    G4LogicalVolumeStore* logVolStore = G4LogicalVolumeStore::GetInstance();
-
-    // Find the logical volume with the name "TWATER_LV"
-    G4LogicalVolume* TWATER_LV = nullptr;
-    for (auto logVol : *logVolStore) {
-        if (logVol->GetName() == "TWATER_LV") {
-            TWATER_LV = logVol;
-            break;
-        }
-    }
-
-    if (TWATER_LV == nullptr) {
-        std::cerr << "Logical volume 'TWATER_LV' not found!" << std::endl;
-        return 1;
-    }
-
-    // Use a queue for BFS
-    std::queue<G4LogicalVolume*> queue;
-    queue.push(TWATER_LV);
-
-    bool found = false;
-    while (!queue.empty() && !found) {
-        G4LogicalVolume* currentLV = queue.front();
-        queue.pop();
-
-        // Check all daughters of the current logical volume
-        for (int i = 0; i < currentLV->GetNoDaughters(); ++i) {
-            G4VPhysicalVolume* daughter = currentLV->GetDaughter(i);
-            if (daughter->GetName() == "currentVolume") {
-                found = true;
-                break;
-            }
-            queue.push(daughter->GetLogicalVolume());
-        }
-    }
-
-    if (found) {
-        std::cout << "Daughter volume 'currentVolume' found." << std::endl;
-	// record this info and kill the particle
-        G4Track* aTrack = aStep->GetTrack();
-        fMyEventRecord->AppendG4Step(aTrack,postStepPoint);
-        aTrack->SetTrackStatus(fStopAndKill);
-    } else {
-        std::cout << "Daughter volume 'currentVolume' not found." << std::endl;
-    }
-  }
-
-  /*
   // get volume of the current step
-  G4VPhysicalVolume* pvolume
+  G4VPhysicalVolume* pvolume 
     = aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
   G4LogicalVolume* lvolume = pvolume->GetLogicalVolume();
   G4Material* material = lvolume->GetMaterial();
@@ -156,7 +76,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
 
   if ( // aStep->GetTrack()->GetKineticEnergy() > 1.0*GeV  &&
        // aStep->GetTrack()->GetTrackID() == 1 &&
-       fVerbosity > 0 ) {
+       fVerbosity > -1 ) {
     G4cout << " step in " << material->GetName()
            << " PDG " << pdg
            << " trackid " << aStep->GetTrack()->GetTrackID()
@@ -165,6 +85,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
            << " end at " << (aStep->GetPostStepPoint()->GetPosition()/cm)
            << G4endl;
   }
+
 
   // collect energy and track length step by step
   G4double edep = aStep->GetTotalEnergyDeposit();
@@ -187,8 +108,6 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
   
   //example of saving random number seed of this event, under condition
   //// if (condition) G4RunManager::GetRunManager()->rndmSaveThisEvent(); 
-  */
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -93,52 +93,14 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     G4LogicalVolume*   lv_end = pv_end->GetLogicalVolume();
     G4Material*       mat_end = lv_end->GetMaterial();
    
-    // Retrieve the logical volume store
-    G4LogicalVolumeStore* logVolStore = G4LogicalVolumeStore::GetInstance();
+    if ( pv_end->GetName() == "TWATER_PV" ) {
+      // record this info and kill the particle
+      G4Track* aTrack = aStep->GetTrack();
+      fMyEventRecord->AppendG4Step(aTrack,postStepPoint);
+      aTrack->SetTrackStatus(fStopAndKill);
 
-    // Find the logical volume with the name "TWATER_LV"
-    G4LogicalVolume* TWATER_LV = nullptr;
-    for (auto logVol : *logVolStore) {
-        if (logVol->GetName() == "TWATER_LV") {
-            TWATER_LV = logVol;
-            break;
-        }
     }
-
-    if (TWATER_LV == nullptr) {
-        std::cerr << "Logical volume 'TWATER_LV' not found!" << std::endl;
-        return 1;
-    }
-
-    // Use a queue for BFS
-    std::queue<G4LogicalVolume*> queue;
-    queue.push(TWATER_LV);
-
-    bool found = false;
-    while (!queue.empty() && !found) {
-        G4LogicalVolume* currentLV = queue.front();
-        queue.pop();
-
-        // Check all daughters of the current logical volume
-        for (int i = 0; i < currentLV->GetNoDaughters(); ++i) {
-            G4VPhysicalVolume* daughter = currentLV->GetDaughter(i);
-            if (daughter->GetName() == "currentVolume") {
-                found = true;
-                break;
-            }
-            queue.push(daughter->GetLogicalVolume());
-        }
-    }
-
-    if (found) {
-        std::cout << "Daughter volume 'currentVolume' found." << std::endl;
-	// record this info and kill the particle
-        G4Track* aTrack = aStep->GetTrack();
-        fMyEventRecord->AppendG4Step(aTrack,postStepPoint);
-        aTrack->SetTrackStatus(fStopAndKill);
-    } else {
-        std::cout << "Daughter volume 'currentVolume' not found." << std::endl;
-    }
+ 
   }
 
   /*

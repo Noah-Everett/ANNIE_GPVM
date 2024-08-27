@@ -6,6 +6,5 @@ bin/*.tbz2
 
 ToolAnalysis*/
 WCSim*/
-G4ANNIE/
 
 geometry/other/annie_tot.gdml

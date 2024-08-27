@@ -1,0 +1,62 @@
+G4StandAlone serves as a testbed for studying Geant4 outside of the
+experiment's framework (e.g. NOvA's use of ART and G4Base (nutools)
+and g4nova (novaart)).
+
+Getting Started (Geant 4.9.4 and earlier):
+
+  $ setup_nova # used to get Geant4 and ROOT environments setup
+  
+  $ export CVSROOT=p-novaart@cdcvs.fnal.gov:/cvs/projects/novaart
+  $ cvs -d $CVSROOT checkout G4StandAlone
+
+  $ cd G4StandAlone
+  $ source ./cp_gdml.sh
+  $ gmake all
+  [... builds 'g4sa' executable ...]
+
+Getting Started (Geant 4.9.5 and later):
+
+  $ setup_nova # used to get Geant4 and ROOT environments setup
+  
+  $ export CVSROOT=p-novaart@cdcvs.fnal.gov:/cvs/projects/novaart
+  $ cvs -d $CVSROOT checkout G4StandAlone
+
+  $ mkdir G4StandAlone-cmakebuild
+  $ cd G4StandAlone-cmakebuild
+  $ source ../G4StandAlone/cp_gdml.sh
+  ## assuming $ROOTSYS and $XERCESCROOT are defined
+  ## as well as the env variables on the lines below
+  ## (adjust for different versions of Geant4 and CLHEP)
+  $ cmake -DGeant4_DIR=${GEANT4_FQ_DIR}/lib64/Geant4-9.5.2 \
+          -DCLHEP_DIR=${CLHEP_DIR}/${CLHEP_FQ}/lib/CLHEP-2.1.2.4 \
+          ../G4StandAlone
+  $ gmake
+  [... builds 'g4sa' executable ...]
+
+Getting Started (Geant 4.9.6 and later):
+
+  $ setup_nova # used to get Geant4 and ROOT environments setup
+  
+  svn checkout https://cdcvs.fnal.gov/subversion/novaart.pkgs.svn/trunk/G4StandAlone
+
+  $ mkdir G4StandAlone-cmakebuild
+  $ cd G4StandAlone-cmakebuild
+  $ source ../G4StandAlone/cp_gdml.sh
+  ## assuming $ROOTSYS and $XERCESCROOT are defined
+  ## as well as the env variables on the lines below
+  ## (adjust for different versions of Geant4 and CLHEP)
+  $ cmake -DGeant4_DIR=${GEANT4_FQ_DIR}/lib64/Geant4-9.6.1 \
+          -DCLHEP_DIR=${CLHEP_DIR}/${CLHEP_FQ}/lib/CLHEP-2.1.3.1 \
+          ../G4StandAlone
+  $ gmake
+  [... builds 'g4sa' executable ...]
+
+
+Running the Executable:
+
+  Note: current ndos.gdml is what would be "ndos-vacuum.gdml" in the
+  nomenclature for the other files (i.e. differs from "ndos-air.gdml"
+  only by "Air" ==> "Vacuum" )
+
+  # ./bin/Linux-g++/g4sa -g gdml/ndos[-air].gdml  run_e.mac < /dev/null > logfile
+
