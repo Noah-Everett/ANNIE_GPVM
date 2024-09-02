@@ -23,6 +23,7 @@
         setup_shortcuts.sh           # setup for personal shortcuts
         setup_singularity.sh         # setup for ToolAnalysis Singularity
         g4annie_dirt_flux            # executable for primary propagation (run by run_g4dirt.sh) (by Robert Hatcher)
+        targetGeom.py                # script to generate target geometry for GENIE, ANNIEDirt, and WCSim
     config/                     # contains GENIE config files
         Messenger_debug.xml          # GENIE messenger config w/ all priorities set to DEBUG
         Messenger_warn.xml           # GENIE messenger config w/ all priorities set to WARN

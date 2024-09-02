@@ -22,6 +22,7 @@
 - [setup_shortcuts.sh](#setup_shortcutssh)
 - [setup_singularity.sh](#setup_singularitysh)
 - [setup_wcsim.sh](#setup_wcsimsh)
+- [targetGeom.py](#targetgeompyp)
 
 ## `run_genie.sh`
 
@@ -289,3 +290,18 @@ $ source $B/setup_shortcuts.sh
 ```
 $ source $B/setup_singularity.sh
 ```
+
+
+## `targetGeom.py`
+
+### About
+`targetGeom.py` is a script that generates the target geometry for GENIE, ANNIEDirt, and WCSim.
+
+### Usage
+
+The script can be generically run with the following commands:
+```
+$ pip install -r requirements.txt
+$ python $B/targetGeom.py
+```
+Anternatively, the script settings can be modified by changing the values in the script itself.
